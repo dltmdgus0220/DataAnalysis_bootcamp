@@ -69,3 +69,10 @@ x_val_scaled = scaler.transform(x_val)
 k = 3
 knn = KNeighborsClassifier(n_neighbors=k) # 거리가 가까운 k개를 보고 다수결로 클래스 결정
 knn.fit(x_train_scaled, y_train) # 학습
+
+# 6. knn 모델 검증(val)
+y_pred = knn.predict(x_val_scaled)
+# print(y_pred)
+# print(y_val)
+acc = accuracy_score(y_pred, y_val)
+print(round(acc,3))
