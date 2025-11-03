@@ -28,6 +28,7 @@ print(f"특성(features): {iris.feature_names}")
 print(f"클래스(species): {iris.target_names}")
 print()
 
+# 2. 데이터 시각화
 df_sepal = pd.DataFrame(X[:, [0,1]], columns=iris.feature_names[:2]) # sepal length,width만 보기
 df_sepal['species'] = [iris.target_names[i] for i in y]
 # print(df_sepal)
@@ -53,3 +54,8 @@ ax2.set_title('붓꽃 데이터 분포')
 ax2.grid()
 plt.tight_layout()
 plt.show()
+
+# 3. 데이터셋 분할
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y) # stratify는 클래스별 비율을 유지하기 위한 파라미터
+x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.25, random_state=42, stratify=y_train)
+print(len(x_train), len(x_val), len(x_test))
