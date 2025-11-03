@@ -9,7 +9,7 @@ import seaborn as sns
 import pandas as pd
 
 # 0. 한글 설정
-from matplotlib import font_manager, rc
+from matplotlib import rc
 import platform
 if platform.system() == "Windows":
     plt.rc('font', family="Malgun Gothic")
@@ -59,3 +59,9 @@ plt.show()
 x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y) # stratify는 클래스별 비율을 유지하기 위한 파라미터
 x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.25, random_state=42, stratify=y_train)
 print(len(x_train), len(x_val), len(x_test))
+
+# 4. 데이터 정규화, 거리 기반 알고리즘이기 때문에 스케일링 중요함.
+scaler = StandardScaler().fit(x_train) # 스케일러 객체 생성하고 fit 함수로 x_train 피처들의 평균, 표준편차 계산
+x_train_scaled = scaler.transform(x_train) # 표준화 스케일링 적용
+x_val_scaled = scaler.transform(x_val)
+
