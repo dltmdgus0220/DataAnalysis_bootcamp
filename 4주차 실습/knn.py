@@ -65,3 +65,7 @@ scaler = StandardScaler().fit(x_train) # 스케일러 객체 생성하고 fit �
 x_train_scaled = scaler.transform(x_train) # 표준화 스케일링 적용
 x_val_scaled = scaler.transform(x_val)
 
+# 5. knn 모델 학습
+k = 3
+knn = KNeighborsClassifier(n_neighbors=k) # 거리가 가까운 k개를 보고 다수결로 클래스 결정
+knn.fit(x_train_scaled, y_train) # 학습
