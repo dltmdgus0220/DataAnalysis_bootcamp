@@ -28,5 +28,6 @@ print(f"특성(features): {iris.feature_names}")
 print(f"클래스(species): {iris.target_names}")
 print()
 
-df = pd.DataFrame(X)
+df = pd.DataFrame(X[:, [0,1]], columns=iris.feature_names[:2]) # sepal length,width만 보기
+df['species'] = [iris.target_names[i] for i in y]
 print(df)
