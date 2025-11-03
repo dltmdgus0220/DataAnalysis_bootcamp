@@ -31,3 +31,14 @@ print()
 df = pd.DataFrame(X[:, [0,1]], columns=iris.feature_names[:2]) # sepal length,width만 보기
 df['species'] = [iris.target_names[i] for i in y]
 print(df)
+
+fig = plt.figure(figsize=(5,5))
+ax1 = fig.add_subplot(1,1,1)
+
+sns.scatterplot(data=df, x=iris.feature_names[0], y=iris.feature_names[1], hue='species', ax=ax1)
+ax1.set_xlabel('꽃받침 길이(cm)')
+ax1.set_ylabel('꽃받침 너비(cm)')
+ax1.set_title('붓꽃 데이터 분포')
+ax1.grid()
+plt.tight_layout()
+plt.show()
