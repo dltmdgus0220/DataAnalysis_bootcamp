@@ -28,17 +28,28 @@ print(f"특성(features): {iris.feature_names}")
 print(f"클래스(species): {iris.target_names}")
 print()
 
-df = pd.DataFrame(X[:, [0,1]], columns=iris.feature_names[:2]) # sepal length,width만 보기
-df['species'] = [iris.target_names[i] for i in y]
-print(df)
+df_sepal = pd.DataFrame(X[:, [0,1]], columns=iris.feature_names[:2]) # sepal length,width만 보기
+df_sepal['species'] = [iris.target_names[i] for i in y]
+# print(df_sepal)
 
-fig = plt.figure(figsize=(5,5))
-ax1 = fig.add_subplot(1,1,1)
+df_petal = pd.DataFrame(X[:, [2,3]], columns=iris.feature_names[2:]) # petal length,width만 보기
+df_petal['species'] = [iris.target_names[i] for i in y]
+# print(df_petal)
 
-sns.scatterplot(data=df, x=iris.feature_names[0], y=iris.feature_names[1], hue='species', ax=ax1)
+fig = plt.figure(figsize=(10,5))
+ax1 = fig.add_subplot(1,2,1)
+ax2 = fig.add_subplot(1,2,2)
+
+sns.scatterplot(data=df_sepal, x=iris.feature_names[0], y=iris.feature_names[1], hue='species', ax=ax1)
 ax1.set_xlabel('꽃받침 길이(cm)')
 ax1.set_ylabel('꽃받침 너비(cm)')
 ax1.set_title('붓꽃 데이터 분포')
 ax1.grid()
+
+sns.scatterplot(data=df_petal, x=iris.feature_names[2], y=iris.feature_names[3], hue='species', ax=ax2)
+ax2.set_xlabel('꽃잎 길이(cm)')
+ax2.set_ylabel('꽃잎 너비(cm)')
+ax2.set_title('붓꽃 데이터 분포')
+ax2.grid()
 plt.tight_layout()
 plt.show()
