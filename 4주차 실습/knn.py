@@ -66,24 +66,24 @@ x_train_scaled = scaler.transform(x_train) # 표준화 스케일링 적용
 x_val_scaled = scaler.transform(x_val)
 
 # 5. knn 모델 학습
-k = 3
+k = 4 # k=4일 때 정확도가 가장 높았음.
 knn = KNeighborsClassifier(n_neighbors=k) # 거리가 가까운 k개를 보고 다수결로 클래스 결정
 knn.fit(x_train_scaled, y_train) # 학습
 
 # 6. knn 모델 검증(val)
-y_pred = knn.predict(x_val_scaled)
-# print(y_pred)
+y_pred_val = knn.predict(x_val_scaled)
+# print(y_pred_val)
 # print(y_val)
-acc = accuracy_score(y_val, y_pred)
-print(f"정확도(accuracy): {round(acc,3)}")
+acc_val = accuracy_score(y_val, y_pred_val)
+print(f"val셋 정확도(accuracy): {round(acc_val,3)}")
 print()
 print("분류 리포트:")
-print(classification_report(y_val, y_pred, target_names=iris.target_names))
+print(classification_report(y_val, y_pred_val, target_names=iris.target_names))
 
 # Confusion Matrix 시각화
 fig = plt.figure(figsize=(10, 5))
 ax3 = fig.add_subplot()
-cm = confusion_matrix(y_val, y_pred)
+cm = confusion_matrix(y_val, y_pred_val)
 dfcm = pd.DataFrame(cm, index=iris.target_names, columns=iris.target_names) 
 sns.heatmap(dfcm, annot=True, fmt='d', cmap='Blues', ax=ax3) 
 ax3.set_title('Confusion Matrix') 
@@ -113,3 +113,13 @@ ax4.set_xticks(range(1,31,2))
 
 plt.tight_layout()
 plt.show()
+
+# 8. test셋 검증
+x_test_scaled = scaler.transform(x_test)
+y_pred_test = knn.predict(x_test_scaled)
+acc_test = accuracy_score(y_test, y_pred_test)
+print(f"test셋 정확도(accuracy): {round(acc_test,3)}")
+print()
+print("분류 리포트:")
+print(classification_report(y_test, y_pred_test, target_names=iris.target_names))
+
