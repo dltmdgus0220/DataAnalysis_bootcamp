@@ -35,3 +35,19 @@ print(df["class_name"].value_counts())
 print("통계 요약")
 print(df.describe())
 
+# 2. 데이터 시각화
+# 히스토그램
+for col in wine.feature_names: # 각 특성별 분포 파악
+    plt.figure(figsize=(6,3))
+    sns.kdeplot(data=df, x=col, hue="class_name", fill=True)
+    plt.title(f"{col} 분포 (클래스별)")
+    plt.tight_layout()
+    plt.show()
+
+# 박스플롯
+for col in wine.feature_names: # 각 특성별 이상치 파악
+    plt.figure(figsize=(12,6))
+    sns.boxplot(data=df, x="class_name", y=col)
+    plt.title(f"{col} 박스플롯")
+    plt.show()
+
