@@ -85,4 +85,13 @@ print(f"rec : {rec:.4f}")
 print(f"auc : {auc:.4f}")
 print()
 print(classification_report(y_test, y_pred, digits=3))
- 
+
+# 6. confusion matrix 확인
+cm = confusion_matrix(y_test, y_pred)
+print(pd.DataFrame(cm, index=["악성","양성"], columns=["악성","양성"]))
+# TN FP
+# FN TP 순
+
+# 일반적으로는 아래와 같음
+# TP FN
+# FP TN
