@@ -1,0 +1,95 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    accuracy_score, precision_score, recall_score, f1_score, roc_auc_score,
+    confusion_matrix, classification_report
+)
+
+# 1. 데이터로드
+titanic = pd.DataFrame(sns.load_dataset("titanic"))
+# print(titanic)
+
+# 2. 시각화 및 전처리
+# 클래스별 불균형 확인
+sns.countplot(data=titanic, x='survived')
+plt.show()
+
+# 결측치 및 데이터 특성 확인
+print(titanic.info())
+print()
+print(titanic.isnull().sum())
+
+# 결측치 평균으로 처리
+titanic['age'] = titanic['age'].fillna(titanic['age'].mean())
+
+# 성별 원핫인코딩
+titanic_encoded = pd.get_dummies(titanic, columns=['sex'], drop_first=True) # drop_first 옵션을 false로 주면 sex_female, sex_male 컬럼 둘 다 생김
+# print(titanic_encoded)
+
+# 나중에 여러 시각화 더 해보기
+
+# 3. 데이터셋 분할
+x = titanic_encoded[['sex_male', 'age', 'fare']]
+y = titanic_encoded['survived']
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42, stratify=y)
+
+# 4. pipeline 세팅
+pipe = Pipeline([
+    ("scaler", StandardScaler()), # 스케일러 설정
+    ("clf", LogisticRegression(
+        class_weight="balanced", # 데이터 개수에 반비례하게 가중치 적용
+        max_iter=1000, 
+        solver="lbfgs", # 다수 특성에서 안정적, liblinear,saga,newton-cg / sag 등 있음
+        n_jobs=None, # 병렬 처리에 쓸 CPU 코어 수. -1이면 모두 사용
+        random_state=42
+    )) # 분류기 설정
+])
+
+# 5. 교차 검증
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# 하이퍼파라미터 그리드 (규제 강도 C)
+param_grid = { "clf__C": [0.01, 0.1, 0.3, 1, 3, 10]} # c가 작을수록 규제가 강함.
+
+# GridSearchCV: 훈련셋 안에서만 CV 수행 → 최고 조합 선택 후 refit
+grid = GridSearchCV(
+    estimator=pipe,
+    param_grid=param_grid,
+    scoring="roc_auc", 
+    cv=cv,
+    n_jobs=-1, 
+    refit=True, 
+    return_train_score=True
+)
+
+grid.fit(x_train, y_train)
+print("Best params:", grid.best_params_)
+print(f"Best CV ROC AUC: {grid.best_score_:.4f}")
+
+cvres = pd.DataFrame(grid.cv_results_).loc[:,["params","mean_test_score","mean_train_score"]].sort_values('mean_test_score', ascending=False)
+print(cvres)
+
+# 6. best model 성능 확인
+best_model = grid.best_estimator_
+y_pred = best_model.predict(x_test)
+y_pred_proba = best_model.predict_proba(x_test)[:,1] # postive class만
+
+acc = accuracy_score(y_test, y_pred) # 정확도
+prec = precision_score(y_test, y_pred) # 정밀도
+rec = recall_score(y_test, y_pred) # 재현율
+auc = roc_auc_score(y_test, y_pred_proba) 
+
+print()
+print(f"acc : {acc:.4f}")
+print(f"prec : {prec:.4f}")
+print(f"rec : {rec:.4f}")
+print(f"auc : {auc:.4f}")
+print()
+print(classification_report(y_test, y_pred, digits=3))
