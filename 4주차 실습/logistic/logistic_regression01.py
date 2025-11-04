@@ -29,3 +29,19 @@ plt.show()
 # 결측치 확인
 print(data.frame.isnull().sum())
 # print(data.frame.info())
+
+# 2. 데이터셋 분할
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42, stratify=y)
+x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.25, random_state=42, stratify=y_train)
+
+# 3. pipeline 세팅
+pipe = Pipeline(
+    ("scaler", StandardScaler()), # 스케일러 설정
+    ("clf", LogisticRegression(
+        class_weight="balanced", # 데이터 개수에 반비례하게 가중치 적용
+        max_iter=1000, 
+        solver="lbfgs", # 다수 특성에서 안정적, liblinear,saga,newton-cg / sag 등 있음
+        n_jobs=None, # 병렬 처리에 쓸 CPU 코어 수. -1이면 모두 사용
+        random_state=42
+    )) # 분류기 설정
+)
