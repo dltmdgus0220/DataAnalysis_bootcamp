@@ -31,7 +31,6 @@ plt.show()
 
 # 2. 데이터셋 분할
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42, stratify=y)
-# x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.25, random_state=42, stratify=y_train)
 
 # 3. pipeline 세팅
 pipe = Pipeline([
@@ -68,3 +67,22 @@ print(f"Best CV ROC AUC: {grid.best_score_:.4f}")
 
 cvres = pd.DataFrame(grid.cv_results_).loc[:,["params","mean_test_score","mean_train_score"]].sort_values('mean_test_score', ascending=False)
 print(cvres)
+
+# 5. best model 성능 확인
+best_model = grid.best_estimator_
+y_pred = best_model.predict(x_test)
+y_pred_proba = best_model.predict_proba(x_test)[:,1] # postive class만
+
+acc = accuracy_score(y_test, y_pred) # 정확도
+prec = precision_score(y_test, y_pred) # 정밀도
+rec = recall_score(y_test, y_pred) # 재현율
+auc = roc_auc_score(y_test, y_pred_proba) 
+
+print()
+print(f"acc : {acc:.4f}")
+print(f"prec : {prec:.4f}")
+print(f"rec : {rec:.4f}")
+print(f"auc : {auc:.4f}")
+print()
+print(classification_report(y_test, y_pred, digits=3))
+ 
