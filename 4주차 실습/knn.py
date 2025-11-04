@@ -91,3 +91,25 @@ ax3.set_ylabel('실제 값')
 ax3.set_xlabel('예측 값') 
 plt.tight_layout()
 plt.show()
+
+# 7. 여러 k 값에 따른 knn 결과 확인
+k_range = range(3, 31)
+accuracies = []
+
+for k in k_range:
+    knn_tmp = KNeighborsClassifier(n_neighbors=k)
+    knn_tmp.fit(x_train_scaled, y_train)
+    y_pred_tmp = knn_tmp.predict(x_val_scaled)
+    accuracies.append(accuracy_score(y_val, y_pred_tmp))
+
+fig = plt.figure(figsize=(10,5))
+ax4=fig.add_subplot()
+ax4.plot(k_range, accuracies, marker="o")
+ax4.set_xlabel("K 값")
+ax4.set_ylabel("정확도")
+ax4.set_title("K 값에 따른 모델 정확도")
+ax4.grid(True)
+ax4.set_xticks(range(1,31,2))
+
+plt.tight_layout()
+plt.show()
