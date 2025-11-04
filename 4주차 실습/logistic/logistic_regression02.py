@@ -47,27 +47,21 @@ pipe = Pipeline([
 
 # 4. 교차 검증
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-cv_auc = cross_val_score(pipe, x_train, y_train, cv=cv, scoring='roc_auc')
-cv_acc = cross_val_score(pipe, x_train, y_train, cv=cv, scoring='accuracy')
-print(f"auc : {cv_auc}")
-print(f"acc : {cv_acc}")
-print(f"[cv] ROC_AUC : {cv_auc.mean():.3f}")
-print(f"[cv] ACCARACY : {cv_acc.mean():.3f}")
 
-pipe.fit(x_train, y_train)
-y_pred = pipe.predict(x_test)
-y_pred_proba = pipe.predict_proba(x_test)
-# print(y_pred_proba)
+# 하이퍼파라미터 그리드 (규제 강도 C)
+param_grid = { "clf__C": [0.01, 0.1, 0.3, 1, 3, 10]} # c가 작을수록 규제가 강함.
 
-acc = accuracy_score(y_test, y_pred) # 정확도
-prec = precision_score(y_test, y_pred) # 정밀도
-rec = recall_score(y_test, y_pred) # 재현율
-auc = roc_auc_score(y_test, y_pred_proba[:,[1]]) # roc_auc, auc는 positive class를 얼마나 잘 구분하는지를 측정하는 지표
-# roc커브는 x축-특이도, y축-재현율
-# 양성을 잘 맞추려다 보면 음성을 틀릴 위험이 커진다 라는 트레이드오프(Trade-off)를 시각화한 곡선
-print(f"acc : {acc:.4f}")
-print(f"prec : {prec:.4f}")
-print(f"rec : {rec:.4f}")
-print(f"auc : {auc:.4f}")
+# GridSearchCV: 훈련셋 안에서만 CV 수행 → 최고 조합 선택 후 refit
+grid = GridSearchCV(
+    estimator=pipe,
+    param_grid=param_grid,
+    scoring="roc_auc", 
+    cv=cv,
+    n_jobs=-1, 
+    refit=True, 
+    return_train_score=True
+)
 
-print(classification_report(y_test, y_pred, digits=3))
+grid.fit(x_train, y_train)
+print("Best params:", grid.best_params_)
+print(f"Best CV ROC AUC: {grid.best_score_:.4f}")
