@@ -94,3 +94,16 @@ test_acc = accuracy_score(y_test, pred)
 
 print(f"테스트 정확도: {test_acc:.3f}")
 print(classification_report(y_test, pred, digits=3))
+
+# 7. confusion matrix 시각화
+cm = confusion_matrix(y_test, pred)
+dfcm = pd.DataFrame(cm, index=wine.target_names, columns=wine.target_names)
+
+fig = plt.figure(figsize=(8,5))
+ax = fig.add_subplot()
+sns.heatmap(data=dfcm, annot=True, fmt='d', cmap="Blues", ax=ax)
+ax.set_xlabel("예측 값")
+ax.set_ylabel("실제 값")
+ax.set_title("Confusion Matrix")
+plt.tight_layout()
+plt.show()
