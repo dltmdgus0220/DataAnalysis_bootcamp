@@ -65,3 +65,32 @@ scaler = RobustScaler().fit(x_train)
 x_train_scaled = scaler.transform(x_train)
 x_val_scaled = scaler.transform(x_val)
 x_test_scaled = scaler.transform(x_test)
+
+# 5. 하이퍼파라미터 실험
+best_cfg = None
+best_acc = -1.0
+
+for k in range(3, 31, 2):
+    for weights in ['uniform', 'distance']:
+        for metric in ['euclidean', 'manhattan']:
+            model = KNeighborsClassifier(n_neighbors=k, metric=metric, weights=weights)
+            model.fit(x_train_scaled, y_train)
+            pred = model.predict(x_val_scaled)
+            acc = accuracy_score(y_val, pred)
+            # print("K:", k, ", acc:", acc)
+
+            if acc > best_acc:
+                best_acc = acc
+                best_cfg ={"k":k, "metric":metric, "weights":weights}
+
+
+print(f"[검증] 최고 정확도 = {best_acc:.3f}, 설정 ={best_cfg}")
+
+# 6. knn 학습
+knn_model = KNeighborsClassifier(n_neighbors=best_cfg['k'], metric=best_cfg['metric'], weights=best_cfg['weights'])
+knn_model.fit(x_train_scaled, y_train)
+pred = knn_model.predict(x_test_scaled)
+test_acc = accuracy_score(y_test, pred)
+
+print(f"테스트 정확도: {test_acc:.3f}")
+print(classification_report(y_test, pred, digits=3))
