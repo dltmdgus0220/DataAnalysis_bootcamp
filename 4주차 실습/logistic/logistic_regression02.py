@@ -65,3 +65,6 @@ grid = GridSearchCV(
 grid.fit(x_train, y_train)
 print("Best params:", grid.best_params_)
 print(f"Best CV ROC AUC: {grid.best_score_:.4f}")
+
+cvres = pd.DataFrame(grid.cv_results_).loc[:,["params","mean_test_score","mean_train_score"]].sort_values('mean_test_score', ascending=False)
+print(cvres)
