@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score, roc_auc_score,
+    accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, roc_curve,
     confusion_matrix, classification_report
 )
 
@@ -95,3 +95,12 @@ print(pd.DataFrame(cm, index=["악성","양성"], columns=["악성","양성"]))
 # 일반적으로는 아래와 같음
 # TP FN
 # FP TN
+
+# 7. roc curve 시각화
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
+j_scores = tpr - fpr
+best_idx = np.argmax(j_scores)
+print(f"가장 이상적인 thresholds : {thresholds[best_idx]:.4f}")
+plt.plot(fpr, tpr, label=f"AUC = {auc:.3f}")
+plt.legend()
+plt.show()
