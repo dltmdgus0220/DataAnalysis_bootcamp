@@ -16,3 +16,22 @@ if platform.system() == "Windows":
 
 plt.rcParams['axes.unicode_minus']=False
 
+
+# 1. 데이터 로드
+wine = load_wine()
+x = wine.data
+y = wine.target
+
+print("=== 와인 데이터셋 정보 ===")
+print(f"데이터 개수 : {len(x)}")
+print(f"특성 : {wine.feature_names}")
+print(f"클래스 : {wine.target_names}")
+print()
+df = pd.DataFrame(x, columns=wine.feature_names)
+df["class_name"] = [wine.target_names[i] for i in y]
+print(df.head())
+print("클래스 별 개수")
+print(df["class_name"].value_counts())
+print("통계 요약")
+print(df.describe())
+
