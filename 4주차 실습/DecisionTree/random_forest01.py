@@ -41,7 +41,14 @@ print(f"Classification Report : \n {classification_report(y_test, pred, target_n
 # 6. 변수 중요도 측정
 # 불순도 기반 중요도 (MDI)
 imp_mdi = pd.Series(rf.feature_importances_, index=feature_names.sort_values(ascending=False))
-print(imp_mdi)
+print(f"imp_mdi : {imp_mdi}\n")
+
+mdi_top10 = imp_mdi.sort_values(ascending=False).head(10)[::-1] # barh는 리스트 첫번째 값이 가장 아래로 오기 때문에 뒤집어서 큰게 제일 위로 가게 해줌.
+plt.figure(figsize=(8,6))
+plt.barh(mdi_top10.index, mdi_top10.values)
+plt.tight_layout()
+plt.show()
+
 
 # 순열 중요도 (MDA)
 perm = permutation_importance(
@@ -53,4 +60,16 @@ perm = permutation_importance(
 )
 
 imp_perm_mean = pd.Series(perm.importances_mean, index=bc.feature_names)
-print(f"imp_perm_mean : {imp_perm_mean}")
+print(f"imp_perm_mean : {imp_perm_mean}\n")
+
+mda_top10 = imp_perm_mean.sort_values(ascending=False).head(10)[::-1]
+plt.figure(figsize=(8,6))
+plt.barh(mda_top10.index, mda_top10.values)
+plt.tight_layout()
+plt.show()
+
+compare = pd.DataFrame({
+    "MDI Importance" : mdi_top10,
+    "MDA Importances" : mda_top10
+})
+print(compare)
