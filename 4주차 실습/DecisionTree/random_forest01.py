@@ -38,6 +38,19 @@ print(f"Test Accuracy : {accuracy_score(y_test,pred):.4f}")
 print(f"Test ROCAUC : {roc_auc_score(y_test,pred_proba):.4f}")
 print(f"Classification Report : \n {classification_report(y_test, pred, target_names=bc.target_names)}")
 
-# 6. 불순도 기반 중요도 (MDI)
+# 6. 변수 중요도 측정
+# 불순도 기반 중요도 (MDI)
 imp_mdi = pd.Series(rf.feature_importances_, index=feature_names.sort_values(ascending=False))
 print(imp_mdi)
+
+# 순열 중요도 (MDA)
+perm = permutation_importance(
+    rf, x_test, y_test,
+    scoring='roc_auc',
+    n_repeats=100,
+    random_state=42,
+    n_jobs=-1
+)
+
+imp_perm_mean = pd.Series(perm.importances_mean, index=bc.feature_names)
+print(f"imp_perm_mean : {imp_perm_mean}")
