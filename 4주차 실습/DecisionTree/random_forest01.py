@@ -71,5 +71,5 @@ plt.show()
 compare = pd.DataFrame({
     "MDI Importance" : mdi_top10,
     "MDA Importances" : mda_top10
-})
-print(compare)
+}).sort_values("MDA Importances", ascending=False)
+print(compare.head(10))
