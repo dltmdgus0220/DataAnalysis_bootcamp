@@ -37,3 +37,7 @@ print(f"OOB score : {rf.oob_score_:.4f}")
 print(f"Test Accuracy : {accuracy_score(y_test,pred):.4f}")
 print(f"Test ROCAUC : {roc_auc_score(y_test,pred_proba):.4f}")
 print(f"Classification Report : \n {classification_report(y_test, pred, target_names=bc.target_names)}")
+
+# 6. 불순도 기반 중요도 (MDI)
+imp_mdi = pd.Series(rf.feature_importances_, index=feature_names.sort_values(ascending=False))
+print(imp_mdi)
