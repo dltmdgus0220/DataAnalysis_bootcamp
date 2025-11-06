@@ -69,7 +69,7 @@ plt.show()
 # 3. ColumnTransformer로 전처리 한번에 하기
 preprocess  = ColumnTransformer(
     transformers=[
-        ('num', StandardScaler(), num_cols.columns), # 수치형 컬럼
+        ('num', StandardScaler(), num_cols.columns), # 수치형 컬럼 (트리를 사용하기 때문에 생략해도됨)
         ('cat', OneHotEncoder(drop='first'), [c for c in cat_cols.columns if c!='species']) # 범주형 컬럼
     ],
     remainder='passthrough' # 나머지 컬럼 처리 방법 ('drop' or 'passthrough')
@@ -114,4 +114,11 @@ best_model = grid.best_estimator_
 print("Best Params :", grid.best_params_)
 print("CV Best ROC_AUC :", grid.best_score_)
 
-# 9. 테스트
+# 9. 테스트 및 평가
+pred = best_model.predict(x_test)
+pred_proba = best_model.predict_proba(x_test) # 다중클래스 shape=(샘플수,클래스수)
+print()
+print("accuracy :", accuracy_score(y_test,pred))
+print("roc_auc :", roc_auc_score(y_test,pred_proba, multi_class='ovr'))
+print("\nClassification Report : \n", classification_report(y_test, pred, digits=3))
+
