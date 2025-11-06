@@ -54,8 +54,9 @@ for n in num_cols.columns:
     # sns.violinplot(data=penguins, x='species', y=n, split=False) 
     plt.title(f"{n}의 박스플롯") # 바이올린플롯
     plt.show()
-# 전체적으로 male의 수치형 변수 값들이 더 큼
+# 전체적으로 male의 수치형 변수 값들이 더 큼.
 # Adelie만 모든 island에 살고, island에 따른 수치형 변수의 값들은 비슷함.
+# 이상치는 전반적으로 크게 없음.
 
 # 수치형 변수 간 상관관계
 plt.figure(figsize=(7,5))
@@ -64,6 +65,8 @@ sns.heatmap(corr, annot=True, cmap='coolwarm')
 plt.title('수치형 변수 상관관계')
 plt.tight_layout()
 plt.show()
+# 무게와 날개(flipper) 길이가 큰 상관관계를 가짐
+# 부리 길이와 날개 길이 또한 양의 상관관계를 가짐
 
 
 # 3. ColumnTransformer로 전처리 한번에 하기
@@ -140,3 +143,18 @@ perm = permutation_importance(
 )
 imp_perm_mean = pd.Series(perm.importances_mean, index=X.columns).sort_values(ascending=False)
 print(f"imp_perm_mean : \n{imp_perm_mean}\n")
+
+# 11. 변수 중요도 시각화
+plt.figure(figsize=(8,6))
+plt.barh(imp_mdi[::-1].index, imp_mdi[::-1].values)
+plt.title('불순도 기반 중요도 (MDI)')
+plt.tight_layout()
+plt.show()
+# bill_length_mm > flipper_length_mm > bill_depth_mm > body_mass_g
+
+plt.figure(figsize=(8,6))
+plt.barh(imp_perm_mean[::-1].index, imp_perm_mean[::-1].values)
+plt.title('순열 중요도 (MDA)')
+plt.tight_layout()
+plt.show()
+# bill_length_mm > island > bill_depth_mm > flipper_length_mm
