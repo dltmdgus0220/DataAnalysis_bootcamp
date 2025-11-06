@@ -111,7 +111,7 @@ x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # 8. 학습
 grid.fit(x_train, y_train)
 best_model = grid.best_estimator_
-print("Best Params :", grid.best_params_)
+print("\nBest Params :", grid.best_params_)
 print("CV Best ROC_AUC :", grid.best_score_)
 
 # 9. 테스트 및 평가
@@ -122,3 +122,21 @@ print("accuracy :", accuracy_score(y_test,pred))
 print("roc_auc :", roc_auc_score(y_test,pred_proba, multi_class='ovr'))
 print("\nClassification Report : \n", classification_report(y_test, pred, digits=3))
 
+# 10. 변수 중요도
+feature_names = best_model.named_steps['preprocess'].get_feature_names_out() # 전처리 후 피처 이름 추출
+
+# 불순도 기반 중요도 (MDI)
+importances = best_model.named_steps['model'].feature_importances_ # 중요도 계산
+imp_mdi = pd.Series(importances, index=feature_names).sort_values(ascending=False)
+print(f"\nimp_mdi : \n{imp_mdi}\n")
+
+# 순열 중요도 (MDA)
+perm = permutation_importance(
+    best_model, x_test, y_test,
+    scoring='roc_auc_ovr',
+    n_repeats=100,
+    random_state=42,
+    n_jobs=-1
+)
+imp_perm_mean = pd.Series(perm.importances_mean, index=X.columns).sort_values(ascending=False)
+print(f"imp_perm_mean : \n{imp_perm_mean}\n")
