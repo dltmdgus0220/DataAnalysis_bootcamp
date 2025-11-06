@@ -31,7 +31,7 @@ for c in cat_cols.columns:
 # print(penguins.isnull().sum())
 
 # 범주형 원핫인코딩
-penguins = pd.get_dummies(penguins, columns=cat_cols, drop_first=True)
+penguins = pd.get_dummies(penguins, columns=cat_cols.columns, drop_first=True)
 
 
 # 3. 데이터 시각화
