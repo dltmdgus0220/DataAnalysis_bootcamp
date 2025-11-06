@@ -115,3 +115,10 @@ grid = GridSearchCV(
     refit=True,
     return_train_score=True
 )
+
+# 7. 데이터 분리
+X = penguins.drop(columns=['species']).copy()
+y = penguins['species'].copy()
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+
