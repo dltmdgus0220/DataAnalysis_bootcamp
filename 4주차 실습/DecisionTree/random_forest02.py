@@ -2,6 +2,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
 from sklearn.inspection import permutation_importance # 변수 중요도를 계산하는 라이브러리
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.pipeline import Pipeline
 import seaborn as sns
 import pandas as pd
 import numpy as np
@@ -30,8 +33,6 @@ for c in cat_cols.columns:
     penguins[c] = penguins[c].fillna(penguins[c].mode()[0])
 # print(penguins.isnull().sum())
 
-# 범주형 원핫인코딩
-penguins = pd.get_dummies(penguins, columns=[c for c in cat_cols.columns if c!='species'], drop_first=True)
 
 # 3. 데이터 시각화
 # 클래스 불균형 파악
@@ -49,7 +50,7 @@ for n in num_cols.columns:
 
 # 수치형 변수 이상치 및 분포 확인
 for n in num_cols.columns:
-    sns.boxplot(data=penguins, x='species', y=n)
+    sns.boxplot(data=penguins, x='species', y=n, hue='sex') # hue=
     # sns.violinplot(data=penguins, x='species', y=n, split=False) 
     plt.title(f"{n}의 박스플롯") # 바이올린플롯
     plt.show()
@@ -64,3 +65,30 @@ plt.title('수치형 변수 상관관계')
 plt.tight_layout()
 plt.show()
 
+
+# 3. ColumnTransformer로 전처리 한번에 하기
+preprocess  = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), num_cols.columns), # 수치형 컬럼
+        ('cat', OneHotEncoder(drop='first'), [c for c in cat_cols.columns if c!='species']) # 범주형 컬럼
+    ],
+    remainder='passthrough' # 나머지 컬럼 처리 방법 ('drop' or 'passthrough')
+)
+
+# 4. 파이프라인 구성
+# 모델 정의
+rf = RandomForestClassifier(
+    n_estimators=300,
+    max_depth = None,
+    min_samples_leaf = 2, # 하나의 리프노드(최종노드)에 최소 2개의 샘플은 있어야함.
+    max_features = 'sqrt',
+    bootstrap = True,
+    oob_score = True,
+    n_jobs = -1,
+    random_state = 42
+)
+
+pipe = Pipeline(steps=[
+    ('preprocess', preprocess),
+    ('model', rf)
+])
