@@ -76,32 +76,19 @@ preprocess  = ColumnTransformer(
 )
 
 # 4. 파이프라인 구성
-# 모델 정의
-rf = RandomForestClassifier(
-    n_estimators=300,
-    max_depth = None,
-    min_samples_leaf = 2, # 하나의 리프노드(최종노드)에 최소 2개의 샘플은 있어야함.
-    max_features = 'sqrt',
-    bootstrap = True,
-    oob_score = True,
-    n_jobs = -1,
-    random_state = 42
-)
-
 pipe = Pipeline(steps=[
     ('preprocess', preprocess),
-    ('model', rf)
+    ('model', RandomForestClassifier())
 ])
 
 # 5. 교차 검증 객체 생성
-param_grid = [
-    {
-        'model__solver':['lbfgs'],
-        'model__penalty':['l2'],
-        'model__C': [0.01, 0.1, 1, 3, 10],
-        'model__class_weight' : [None, 'balanced']
-    }
-]
+param_grid = {
+    'model__n_estimators': [200, 300, 500],
+    'model__max_depth': [None, 10, 20],
+    'model__min_samples_leaf': [1, 2, 4],
+    'model__max_features': ['sqrt', 'log2', None],
+    'model__class_weight': [None, 'balanced']  # 불균형 완화 시도
+}
 
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
@@ -109,7 +96,7 @@ cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 grid = GridSearchCV(
     estimator=pipe,
     param_grid=param_grid,
-    scoring='roc_auc',
+    scoring='roc_auc_ovr',
     cv=cv,
     n_jobs=-1,
     refit=True,
@@ -121,4 +108,10 @@ X = penguins.drop(columns=['species']).copy()
 y = penguins['species'].copy()
 x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
+# 8. 학습
+grid.fit(x_train, y_train)
+best_model = grid.best_estimator_
+print("Best Params :", grid.best_params_)
+print("CV Best ROC_AUC :", grid.best_score_)
 
+# 9. 테스트
