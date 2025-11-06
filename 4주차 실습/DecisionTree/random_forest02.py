@@ -31,8 +31,7 @@ for c in cat_cols.columns:
 # print(penguins.isnull().sum())
 
 # 범주형 원핫인코딩
-penguins = pd.get_dummies(penguins, columns=cat_cols.columns, drop_first=True)
-
+penguins = pd.get_dummies(penguins, columns=[c for c in cat_cols.columns if c!='species'], drop_first=True)
 
 # 3. 데이터 시각화
 # 클래스 불균형 파악
@@ -50,8 +49,8 @@ for n in num_cols.columns:
 
 # 수치형 변수 이상치 및 분포 확인
 for n in num_cols.columns:
-    sns.boxplot(data=penguins, x='species', y=n, hue='island') # hue='island'
-    # sns.violinplot(data=penguins, x='species', y=n, hue='sex', split=False) 
+    sns.boxplot(data=penguins, x='species', y=n)
+    # sns.violinplot(data=penguins, x='species', y=n, split=False) 
     plt.title(f"{n}의 박스플롯") # 바이올린플롯
     plt.show()
 # 전체적으로 male의 수치형 변수 값들이 더 큼
@@ -59,8 +58,9 @@ for n in num_cols.columns:
 
 # 수치형 변수 간 상관관계
 plt.figure(figsize=(7,5))
-corr = penguins.corr(numeric_only=True)
+corr = num_cols.corr(numeric_only=True)
 sns.heatmap(corr, annot=True, cmap='coolwarm')
 plt.title('수치형 변수 상관관계')
 plt.tight_layout()
 plt.show()
+
