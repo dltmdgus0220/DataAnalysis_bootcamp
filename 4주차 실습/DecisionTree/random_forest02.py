@@ -1,4 +1,4 @@
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
 from sklearn.inspection import permutation_importance # 변수 중요도를 계산하는 라이브러리
@@ -92,3 +92,26 @@ pipe = Pipeline(steps=[
     ('preprocess', preprocess),
     ('model', rf)
 ])
+
+# 5. 교차 검증 객체 생성
+param_grid = [
+    {
+        'model__solver':['lbfgs'],
+        'model__penalty':['l2'],
+        'model__C': [0.01, 0.1, 1, 3, 10],
+        'model__class_weight' : [None, 'balanced']
+    }
+]
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# 6. GridSearchCV
+grid = GridSearchCV(
+    estimator=pipe,
+    param_grid=param_grid,
+    scoring='roc_auc',
+    cv=cv,
+    n_jobs=-1,
+    refit=True,
+    return_train_score=True
+)
