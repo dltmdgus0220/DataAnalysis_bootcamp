@@ -118,3 +118,45 @@ print("F1 (macro) :", f1_score(y_te, pred_base, average="macro"))
 print("F1 (weighted) :", f1_score(y_te, pred_base, average="weighted"))
 print("ROC-AUC (OVR) :", roc_auc_score(y_te, proba_base, multi_class="ovr"))
 print()
+
+##############
+# 5. 모델 튜닝 #
+##############
+hgbc = HistGradientBoostingClassifier(
+        early_stopping=True,
+        validation_fraction=0.1, # 0.1이 기본값
+        n_iter_no_change=10, # 10이 기본값
+        random_state=42
+    )
+# 트리이기 때문에 수치형 스케일링 필요없음.
+# 알아서 내부적으로 인코딩해주므로 범주형 전처리 필요없음.
+
+# 그리드 정의
+param_gird = [{
+    "model__learning_rate": [0.03, 0.05, 0.08, 0.1, 0.15],
+    "model__max_leaf_nodes": [15, 31, 63],
+    "model__l2_regularization": [0.0, 0.01, 0.1, 1.0],
+    #"model__min_samples_leaf": [10, 20, 30]
+}]
+
+# 교차검증 설정 (층화+셔플)
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# 다중 스코어 기록, 최종 refit은 ROC-AUC
+scoring = {
+    "roc_auc_ovr":'roc_auc_ovr',
+    'f1_macro':'f1_macro',
+    'f1_weighted':'f1_weighted',
+    'accuracy':'accuracy'
+}
+
+search = GridSearchCV(
+    estimator=hgbc,
+    param_grid=param_gird,
+    scoring=scoring,
+    refit='roc_auc_ovr',
+    cv=cv,
+    n_jobs=-1,
+    return_train_score=False
+)
+
