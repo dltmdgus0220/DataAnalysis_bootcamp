@@ -55,7 +55,7 @@ mpg['cylinders'] = mpg['cylinders'].astype('category')
 # print(mpg.info())
 
 # 타켓/특징 분리                 
-X = mpg.drop(columns=["origin"])
+X = mpg.drop(columns=["origin","name"])
 y = mpg["origin"]
 
 num_cols = X.select_dtypes(include=["float64", "int64"]).columns.tolist()
@@ -64,6 +64,14 @@ cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
 ##################
 # 3. 데이터 시각화 #
 ##################
+# 타겟 클래스 분포
+plt.figure(figsize=(10, 4))
+sns.countplot(data=mpg, x="origin")
+plt.title("[원시] 클래스 분포")
+plt.tight_layout()
+plt.show()
+# USA가 압도적으로 많음. 나머지 둘은 비슷함.
+
 # 수치형 변수들의 히스토그램
 mpg[num_cols].hist(bins=20, figsize=(10, 8))
 plt.suptitle("[원시] 수치형 변수 히스토그램", y=0.98)
@@ -85,3 +93,5 @@ plt.title("[원시] 수치형 상관행렬")
 plt.tight_layout()
 plt.show()
 # displacement, horsepower, weight 끼리 아주 강한 양의 상관관계를 가짐
+
+
