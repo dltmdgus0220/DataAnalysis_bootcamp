@@ -88,12 +88,21 @@ plt.show()
 # =========================================================
 
 # SimpleImputer:결측치처리
+num_pipe = Pipeline(steps=[
+    ('num', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+cat_pipe = Pipeline(steps=[
+    ('cat', SimpleImputer(strategy='most_frequent')),
+    ('cat_encoder', OneHotEncoder(handle_unknown='ignore')) # handle_unknown:학습때 사용하지 않은 범주가 들어오면 0으로 채움
+    # 예를 들어 학습할때는 red,blue,green만 있었는데 예측시 yellow가 들어오면 yellow 컬럼을 전부 0으로 처리해버림
+])
+
 preprocess = ColumnTransformer(
     transformers=[
-        ('num', SimpleImputer(strategy='median'), num_cols),
-        ('cat', SimpleImputer(strategy='most_frequent'), cat_cols),
-        ('cat_encoder', OneHotEncoder(handle_unknown='ignore'), cat_cols) # handle_unknown:학습때 사용하지 않은 범주가 들어오면 0으로 채움
-        # 예를 들어 학습할때는 red,blue,green만 있었는데 예측시 yellow가 들어오면 yellow 컬럼을 전부 0으로 처리해버림
+        ('num_pre', num_pipe, num_cols),
+        ('cat_pre', cat_pipe, cat_cols)
     ],
     remainder="passthrough",
 )
