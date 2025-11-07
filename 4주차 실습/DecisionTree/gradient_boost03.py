@@ -143,7 +143,7 @@ param_gird = [{
 # 교차검증 설정 (층화+셔플)
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
-# 다중 스코어 기록, 최종 refit은 ROC-AUC
+# 다중 스코어 기록, 최종 refit은 ROC-AUC-OVR
 scoring = {
     "roc_auc_ovr":'roc_auc_ovr',
     'f1_macro':'f1_macro',
