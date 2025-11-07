@@ -94,4 +94,27 @@ plt.tight_layout()
 plt.show()
 # displacement, horsepower, weight 끼리 아주 강한 양의 상관관계를 가짐
 
+###############
+# 4. 베이스라인 #
+###############
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
+base = HistGradientBoostingClassifier(
+    early_stopping=True,
+    validation_fraction=0.1, # 조기종료를 하려면 성능이 개선되었는지를 확인해야하는데 확인할때 사용할 검증셋 비율 설정
+    n_iter_no_change=10, # 성능개선이 없었을 때 10번 더 해보고 여전히 성능개선 없으면 조기종료
+    learning_rate=0.1,
+    max_leaf_nodes=31,
+    random_state=42
+)
+
+base.fit(X_tr, y_tr)
+pred_base = base.predict(X_te)
+proba_base = base.predict_proba(X_te) # 다중클래스
+
+print("[Baseline]")
+print(f"Accuracy : {accuracy_score(y_te, pred_base)}")
+print("F1 (macro) :", f1_score(y_te, pred_base, average="macro"))
+print("F1 (weighted) :", f1_score(y_te, pred_base, average="weighted"))
+print("ROC-AUC (OVR) :", roc_auc_score(y_te, proba_base, multi_class="ovr"))
+print()
