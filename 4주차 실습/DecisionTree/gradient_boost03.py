@@ -26,5 +26,22 @@ import pandas as pd
 
 
 # mpg를 gradient_boost 모델로 예측하기
-# 1. 데이터 로드
+################
+# 1. 데이터 로드 #
+################
 mpg = sns.load_dataset('mpg') # cylinders를 범주형으로 바꾸기
+# print(mpg.info())
+# print(mpg.describe())
+
+##########################
+# 2. 데이터 전처리(시각화전) #
+##########################
+# 결측치 확인
+# print(mpg.isnull().sum())
+# horsepower 결측치 6개 존재
+mpg['horsepower'] = mpg['horsepower'].fillna(mpg['horsepower'].median())
+# print(mpg.isnull().sum())
+
+# cylinders 컬럼 범주형으로 바꾸기
+mpg['cylinders'] = mpg['cylinders'].astype('category')
+# print(mpg.info())
