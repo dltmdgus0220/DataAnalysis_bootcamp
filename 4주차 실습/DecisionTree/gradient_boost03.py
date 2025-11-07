@@ -12,6 +12,13 @@ from sklearn.model_selection import StratifiedKFold, GridSearchCV
 import seaborn as sns
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+
+import platform
+if platform.system() == "Windows":
+    plt.rc('font', family="Malgun Gothic")
+plt.rcParams['axes.unicode_minus']=False
+
 
 # 데이터 설명
 # mpg : float, 연비 (miles per gallon, 1갤런당 주행거리) → 예측/타깃 변수로 자주 사용
@@ -33,6 +40,13 @@ mpg = sns.load_dataset('mpg') # cylinders를 범주형으로 바꾸기
 # print(mpg.info())
 # print(mpg.describe())
 
+# 타켓/특징 분리                 
+X = mpg.drop(columns=["mpg"])
+y = mpg["mpg"]
+
+num_cols = X.select_dtypes(include=["float64", "int64"]).columns.tolist()
+cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
+
 ##########################
 # 2. 데이터 전처리(시각화전) #
 ##########################
@@ -45,3 +59,7 @@ mpg['horsepower'] = mpg['horsepower'].fillna(mpg['horsepower'].median())
 # cylinders 컬럼 범주형으로 바꾸기
 mpg['cylinders'] = mpg['cylinders'].astype('category')
 # print(mpg.info())
+
+##################
+# 3. 데이터 시각화 #
+##################
