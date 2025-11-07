@@ -143,7 +143,6 @@ gs = GridSearchCV(
     verbose=1
 )
 
-
 X_tr, X_te, y_tr, y_te = train_test_split(
     X, Y, test_size=0.2, stratify=Y, random_state=42
 )
@@ -201,8 +200,9 @@ prep = best_model.named_steps["prep"]
 feature_names = X_te.columns
 print("\n\nfeature_names : ", feature_names)
 
+feat_names_after = prep.get_feature_names_out()
 rf_best = best_model.named_steps["model"]
-mdi = pd.Series(rf_best.feature_importances_, index=feature_names).sort_values(ascending=False)
+mdi = pd.Series(rf_best.feature_importances_, index=feat_names_after).sort_values(ascending=False)
 
 TOPN = 10
 plt.figure(figsize=(8, 7))
@@ -215,19 +215,20 @@ plt.show()
 print("\n[MDI] 상위 중요도 TOP10")
 print(mdi.head(10).round(4))
 
-X_te_tx = prep.transform(X_te)
+# X_te_tx = prep.transform(X_te)
 # ----- (B) Permutation Importance (테스트셋, f1_macro)
 # 파이프라인 전체에 대해 순열 중요도(전처리 포함)
 perm = permutation_importance(
-    rf_best, X_te_tx, y_te,
+    # rf_best, X_te_tx, y_te, 
+    best_model, X_te, y_te, # best_model은 전처리과정을 포함하고 있기 때문에 전처리하기 전 데이터를 입력
     scoring="f1_macro",
     n_repeats=30,
     random_state=42,
     n_jobs=-1
 )
 
-perm_mean = pd.Series(perm.importances_mean, index=feature_names).sort_values(ascending=False)
-perm_std  = pd.Series(perm.importances_std, index=feature_names).loc[perm_mean.index]
+perm_mean = pd.Series(perm.importances_mean, index=X_te.columns).sort_values(ascending=False)
+perm_std  = pd.Series(perm.importances_std, index=X_te.columns).loc[perm_mean.index]
 
 plt.figure(figsize=(8, 7))
 perm_mean.head(TOPN).iloc[::-1].plot(kind="barh", xerr=perm_std.head(TOPN).iloc[::-1])
