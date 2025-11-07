@@ -115,9 +115,9 @@ y_proba = best_model.predict_proba(X_te)[:,1]
 y_pred = (y_proba > 0.5).astype(int)
 
 print("[Best Model on Test]")
-print(f"Accuracy : {accuracy_score(y_te, pred_base)}")
-print(f"F1 : {f1_score(y_te, pred_base)}")
-print(f"ROC-AUC : {roc_auc_score(y_te, proba_base)}")
+print(f"Accuracy : {accuracy_score(y_te, y_pred)}")
+print(f"F1 : {f1_score(y_te, y_pred)}")
+print(f"ROC-AUC : {roc_auc_score(y_te, y_proba)}")
 print('\nClassification Report\n', classification_report(y_te, y_pred, digits=3))
 print()
 
