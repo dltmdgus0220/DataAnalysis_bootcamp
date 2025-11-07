@@ -161,3 +161,33 @@ search = GridSearchCV(
     return_train_score=False
 )
 
+
+##########################
+# 6. 모델 학습 및 결과 출력 #
+##########################
+# 학습
+search.fit(X_tr, y_tr)
+
+# cv 결과 표 정리
+def tidy_cv_results(gscv):
+    df = pd.DataFrame(gscv.cv_results_)
+    keep = [
+        'param_learning_rate', 'param_max_leaf_nodes', 'param_l2_regularization',
+        'mean_test_roc_auc_ovr', 'std_test_roc_auc_ovr',
+        'mean_test_f1_macro', 'std_test_f1_macro',
+        'mean_test_f1_weighted', 'std_test_f1_weighted',
+        'mean_test_accuracy', 'std_test_accuracy',
+        'rank_test_roc_auc_ovr' # GridSearchCV의 cv_results_ 테이블에서 각 하이퍼파라미터 조합의 mean_test_roc_auc가 몇 위인지를 나타내는
+    ]
+    return df[keep].sort_values('rank_test_roc_auc_ovr').reset_index(drop=True)
+    # 데이터프레임의 인덱스를 0부터 다시 매기고 기존 인덱스는 버림.
+    # reset_index만 하면 인덱스가 새롭게 바뀌지만 기존 인덱스는 새로운 컬럼으로 가지고 있음.
+
+cv_table = tidy_cv_results(search)
+print('[Top 10 CV rows by ROC-AUC]')
+print(cv_table.head(10).to_string(index=False))
+print()
+
+print("[Best Params by ROC-AUC]")
+print(search.best_params_)
+print()
