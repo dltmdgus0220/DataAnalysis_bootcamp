@@ -133,11 +133,12 @@ hgbc = HistGradientBoostingClassifier(
 
 # 그리드 정의
 param_gird = [{
-    "model__learning_rate": [0.03, 0.05, 0.08, 0.1, 0.15],
-    "model__max_leaf_nodes": [15, 31, 63],
-    "model__l2_regularization": [0.0, 0.01, 0.1, 1.0],
+    "learning_rate": [0.03, 0.05, 0.08, 0.1, 0.15],
+    "max_leaf_nodes": [15, 31, 63],
+    "l2_regularization": [0.0, 0.01, 0.1, 1.0],
     #"model__min_samples_leaf": [10, 20, 30]
 }]
+# 파이프라인을 사용하지 않았기 때문에 접두사 제거
 
 # 교차검증 설정 (층화+셔플)
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
