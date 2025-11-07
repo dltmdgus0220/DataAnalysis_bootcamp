@@ -21,7 +21,7 @@ plt.rcParams['axes.unicode_minus']=False
 
 
 # 데이터 설명
-# mpg : float, 연비 (miles per gallon, 1갤런당 주행거리) → 예측/타깃 변수로 자주 사용
+# mpg : float, 연비 (miles per gallon, 1갤런당 주행거리)
 # cylinders : int, 엔진 실린더 수 (예: 4, 6, 8기통) — 엔진 크기/출력 관련 (범주형으로 바꿔서 처리)
 # displacement : float, 배기량 (입방인치, cubic inches) — 엔진 크기
 # horsepower : float, 마력 (horsepower) — 엔진 출력
@@ -32,7 +32,8 @@ plt.rcParams['axes.unicode_minus']=False
 # name : string, 자동차 이름 (모델명)
 
 
-# mpg를 gradient_boost 모델로 예측하기
+# origin을 gradient_boost 모델로 예측하기
+
 ################
 # 1. 데이터 로드 #
 ################
@@ -54,8 +55,8 @@ mpg['cylinders'] = mpg['cylinders'].astype('category')
 # print(mpg.info())
 
 # 타켓/특징 분리                 
-X = mpg.drop(columns=["mpg"])
-y = mpg["mpg"]
+X = mpg.drop(columns=["origin"])
+y = mpg["origin"]
 
 num_cols = X.select_dtypes(include=["float64", "int64"]).columns.tolist()
 cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
@@ -69,14 +70,12 @@ plt.suptitle("[원시] 수치형 변수 히스토그램", y=0.98)
 plt.tight_layout()
 plt.show()
 
-# 산점도(수치형 변수와 타겟 간 상관관계 확인)
+# 박스 플롯
 for col in num_cols:
-    sns.scatterplot(data=mpg, x=col, y='mpg')
-    plt.title(f'mpg vs {col}')
+    sns.boxplot(data=mpg, x="origin", y=col, hue="origin")
+    plt.title("[원시] 클래스별 수치형 박스플롯")
+    plt.tight_layout()
     plt.show()
-# displacement, horsepower, weight : 음의 상관관계 가짐
-# acceleration : 아주 약한 양의 상관관계 가짐
-# model_year : 상관관계 없음
 
 # 상관행렬(수치형만)
 plt.figure(figsize=(7, 5))
