@@ -40,13 +40,6 @@ mpg = sns.load_dataset('mpg') # cylinders를 범주형으로 바꾸기
 # print(mpg.info())
 # print(mpg.describe())
 
-# 타켓/특징 분리                 
-X = mpg.drop(columns=["mpg"])
-y = mpg["mpg"]
-
-num_cols = X.select_dtypes(include=["float64", "int64"]).columns.tolist()
-cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
-
 ##########################
 # 2. 데이터 전처리(시각화전) #
 ##########################
@@ -60,6 +53,36 @@ mpg['horsepower'] = mpg['horsepower'].fillna(mpg['horsepower'].median())
 mpg['cylinders'] = mpg['cylinders'].astype('category')
 # print(mpg.info())
 
+# 타켓/특징 분리                 
+X = mpg.drop(columns=["mpg"])
+y = mpg["mpg"]
+
+num_cols = X.select_dtypes(include=["float64", "int64"]).columns.tolist()
+cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
+
 ##################
 # 3. 데이터 시각화 #
 ##################
+# 수치형 변수들의 히스토그램
+mpg[num_cols].hist(bins=20, figsize=(10, 8))
+plt.suptitle("[원시] 수치형 변수 히스토그램", y=0.98)
+plt.tight_layout()
+plt.show()
+
+# 산점도(수치형 변수와 타겟 간 상관관계 확인)
+for col in num_cols:
+    sns.scatterplot(data=mpg, x=col, y='mpg')
+    plt.title(f'mpg vs {col}')
+    plt.show()
+# displacement, horsepower, weight : 음의 상관관계 가짐
+# acceleration : 아주 약한 양의 상관관계 가짐
+# model_year : 상관관계 없음
+
+# 상관행렬(수치형만)
+plt.figure(figsize=(7, 5))
+corr = mpg[num_cols].corr()
+sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm")
+plt.title("[원시] 수치형 상관행렬")
+plt.tight_layout()
+plt.show()
+# displacement, horsepower, weight 끼리 아주 강한 양의 상관관계를 가짐
