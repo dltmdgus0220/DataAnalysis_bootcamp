@@ -191,3 +191,35 @@ print()
 print("[Best Params by ROC-AUC]")
 print(search.best_params_)
 print()
+
+#########################
+# 7. 테스트 및 피처 중요도 #
+#########################
+best = search.best_estimator_
+y_pred = best.predict(X_te)
+y_proba = best.predict_proba(X_te)
+
+print("[Best Model on Test]")
+print(f"Accuracy : {accuracy_score(y_te, y_pred)}")
+print("F1 (macro) :", f1_score(y_te, y_pred, average="macro"))
+print("F1 (weighted) :", f1_score(y_te, y_pred, average="weighted"))
+print("ROC-AUC (OVR) :", roc_auc_score(y_te, y_proba, multi_class="ovr"))
+print('\nClassification Report\n', classification_report(y_te, y_pred, digits=3))
+print()
+
+# 순열 중요도(MDA, 테스트셋, ROC-AUC 기준)
+perm = permutation_importance(
+    best, X_te, y_te,
+    scoring="roc_auc_ovr",
+    n_repeats=30,
+    random_state=42,
+    n_jobs=-1
+)
+
+imp_mean = perm.importances_mean
+imp_std = perm.importances_std
+rank = np.argsort(-imp_mean)
+
+print('[Top 10 Permutation Importance]')
+for idx in rank[:10]:
+    print(f"{X.columns[idx]:.25s} : mean={imp_mean[idx]:.4f}, std={imp_std[idx]:.4f}")
