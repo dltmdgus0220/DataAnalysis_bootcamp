@@ -184,11 +184,11 @@ def tidy_cv_results(gscv):
     # reset_index만 하면 인덱스가 새롭게 바뀌지만 기존 인덱스는 새로운 컬럼으로 가지고 있음.
 
 cv_table = tidy_cv_results(search)
-print('[Top 10 CV rows by ROC-AUC]')
+print('[Top 10 CV rows by ROC-AUC-OVR]')
 print(cv_table.head(10).to_string(index=False))
 print()
 
-print("[Best Params by ROC-AUC]")
+print("[Best Params by ROC-AUC-OVR]")
 print(search.best_params_)
 print()
 
@@ -207,7 +207,7 @@ print("ROC-AUC (OVR) :", roc_auc_score(y_te, y_proba, multi_class="ovr"))
 print('\nClassification Report\n', classification_report(y_te, y_pred, digits=3))
 print()
 
-# 순열 중요도(MDA, 테스트셋, ROC-AUC 기준)
+# 순열 중요도(MDA, 테스트셋, ROC-AUC-OVR 기준)
 perm = permutation_importance(
     best, X_te, y_te,
     scoring="roc_auc_ovr",
