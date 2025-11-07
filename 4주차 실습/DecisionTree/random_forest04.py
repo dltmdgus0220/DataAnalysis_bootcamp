@@ -143,34 +143,10 @@ gs = GridSearchCV(
     verbose=1
 )
 
-X = pd.get_dummies(df[cat_cols + num_cols], columns=cat_cols, drop_first=True)
+
 X_tr, X_te, y_tr, y_te = train_test_split(
     X, Y, test_size=0.2, stratify=Y, random_state=42
 )
-
-
-# df = sns.load_dataset("penguins")
-
-# X = df.drop(columns=["species"])
-# Y = df["species"] # 3-class: Adelie / Chinstrap / Gentoo
-
-# X_tr, X_te, y_tr, y_te = train_test_split(
-#     X, Y, test_size=0.2, stratify=Y, random_state=42
-# )
-
-# X_tr[num_cols] = X_tr[num_cols].apply(lambda s: s.fillna(s.median()))
-# for c in cat_cols:
-#     X_tr[c] = X_tr[c].fillna(X_tr[c].mode()[0])
-
-# X_tr = pd.get_dummies(X_tr[cat_cols + num_cols], columns=cat_cols, drop_first=True)
-
-# X_te[num_cols] = X_te[num_cols].apply(lambda s: s.fillna(s.median()))
-# for c in cat_cols:
-#     X_te[c] = X_te[c].fillna(X_te[c].mode()[0])
-
-# X_te = pd.get_dummies(X_te[cat_cols + num_cols], columns=cat_cols, drop_first=True)
-
-
 
 gs.fit(X_tr, y_tr)
 
