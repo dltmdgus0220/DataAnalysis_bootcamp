@@ -26,4 +26,5 @@ import pandas as pd
 
 
 # mpg를 gradient_boost 모델로 예측하기
-
+# 1. 데이터 로드
+mpg = sns.load_dataset('mpg') # cylinders를 범주형으로 바꾸기
