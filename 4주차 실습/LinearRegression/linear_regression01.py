@@ -31,7 +31,7 @@ def fit_and_plot_residual(x, y, title, save_prefix=None): # save_prefix는 저�
         plt.savefig(f'{save_prefix}_scatter_fit.png')
     plt.show()
 
-    # 잔차 시각화
+    # 잔차 시각화 : 패턴이 있으면 안됨. 패턴이 있으면 모델이 데이터 구조를 제대로 설명하지 못했다는 신호.
     plt.figure(figsize=(6,4))
     plt.scatter(y_pred, residual, alpha=0.7) # 예측값에 따른 잔차를 산점도로 확인
     plt.axhline(0, linestyle='--') # 수평선 긋기, 양수음수를 구분하기 위해 y축 생성, 즉 잔차가 0인 기준선 긋기
