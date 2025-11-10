@@ -44,3 +44,9 @@ def fit_and_plot_residual(x, y, title, save_prefix=None): # save_prefix는 저�
     plt.show()
 
     return y_pred, residual, model
+
+
+
+x = rng.uniform(-2, 2, size=n) # 하한:-2, 상한:2 이 범위 내 n개의 균등분포를 따르는 난수 생성
+yA = 2 + 3 * x + rng.normal(0, 0.8, size=n)
+fit_and_plot_residual(x, yA, '선형성 만족 그래프')
