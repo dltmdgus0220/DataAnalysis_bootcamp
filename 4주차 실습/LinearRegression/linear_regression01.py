@@ -50,4 +50,7 @@ def fit_and_plot_residual(x, y, title, save_prefix=None): # save_prefix는 저�
 x = rng.uniform(-2, 2, size=n) # 하한:-2, 상한:2 이 범위 내 n개의 균등분포를 따르는 난수 생성
 # yA = 2 + 3 * x + rng.normal(0, 0.8, size=n)
 yB = 2 + 3 * x + 0.7 * (x ** 2) + rng.normal(0, 0.8, size=n)
-fit_and_plot_residual(x, yB, '선형성 만족 그래프')
+yB_pred, yB_residual, yB_model = fit_and_plot_residual(x, yB, '부분 위배(선형모델)')
+
+print(f'Case B - Linear model R^2 : {r2_score(yB, yB_pred):.4f}')
+# r2_score : 회귀모델의 성능(설명력)을 평가할 때 사용하는 가장 기본적인 평가지표
