@@ -5,6 +5,11 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import r2_score
 
+import platform
+if platform.system() == "Windows":
+    plt.rc('font', family="Malgun Gothic")
+plt.rcParams['axes.unicode_minus']=False
+
 rng = np.random.default_rng(42)
 n = 120
 
@@ -15,9 +20,9 @@ def fit_and_plot_residual(x, y, title, save_prefix=None): # save_prefix는 저�
     residual = y - y_pred
 
     plt.figure(figsize=(6,4))
-    plt.scatter(X, y, alpha=0.7)
-    order = np.argsort(X) # 정렬인덱스 저장
-    plt.plot(X[order], y_pred[order]) # 선형회귀식에 의한 1차직선
+    plt.scatter(x, y, alpha=0.7)
+    order = np.argsort(x) # 정렬인덱스 저장
+    plt.plot(x[order], y_pred[order]) # 선형회귀식에 의한 1차직선
     plt.title(f"y vs x (+Linear Fit) - {title}")
     plt.xlabel('x')
     plt.ylabel('y')
