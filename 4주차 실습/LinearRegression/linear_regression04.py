@@ -15,8 +15,8 @@ if platform.system() == "Windows":
     plt.rc('font', family="Malgun Gothic")
 plt.rcParams['axes.unicode_minus']=False
 
-df = sns.load_dataset('mpg')
-X = df.drop(columns=['mpg','name','horsepower'])
+df = sns.load_dataset('mpg').dropna().copy()
+X = df.drop(columns=['mpg','name'])
 y = df['mpg']
 # print(df.isnull().sum())
 
