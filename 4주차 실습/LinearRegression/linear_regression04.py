@@ -110,3 +110,8 @@ plt.ylabel('Residual')
 plt.title('Residual vs Predicted')
 plt.tight_layout()
 plt.show()
+
+cv_scores = cross_val_score(model, x_tr, y_tr, cv=cv, scoring='r2') # 각 5번의 검증 결과 저장
+print(f'CV R2 : {cv_scores}')
+print(f'CV Mean : {cv_scores.mean()}')
+print(f'CV Std : {cv_scores.std()}')
