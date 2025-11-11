@@ -18,18 +18,17 @@ if platform.system() == "Windows":
     plt.rc('font', family="Malgun Gothic")
 plt.rcParams['axes.unicode_minus']=False
 
-# linear_regression() 사용
-# horsepower, weight 선형성 검증, 다항식 추가 성능 개선
-
 
 #=============
 # 1. 데이터로드 
 #=============
 df = sns.load_dataset('mpg').dropna().copy()
-num_cols = df.select_dtypes(include=['int', 'float']).columns.tolist()
 
-X = df[num_cols].copy()
-y = df['mpg'].copy()
+X = df.drop(columns=['mpg','name'])
+y = df['mpg']
+
+num_cols = X.select_dtypes(include=['int', 'float']).columns.to_list()
+cat_cols = X.select_dtypes(include=['object', 'category']).columns.to_list()
 
 #===============================================
 # 2. 선형성 검증을 위한 시각화 (horsepower, weight)
