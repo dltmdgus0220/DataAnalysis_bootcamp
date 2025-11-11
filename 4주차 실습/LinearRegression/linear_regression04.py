@@ -54,8 +54,6 @@ print(f'MSE : {mse}')
 print(f'RMSE : {rmse}')
 
 resid = y_te - pred
-
-# fig, axes = plt.subplots(1,3, figsize=(14,4))
 plt.figure(figsize=(6,4))
 plt.scatter(pred, resid, alpha=0.7)
 plt.axhline(0, linestyle='--')
@@ -66,7 +64,7 @@ plt.tight_layout()
 plt.show()
 
 cv = KFold(n_splits=5, shuffle=True, random_state=42)
-cv_scores = cross_val_score(model, x_tr, y_tr, cv=cv, scoring='r2')
+cv_scores = cross_val_score(model, x_tr, y_tr, cv=cv, scoring='r2') # 각 5번의 검증 결과 저장
 print(f'CV R2 : {cv_scores}')
 print(f'CV Mean : {cv_scores.mean()}')
 print(f'CV Std : {cv_scores.std()}')
@@ -86,3 +84,19 @@ poly_ct = ColumnTransformer(
     remainder='drop'
 )
 
+model = Pipeline(steps=[
+    ('prep', poly_ct),
+    ('model', LinearRegression())
+])
+
+model.fit(x_tr, y_tr)
+pred2 = model.predict(x_te)
+
+r2_poly = r2_score(y_te, pred2)
+mae_poly = mean_absolute_error(y_te, pred2)
+mse_poly = mean_squared_error(y_te, pred2)
+rmse_poly = np.sqrt(mse_poly)
+print(f'Poly R2 : {r2_poly}')
+print(f'Poly MAE : {mae_poly}')
+print(f'Poly MSE : {mse_poly}')
+print(f'Poly RMSE : {rmse_poly}')
