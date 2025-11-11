@@ -74,6 +74,50 @@ def drop_high_corr_features(df_num:pd.DataFrame, thr:float=0.9) -> list:
     return cols
 
 reduced_cols = drop_high_corr_features(X, thr=0.9)
+X_reduced = X[reduced_cols]
 print(f'Kept features : {reduced_cols}')
-vif_after = compute_vif(X[reduced_cols].astype(float))
-print(vif_after) 
+vif_after = compute_vif(X_reduced.astype(float))
+print(vif_after)
+
+
+lin_pipe = Pipeline(steps=[
+    ('scaler', StandardScaler()),
+    ('lin_model', LinearRegression())
+])
+
+ridge_pipe = Pipeline(steps=[
+    ('scaler', StandardScaler()),
+    ('model', RidgeCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5)) # alpha는 규제강도
+])
+
+# 피처 제거 전
+x_tr0, x_te0, y_tr0, y_te0 = train_test_split(X, y, test_size=0.2, random_state=42)
+
+lin_pipe.fit(x_tr0, y_tr0)
+ridge_pipe.fit(x_tr0, y_tr0)
+
+y_pred_lin = lin_pipe.predict(x_te0)
+y_pred_ridge = ridge_pipe.predict(x_te0)
+
+def metrics(y_true, y_pred):
+    return { 'R2':r2_score(y_true, y_pred), 'RMSE':np.sqrt(mean_squared_error(y_true, y_pred)) }
+
+print('[피쳐 제거 전]')
+print(f'Linear : {metrics(y_te0, y_pred_lin)}')
+print(f'Ridge : {metrics(y_te0, y_pred_ridge)}')
+
+# 피처 제거 후
+x_tr1, x_te1, y_tr1, y_te1 = train_test_split(X_reduced, y, test_size=0.2, random_state=42)
+
+lin_pipe.fit(x_tr1, y_tr1)
+ridge_pipe.fit(x_tr1, y_tr1)
+
+y_pred_lin = lin_pipe.predict(x_te1)
+y_pred_ridge = ridge_pipe.predict(x_te1)
+
+def metrics(y_true, y_pred):
+    return { 'R2':r2_score(y_true, y_pred), 'RMSE':np.sqrt(mean_squared_error(y_true, y_pred)) }
+
+print('[피쳐 제거 후]')
+print(f'Linear : {metrics(y_te1, y_pred_lin)}')
+print(f'Ridge : {metrics(y_te1, y_pred_ridge)}')
