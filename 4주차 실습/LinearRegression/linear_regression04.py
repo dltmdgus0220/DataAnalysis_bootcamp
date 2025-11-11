@@ -70,3 +70,19 @@ cv_scores = cross_val_score(model, x_tr, y_tr, cv=cv, scoring='r2')
 print(f'CV R2 : {cv_scores}')
 print(f'CV Mean : {cv_scores.mean()}')
 print(f'CV Std : {cv_scores.std()}')
+
+poly_features = ['displacement','horsepower','weight','acceleration']
+num_rest = [ c for c in num_cols if c not in poly_features] # 수치형 컬럼 중 poly features를 제외한 컬럼들만 추가
+
+poly_ct = ColumnTransformer(
+    transformers=[
+        ( 'poly_num', Pipeline(steps=[
+            ('poly', PolynomialFeatures(degree=2,include_bias=False)),
+            ('scaler', StandardScaler())
+        ]), poly_features ),
+        ('num_rest', StandardScaler(), num_rest),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), cat_cols)
+    ],
+    remainder='drop'
+)
+
