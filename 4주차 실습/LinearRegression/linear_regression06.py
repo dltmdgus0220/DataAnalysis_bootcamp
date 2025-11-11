@@ -63,3 +63,28 @@ def fit_and_plot_residual(x, y):
 
 fit_and_plot_residual(X['horsepower'].to_numpy(), y)
 fit_and_plot_residual(X['weight'].to_numpy(), y)
+
+#=============
+# 3. 베이스라인
+#=============
+preprocess = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), num_cols),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), cat_cols)
+    ],
+    remainder='drop'
+)
+
+base_model = Pipeline(steps=[
+    ('prep', preprocess),
+    ('model', LinearRegression())
+])
+
+x_tr, x_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)
+
+base_model.fit(x_tr, y_tr)
+pred0 = base_model.predict(x_te)
+
+print(f'R2 : {r2_score(y_te, pred0):.4f}')
+print(f'MAE : {mean_absolute_error(y_te, pred0):.4f}')
+print(f'RMSE : {np.sqrt(mean_squared_error(y_te, pred0)):.4f}')
