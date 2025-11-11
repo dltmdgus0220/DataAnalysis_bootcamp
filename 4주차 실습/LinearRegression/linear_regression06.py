@@ -9,9 +9,6 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler, PolynomialFeatu
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-from scipy import stats
-import statsmodels.api as sm
-from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 import platform
 if platform.system() == "Windows":
@@ -92,3 +89,48 @@ print("[베이스모델]")
 print(f'R2 : {r2_score(y_te, pred0):.4f}')
 print(f'MAE : {mean_absolute_error(y_te, pred0):.4f}')
 print(f'RMSE : {np.sqrt(mean_squared_error(y_te, pred0)):.4f}')
+
+#==================================
+# 4. 다항식 추가 (horsepower, weight)
+#==================================
+poly_features = ['horsepower','weight']
+num_rest = [ c for c in num_cols if c not in poly_features]
+
+poly_ct = ColumnTransformer(
+    transformers=[
+        ('poly_num', Pipeline(steps=[
+            ('poly', PolynomialFeatures(degree=2,include_bias=False)),
+            ('scaler', StandardScaler())
+        ]), poly_features),
+        ('num_rest', StandardScaler(), num_rest),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), cat_cols)
+    ],
+    remainder='drop'
+)
+
+model = Pipeline(steps=[
+    ('prep', poly_ct),
+    ('model', LinearRegression())
+])
+
+model.fit(x_tr, y_tr)
+pred = model.predict(x_te)
+
+print("\n[Poly model]")
+print(f'R2 : {r2_score(y_te, pred):.4f}')
+print(f'MAE : {mean_absolute_error(y_te, pred):.4f}')
+print(f'RMSE : {np.sqrt(mean_squared_error(y_te, pred)):.4f}')
+
+resid = y_te - pred
+plot_residual(pred, resid)
+
+# 결과 출력
+# [베이스모델]
+# R2 : 0.7923
+# MAE : 2.4620
+# RMSE : 3.2561
+
+# [Poly model]
+# R2 : 0.8193
+# MAE : 2.2875
+# RMSE : 3.0370
