@@ -15,3 +15,16 @@ np.random.seed(0) # 전역시드고정
 x = np.linspace(1,20,50) # 1이상 20이하 균등하게 50개 생성
 noise = np.random.chisquare(df=2, size=50) # 카이제곱분포:비대칭적인(오른쪽으로 꼬리가 긴) 확률 분포, 자유도(df)가 커질수록 정규분포처럼 대칭에 가까워짐.
 y = 3 * x + noise
+
+X = sm.add_constant(x)
+model = sm.OLS(y, X).fit() # OLS:잔차를 최소화하도록 학습하는 회귀분석모델
+resid = model.resid
+
+fig, axes = plt.subplots(1, 2, figsize=(8, 4))
+sns.histplot(resid, kde=True, ax=axes[0])
+axes[0].set_title('잔차 분포')
+sm.qqplot(resid, line='45', ax=axes[1]) # histplot과 마찬가지로 잔차가 정규분포를 따르는지 확인하기 위한 시각화로, 직선의 형태로 확인하는 그래프.
+axes[1].set_title('Q-Q plot')
+plt.tight_layout()
+plt.show()
+
