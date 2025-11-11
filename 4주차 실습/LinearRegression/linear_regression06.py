@@ -17,3 +17,17 @@ import platform
 if platform.system() == "Windows":
     plt.rc('font', family="Malgun Gothic")
 plt.rcParams['axes.unicode_minus']=False
+
+# linear_regression() 사용
+# horsepower, weight 선형성 검증, 다항식 추가 성능 개선
+
+
+#=============
+# 1. 데이터로드 
+#=============
+df = sns.load_dataset('mpg').dropna().copy()
+num_cols = df.select_dtypes(include=['int', 'float']).columns.tolist()
+
+X = df[num_cols].copy()
+y = df['mpg'].copy()
+
