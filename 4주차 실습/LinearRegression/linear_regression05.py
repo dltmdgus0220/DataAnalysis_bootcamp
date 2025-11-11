@@ -33,3 +33,4 @@ print(f"Shapiro-Wilk 검정 : {shapiro_test.statistic:.3f}, {shapiro_test.pvalue
 # 귀무가설 : 정규분포다 / 대립가설 : 정규분포가 아니다
 # p-value < 0.05 이므로 귀무가설기각/대립가설채택
 # 즉, 정규분포를 따르지않는다.
+print(model.summary())
