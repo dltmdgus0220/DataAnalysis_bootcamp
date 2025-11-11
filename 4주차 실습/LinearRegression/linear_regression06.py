@@ -33,7 +33,7 @@ cat_cols = X.select_dtypes(include=['object', 'category']).columns.to_list()
 #===============================================
 # 2. 선형성 검증을 위한 시각화 (horsepower, weight)
 #===============================================
-def fit_and_plot_residual(x, y):
+def fit_and_plot_linear(x, y):
     X = x.reshape(-1,1) # 다행1열로 reshape, x:1차원 X:2차원
     model = LinearRegression().fit(X, y) # 회귀식 생성, linearregression은 무조건 2d 형태여야함.
     y_pred = model.predict(X) # 오차를 계산하기 위해 X로 다시 예측
@@ -48,7 +48,9 @@ def fit_and_plot_residual(x, y):
     plt.ylabel('y')
     plt.tight_layout()
     plt.show()
+    return y_pred, resid
 
+def plot_residual(y_pred, resid):
     # 잔차 시각화 : 패턴이 있으면 안됨. 패턴이 있으면 모델이 데이터 구조를 제대로 설명하지 못했다는 신호.
     plt.figure(figsize=(6,4))
     plt.scatter(y_pred, resid, alpha=0.7) # 예측값에 따른 잔차를 산점도로 확인
@@ -59,10 +61,11 @@ def fit_and_plot_residual(x, y):
     plt.tight_layout()
     plt.show()
 
-    return y_pred, resid, model
 
-fit_and_plot_residual(X['horsepower'].to_numpy(), y)
-fit_and_plot_residual(X['weight'].to_numpy(), y)
+y_pred0, resid0 = fit_and_plot_linear(X['horsepower'].to_numpy(), y)
+plot_residual(y_pred0, resid0)
+y_pred1, resid1 = fit_and_plot_linear(X['weight'].to_numpy(), y)
+plot_residual(y_pred1, resid1)
 
 #=============
 # 3. 베이스라인
@@ -85,6 +88,7 @@ x_tr, x_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)
 base_model.fit(x_tr, y_tr)
 pred0 = base_model.predict(x_te)
 
+print("[베이스모델]")
 print(f'R2 : {r2_score(y_te, pred0):.4f}')
 print(f'MAE : {mean_absolute_error(y_te, pred0):.4f}')
 print(f'RMSE : {np.sqrt(mean_squared_error(y_te, pred0)):.4f}')
