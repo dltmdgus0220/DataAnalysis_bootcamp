@@ -9,6 +9,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from scipy import stats
+import statsmodels.api as sm
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
 
 import platform
 if platform.system() == "Windows":
@@ -18,13 +21,32 @@ plt.rcParams['axes.unicode_minus']=False
 df = sns.load_dataset('mpg').dropna().copy()
 X = df.drop(columns=['mpg','name'])
 y = df['mpg']
-# print(df.isnull().sum())
 
 num_cols = X.select_dtypes(include=['float','int']).columns.to_list()
 cat_cols = X.select_dtypes(include=['category','object']).columns.to_list()
 
 print(f'num_cols : {num_cols}')
 print(f'cat_cols : {cat_cols}')
+
+# 다중공선성 검사
+X_num = df[num_cols].astype(float).copy()
+X_num = sm.add_constant(X_num)
+
+vif_values = []
+
+for i in range(1, X_num.shape[1]): # 상수항은 vif 계산할 필요가 없으므로 1번 인덱스부터
+    vif_values.append(variance_inflation_factor(X_num.values, i))
+vif = pd.Series(vif_values, index=X_num.columns[1:]).sort_values(ascending=False)
+print(vif)
+# vif 내부 동작 원리
+# i번째 열을 타겟 변수로 선택
+# 나머지 변수들만 가지고 선형회귀 수행
+# 그 회귀의 결정계수 r2 계산
+# 1/(1-r2) 로 vif 계산
+# 결론 : 나머지 변수들로 해당 타겟 변수를 얼마나 잘 설명할 수 있나를 계산.
+# 다중공선성이 크면 어떤 변수가 진짜 영향을 미치는지 구분이 어려워 모델 해석력이 떨어짐(사람의 관점), 모델예측성능에는 큰 문제 없을 수도 있음.
+# 해결방법 : 상관높은변수제거, 변수결합, 정규화회귀(Ridge,Lasso) 사용, 주성분분석(PCA)를 통해 상관성 제거, 변수스케일조정으로 상관성완화
+
 
 preprocess = ColumnTransformer(
     transformers=[
@@ -115,3 +137,4 @@ cv_scores = cross_val_score(model, x_tr, y_tr, cv=cv, scoring='r2') # 각 5번�
 print(f'CV R2 : {cv_scores}')
 print(f'CV Mean : {cv_scores.mean()}')
 print(f'CV Std : {cv_scores.std()}')
+
