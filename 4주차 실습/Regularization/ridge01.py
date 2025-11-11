@@ -72,3 +72,8 @@ def drop_high_corr_features(df_num:pd.DataFrame, thr:float=0.9) -> list:
         cols.remove(drop_col)
 
     return cols
+
+reduced_cols = drop_high_corr_features(X, thr=0.9)
+print(f'Kept features : {reduced_cols}')
+vif_after = compute_vif(X[reduced_cols].astype(float))
+print(vif_after) 
