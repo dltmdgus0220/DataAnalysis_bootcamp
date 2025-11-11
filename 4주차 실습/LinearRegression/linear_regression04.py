@@ -100,3 +100,13 @@ print(f'Poly R2 : {r2_poly}')
 print(f'Poly MAE : {mae_poly}')
 print(f'Poly MSE : {mse_poly}')
 print(f'Poly RMSE : {rmse_poly}')
+
+resid2 = y_te - pred2
+plt.figure(figsize=(6,4))
+plt.scatter(pred2, resid2, alpha=0.7)
+plt.axhline(0, linestyle='--')
+plt.xlabel('Predicted')
+plt.ylabel('Residual')
+plt.title('Residual vs Predicted')
+plt.tight_layout()
+plt.show()
