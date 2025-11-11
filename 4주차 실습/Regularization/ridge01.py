@@ -34,3 +34,10 @@ plt.yticks(range(len(num_cols)), labels=num_cols, rotation=0)
 plt.tight_layout()
 plt.show()
 
+def compute_vif(df_num:pd.DataFrame) -> pd.DataFrame:
+    Z = sm.add_constant(df_num.values, has_constant='skip')
+    vifs = []
+
+    for i in range(1, Z.shape[1]):
+        vifs.append(variance_inflation_factor(Z, i))
+    return pd.DataFrame( { "feature" : df_num.columns, "VIF" : vifs } ).sort_values('VIF', ascending=False)
