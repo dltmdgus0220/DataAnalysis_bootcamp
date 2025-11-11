@@ -28,3 +28,8 @@ axes[1].set_title('Q-Q plot')
 plt.tight_layout()
 plt.show()
 
+shapiro_test = shapiro(resid)
+print(f"Shapiro-Wilk 검정 : {shapiro_test.statistic:.3f}, {shapiro_test.pvalue:.3f}") # statistic는 정규분포에 얼마나 가까운지 수치화한것. 0.9보다는 커야 정규분포라고 얘기할 수 있음.
+# 귀무가설 : 정규분포다 / 대립가설 : 정규분포가 아니다
+# p-value < 0.05 이므로 귀무가설기각/대립가설채택
+# 즉, 정규분포를 따르지않는다.
