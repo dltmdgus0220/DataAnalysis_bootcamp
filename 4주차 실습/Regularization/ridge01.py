@@ -90,6 +90,11 @@ ridge_pipe = Pipeline(steps=[
     ('model', RidgeCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5)) # alpha는 규제강도
 ])
 
+def metrics(y_true, y_pred):
+    return { 'R2':r2_score(y_true, y_pred), 'RMSE':np.sqrt(mean_squared_error(y_true, y_pred)) }
+
+cv = KFold(n_splits=5, shuffle=True, random_state=42)
+
 # 피처 제거 전
 x_tr0, x_te0, y_tr0, y_te0 = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -99,12 +104,16 @@ ridge_pipe.fit(x_tr0, y_tr0)
 y_pred_lin = lin_pipe.predict(x_te0)
 y_pred_ridge = ridge_pipe.predict(x_te0)
 
-def metrics(y_true, y_pred):
-    return { 'R2':r2_score(y_true, y_pred), 'RMSE':np.sqrt(mean_squared_error(y_true, y_pred)) }
-
 print('[피쳐 제거 전]')
 print(f'Linear : {metrics(y_te0, y_pred_lin)}')
 print(f'Ridge : {metrics(y_te0, y_pred_ridge)}')
+
+scores_lin = cross_val_score(lin_pipe, x_tr0, y_tr0, cv=cv, scoring='r2')
+scores_ridge = cross_val_score(ridge_pipe, x_tr0, y_tr0, cv=cv, scoring='r2')
+print(f'CV R2 Linear Mean : {scores_lin.mean()}, Std : {scores_lin.std()}')
+print(f'CV R2 Ridge Mean : {scores_lin.mean()}, Std : {scores_lin.std()}')
+
+
 
 # 피처 제거 후
 x_tr1, x_te1, y_tr1, y_te1 = train_test_split(X_reduced, y, test_size=0.2, random_state=42)
@@ -121,3 +130,8 @@ def metrics(y_true, y_pred):
 print('[피쳐 제거 후]')
 print(f'Linear : {metrics(y_te1, y_pred_lin)}')
 print(f'Ridge : {metrics(y_te1, y_pred_ridge)}')
+
+scores_lin = cross_val_score(lin_pipe, x_tr1, y_tr1, cv=cv, scoring='r2')
+scores_ridge = cross_val_score(ridge_pipe, x_tr1, y_tr1, cv=cv, scoring='r2')
+print(f'CV R2 Linear Mean : {scores_lin.mean()}, Std : {scores_lin.std()}')
+print(f'CV R2 Ridge Mean : {scores_lin.mean()}, Std : {scores_lin.std()}')
