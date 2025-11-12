@@ -183,7 +183,7 @@ from sklearn.linear_model import RidgeCV, LassoCV, ElasticNetCV
 # ridge (l2)
 pipe_ridge_poly = Pipeline([
     ("prep", preprocess_poly),
-    ("model", RidgeCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5))
+    ("model", RidgeCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5)) # 수학적 해가 유일하므로 random_state 없음.
 ])
 
 pipe_ridge_poly.fit(X_tr, y_tr)
