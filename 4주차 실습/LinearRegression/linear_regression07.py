@@ -83,7 +83,7 @@ plt.tight_layout()
 plt.show()
 
 plt.figure(figsize=(6,4))
-plt.scatter(y_tr_pred_lin, resid_lin,alpha=0.6)
+plt.scatter(y_tr_pred_lin, resid_lin, alpha=0.6)
 plt.axhline(0, linestyle="--")
 plt.title("Residuals vs Predict (Linear baseline)")
 plt.xlabel("Predict")
@@ -174,3 +174,85 @@ plt.xlabel("Predict")
 plt.ylabel("Residuals")
 plt.tight_layout()
 plt.show()
+
+#=====================
+# 규제 추가 후 성능 비교
+#=====================
+from sklearn.linear_model import RidgeCV, LassoCV, ElasticNetCV
+
+# ridge (l2)
+pipe_ridge_poly = Pipeline([
+    ("prep", preprocess_poly),
+    ("model", RidgeCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5))
+])
+
+pipe_ridge_poly.fit(X_tr, y_tr)
+
+# (선형성 검증) 훈련셋 잔차 계산
+y_tr_pred_ridge_poly = pipe_ridge_poly.predict(X_tr)
+resid_ridge_poly = y_tr - y_tr_pred_ridge_poly
+
+# (성능) 테스트셋
+y_te_pred_ridge_poly = pipe_ridge_poly.predict(X_te)
+r2_ridge_poly   = r2_score(y_te, y_te_pred_ridge_poly)
+mae_ridge_poly  = mean_absolute_error(y_te, y_te_pred_ridge_poly)
+rmse_ridge_poly = np.sqrt(mean_squared_error(y_te, y_te_pred_ridge_poly))
+
+print("\n=== [Ridge Polynomial on hp, wt only] Test 성능 ===")
+best_ridge_alpha = pipe_ridge_poly.named_steps["model"].alpha_
+print("선택된 alpha:", best_ridge_alpha)
+print(f"R²   : {r2_ridge_poly:.4f}")
+print(f"MAE  : {mae_ridge_poly:.4f}")
+print(f"RMSE : {rmse_ridge_poly:.4f}")
+
+
+# Lasso (l1)
+pipe_lasso_poly = Pipeline([
+    ("prep", preprocess_poly),
+    ("model", LassoCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5))
+])
+
+pipe_lasso_poly.fit(X_tr, y_tr)
+
+# (선형성 검증) 훈련셋 잔차 계산
+y_tr_pred_lasso_poly = pipe_lasso_poly.predict(X_tr)
+resid_lasso_poly = y_tr - y_tr_pred_lasso_poly
+
+# (성능) 테스트셋
+y_te_pred_lasso_poly = pipe_lasso_poly.predict(X_te)
+r2_lasso_poly   = r2_score(y_te, y_te_pred_lasso_poly)
+mae_lasso_poly  = mean_absolute_error(y_te, y_te_pred_lasso_poly)
+rmse_lasso_poly = np.sqrt(mean_squared_error(y_te, y_te_pred_lasso_poly))
+
+print("\n=== [Lasso Polynomial on hp, wt only] Test 성능 ===")
+best_lasso_alpha = pipe_lasso_poly.named_steps["model"].alpha_
+print("선택된 alpha:", best_lasso_alpha)
+print(f"R²   : {r2_lasso_poly:.4f}")
+print(f"MAE  : {mae_lasso_poly:.4f}")
+print(f"RMSE : {rmse_lasso_poly:.4f}")
+
+
+# elasticnet (l1,l2 혼용)
+pipe_elastic_poly = Pipeline([
+    ("prep", preprocess_poly),
+    ("model", ElasticNetCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5))
+])
+
+pipe_elastic_poly.fit(X_tr, y_tr)
+
+# (선형성 검증) 훈련셋 잔차 계산
+y_tr_pred_elastic_poly = pipe_elastic_poly.predict(X_tr)
+resid_elastic_poly = y_tr - y_tr_pred_elastic_poly
+
+# (성능) 테스트셋
+y_te_pred_elastic_poly = pipe_elastic_poly.predict(X_te)
+r2_elastic_poly   = r2_score(y_te, y_te_pred_elastic_poly)
+mae_elastic_poly  = mean_absolute_error(y_te, y_te_pred_elastic_poly)
+rmse_elastic_poly = np.sqrt(mean_squared_error(y_te, y_te_pred_elastic_poly))
+
+print("\n=== [ElasticNet Polynomial on hp, wt only] Test 성능 ===")
+best_elastic_alpha = pipe_elastic_poly.named_steps["model"].alpha_
+print("선택된 alpha:", best_elastic_alpha)
+print(f"R²   : {r2_elastic_poly:.4f}")
+print(f"MAE  : {mae_elastic_poly:.4f}")
+print(f"RMSE : {rmse_elastic_poly:.4f}")
