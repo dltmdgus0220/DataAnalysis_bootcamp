@@ -256,3 +256,14 @@ print("선택된 alpha:", best_elastic_alpha)
 print(f"R²   : {r2_elastic_poly:.4f}")
 print(f"MAE  : {mae_elastic_poly:.4f}")
 print(f"RMSE : {rmse_elastic_poly:.4f}")
+
+# 베이스라인과 성능 비교
+comp = pd.DataFrame({
+    "Model": ["Linear (all features linear)",
+              "Poly(deg=2,L2=0.1) on [horsepower, weight]"],
+    "R2":   [r2_lin, r2_ridge_poly],
+    "MAE":  [mae_lin, mae_ridge_poly],
+    "RMSE": [rmse_lin, rmse_ridge_poly]
+})
+print("\n=== 성능 비교 (Test) ===")
+print(comp)
