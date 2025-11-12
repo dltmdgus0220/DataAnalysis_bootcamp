@@ -209,7 +209,7 @@ print(f"RMSE : {rmse_ridge_poly:.4f}")
 # Lasso (l1)
 pipe_lasso_poly = Pipeline([
     ("prep", preprocess_poly),
-    ("model", LassoCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5))
+    ("model", LassoCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5, random_state=42))
 ])
 
 pipe_lasso_poly.fit(X_tr, y_tr)
@@ -235,7 +235,7 @@ print(f"RMSE : {rmse_lasso_poly:.4f}")
 # elasticnet (l1,l2 혼용)
 pipe_elastic_poly = Pipeline([
     ("prep", preprocess_poly),
-    ("model", ElasticNetCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5))
+    ("model", ElasticNetCV(alphas=[0.1, 1.0, 10.0, 100.0], cv=5, random_state=42))
 ])
 
 pipe_elastic_poly.fit(X_tr, y_tr)
