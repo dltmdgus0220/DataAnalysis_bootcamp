@@ -188,3 +188,24 @@ if best_state is not None:
     print('[Best State]')
     print(best_state)
 
+# test
+model.eval()
+with torch.no_grad(): # 평가시에는 가중치를 계산할 필요 없음. 메모리 사용량 감소 
+    pred = model(x_te_tensor)
+    loss = criterion(pred, y_te_tensor)
+
+    test_mse = loss.item()
+    test_rmse = np.sqrt(test_mse)
+    test_r2 = r2_score_torch(y_te_tensor, pred)
+    print("\n[Test Loss]")
+    print(f'MSE: {test_mse:.4f}, RMSE: {test_rmse:.4f}, R^2: {test_r2:.4f}')
+
+# loss 시각화
+plt.plot(train_losses, label='Train Loss')
+plt.plot(val_losses, label='Val Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+plt.title('Train vs Validation Loss(MSE)')
+plt.show()
+
