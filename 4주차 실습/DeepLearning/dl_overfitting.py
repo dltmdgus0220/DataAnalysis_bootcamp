@@ -33,3 +33,9 @@ y_va_tensor = torch.tensor(y_va, dtype=torch.float32).unsqueeze(1)
 x_te_tensor = torch.tensor(x_te_scaled, dtype=torch.float32)
 y_te_tensor = torch.tensor(y_te, dtype=torch.float32).unsqueeze(1)
 
+
+train_dataset = TensorDataset(x_tr_tensor, y_tr_tensor)
+val_dataset = TensorDataset(x_va_tensor, y_va_tensor)
+
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=True)
