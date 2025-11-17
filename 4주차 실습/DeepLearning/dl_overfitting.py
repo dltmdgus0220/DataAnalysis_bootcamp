@@ -100,7 +100,7 @@ for epoch in range(num_epochs):
         epoch_val_loss = running_val_loss / len(val_loader)
         val_losses.append(epoch_val_loss)
 
-    # 조기 종료
+    # 베스트 모델 저장
     if epoch_val_loss < best_val_loss:
         # print(f'Update best model at epoch {epoch+1}')
         # print(f"Train Loss: {epoch_train_loss:.4f}, Val Loss: {epoch_val_loss:.4f}")
@@ -113,7 +113,8 @@ for epoch in range(num_epochs):
     if (epoch + 1) % 10 == 0:
         print(f"Epoch [{epoch+1}/{num_epochs}]  Train Loss: {epoch_train_loss:.4f}, Val Loss: {epoch_val_loss:.4f}")
         print(f'(no_imporve_cnt: {no_improve_cnt})')
-
+    
+    # 조기 종료
     if no_improve_cnt >= patience:
         print(f'\nEarly stopping at epoch {epoch+1}')
         break
