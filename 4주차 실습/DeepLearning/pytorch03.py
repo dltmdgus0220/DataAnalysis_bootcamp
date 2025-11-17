@@ -1,6 +1,7 @@
 import torch
 from torch.utils.data import TensorDataset, Dataset, DataLoader
 import pandas as pd
+import torch.nn as nn
 
 X = torch.linspace(0, 1, steps=100).unsqueeze(1) # 0부터 1까지 균등하게 100개 생성, unsqueeze(n):dim=n 위치에 새로운 차원 추가
 print(X.shape)
@@ -16,4 +17,18 @@ test_dataset = TensorDataset(X_test, y_test)
 train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
 
+
+class MLPRegressor(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(1, 16), # 1차원이 들어오면 16개로 늘려줌
+            nn.ReLU(), # 선형 아웃풋에 비선형성을 추가해줌
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 1)
+        )
+
+    def forward(self, x):
+        return self.net(x)
 
