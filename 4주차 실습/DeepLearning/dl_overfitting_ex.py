@@ -51,3 +51,17 @@ torch.manual_seed(42) # DataLoader가 셔플할 때나 모델 weigth 초기화 �
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=True)
 
+
+# 베이스라인(선형회귀)
+lin_reg = LinearRegression()
+lin_reg.fit(x_train_scaled, y_train)
+
+y_pred_lr = lin_reg.predict(x_te_scaled)
+mse_lr = mean_squared_error(y_te, y_pred_lr) # 대부분 true, pred 순 / 딥러닝 로스계산시에만 pred, true 순
+rmse_lr = np.sqrt(mse_lr)
+r2_lr = r2_score(y_te, y_pred_lr)
+
+print('[Linear Regression]')
+print(f'Test MSE: {mse_lr:.4f}, RMSE: {rmse_lr:.4f}, R^2: {r2_lr:.4f}')
+print()
+
