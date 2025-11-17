@@ -40,3 +40,14 @@ y_va_tensor = torch.tensor(y_va, dtype=torch.float32).unsqueeze(1)
 x_te_tensor = torch.tensor(x_te_scaled, dtype=torch.float32)
 y_te_tensor = torch.tensor(y_te, dtype=torch.float32).unsqueeze(1)
 
+# 데이터로더 생성
+train_dataset = TensorDataset(x_tr_tensor, y_tr_tensor)
+val_dataset = TensorDataset(x_va_tensor, y_va_tensor)
+# test셋은 그냥 텐서만 넣어도 됨.
+# 그러나 테스트셋이 너무 커서 나눠서 예측해야하거나 gpu 메모리 효율성을 높이고 싶거나
+# 코드 일관성을 위해 test셋에 대해서도 TensorDataset으로 바꿔주는 경우도 있음.
+
+torch.manual_seed(42) # DataLoader가 셔플할 때나 모델 weigth 초기화 등등에서 사용됨.
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=True)
+
