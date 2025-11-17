@@ -7,3 +7,13 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
+df = sns.load_dataset('mpg').dropna().copy()
+
+X = df[['horsepower', 'weight']]
+y = df['mpg']
+
+x_tr, x_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)
+scaler = StandardScaler()
+x_tr_scaled = scaler.fit_transform(x_tr) # 학습하고 변환까지, 학습한 결과도 저장
+x_te_scaled = scaler.transform(x_te)
+
