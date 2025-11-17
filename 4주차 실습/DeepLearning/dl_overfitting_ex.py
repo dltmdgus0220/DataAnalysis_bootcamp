@@ -209,3 +209,24 @@ plt.legend()
 plt.title('Train vs Validation Loss(MSE)')
 plt.show()
 
+# 시각화 해석
+# 에폭이 약 5까지는 train loss와 validation loss가 급격하게 감소
+# 그 이후부터는 train loss와 validation loss가 거의 비슷한 곡선을 그림
+# 과적합 없이 훈련이 잘 수행되었다고 볼 수 있음.
+
+# best_state 파라미터 출력 결과
+# net0 : nn.Linear(2,16) / net0.weight의 shape:(16,2), net0.bias:(16)
+# net1 : nn.ReLU()
+# net2 : nn.Linear(16,16) / net0.weight의 shape:(16,16), net0.bias:(16)
+# net3 : nn.ReLU()
+# net0 : nn.Linear(16,1) / net0.weight의 shape:(1,16), net0.bias:(1)
+
+# Linear Regression 성능
+# Test MSE: 17.7918, RMSE: 4.2180, R^2: 0.6514
+# MLPRegressor 성능
+# Test MSE: 15.7460, RMSE: 3.9681, R^2: 0.6915
+# 해석 : 모든 수치에서 MLPRegressor가 조금 더 좋은 성능을 보임
+# rmse : 예측 오차의 평균적인 크기로, 예측한 값이 4정도의 오차를 보인다는 뜻.
+# r2 : 1에 가까울수록 회귀모델이 데이터를 잘 설명하고 있다는 뜻. 0이면 평균. 음수면 평균보다 못한 성능(평균으로 예측하는게 더 나은 경우)
+# r2 스코어도 0.7보다 낮고 mse,rmse 또한 엄청 낮진 않으므로 나쁘지 않은 수준일 뿐 좋지는 않음.
+# feature를 더 늘려서 학습하면 더 성능이 좋을 수도 있음.
