@@ -52,4 +52,14 @@ for epoch in range(num_epoch):
         # 이때는 len(train_dataset)으로 나눠줘야함
 
     if (epoch + 1) % 20 == 0: # 20에폭마다 로스 출력
-        print(f"Epoch [{epoch+1}/{num_epoch}]  Loss: {running_loss/len(train_loader):.4f}")
+        print(f"Epoch [{epoch+1}/{num_epoch}]  Loss(MSE): {running_loss/len(train_loader):.4f}")
+
+
+model.eval()
+with torch.no_grad(): # 평가시에는 가중치를 계산할 필요 없음. 메모리 사용량 감소 
+    total_loss = 0.0
+    for xb, yb in test_loader:
+        pred = model(xb)
+        loss = criterion(pred, yb)
+        total_loss += loss.item()
+    print(f"Test Loss(MSE): {total_loss/len(test_loader):.4f}")
