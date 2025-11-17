@@ -65,3 +65,19 @@ print('[Linear Regression]')
 print(f'Test MSE: {mse_lr:.4f}, RMSE: {rmse_lr:.4f}, R^2: {r2_lr:.4f}')
 print()
 
+
+# MLPRegressor
+class MLPRegressor(nn.Module):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.net = nn.Sequential(
+            nn.Linear(2, 16), # horsepower, weight 2차원 입력
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 1) # mpg 예측
+        )
+
+    def forward(self, x):
+        return self.net(x)
+    
