@@ -121,3 +121,21 @@ for epoch in range(num_epochs):
 if best_state is not None:
     model.load_state_dict(best_state) # 가장 성능이 좋았던 파라미터로 모델 저장
 
+
+model.eval()
+with torch.no_grad():
+    logits_test = model(x_te_tensor)
+    probs_test = torch.sigmoid(logits_test) # 0-1 사이 확률값으로 변환
+    y_pred = (probs_test >= 0.5).int().squeeze(1).numpy() # squeeze(dim):dim의 size가 1이면 없애버림, 1이 아니면 아무변화없음.
+
+test_acc = accuracy_score(y_te, y_pred)
+print(f'\n[Test] Accuracy (with Early stopping): {test_acc:.4f}')
+
+
+plt.plot(train_losses, label='Train Loss')
+plt.plot(val_losses, label='Val Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+plt.title('Train vs Validation Loss')
+plt.show()
