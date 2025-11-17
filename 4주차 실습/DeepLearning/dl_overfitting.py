@@ -55,3 +55,69 @@ class MLPClassifier(nn.Module):
         return self.net(x)
 
 
+in_dim = x_tr_tensor.shape[1] # (샘플수, 피쳐수)
+model = MLPClassifier(in_dim)
+
+criterion = nn.BCEWithLogitsLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+num_epochs = 200
+patience = 15 # 조기 종료를 위해 성능이 15번 개선이 없으면 종료
+
+best_val_loss = np.inf
+best_state = None
+no_improve_cnt = 0 # 성능 개선 안된 횟수 저장
+
+train_losses = []
+val_losses = []
+
+for epoch in range(num_epochs):
+    model.train()
+    running_loss = 0.0
+
+    for xb, yb in train_loader:
+        optimizer.zero_grad()
+
+        logits = model(xb)
+        loss = criterion(logits, yb)
+        
+        loss.backward()
+        optimizer.step()
+
+        running_loss += loss.item()
+
+    epoch_train_loss = running_loss / len(train_loader)
+    train_losses.append(epoch_train_loss)
+
+    model.eval()
+    running_val_loss = 0.0
+    with torch.no_grad():
+        for xb, yb in val_loader:
+            logits = model(xb)
+            loss = criterion(logits, yb)
+            running_val_loss += loss.item()
+
+        epoch_val_loss = running_val_loss / len(val_loader)
+        val_losses.append(epoch_val_loss)
+
+    # 조기 종료
+    if epoch_val_loss < best_val_loss:
+        # print(f'Update best model at epoch {epoch+1}')
+        # print(f"Train Loss: {epoch_train_loss:.4f}, Val Loss: {epoch_val_loss:.4f}")
+        best_val_loss = epoch_val_loss
+        best_state = model.state_dict() # 모델 파라미터(즉, 가중치)를 저장
+        no_improve_cnt = 0
+    else:
+        no_improve_cnt += 1
+
+    if (epoch + 1) % 10 == 0:
+        print(f"Epoch [{epoch+1}/{num_epochs}]  Train Loss: {epoch_train_loss:.4f}, Val Loss: {epoch_val_loss:.4f}")
+        print(f'(no_imporve_cnt: {no_improve_cnt})')
+
+    if no_improve_cnt >= patience:
+        print(f'\nEarly stopping at epoch {epoch+1}')
+        break
+
+if best_state is not None:
+    model.load_state_dict(best_state) # 가장 성능이 좋았던 파라미터로 모델 저장
+
