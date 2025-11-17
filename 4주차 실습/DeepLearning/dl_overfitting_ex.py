@@ -81,3 +81,21 @@ class MLPRegressor(nn.Module):
     def forward(self, x):
         return self.net(x)
     
+model = MLPRegressor()
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
+
+# R2 스코어, 1 - (∑(y_i​−yhat_​i​)^2 / ∑(y_i​−ybar​)^2), yhat은 예측값, ybar는 실제값전체평균
+def r2_score_torch(y_true, y_pred):
+    # 리스트로 들어오면 텐서로 변환
+    if isinstance(y_true, list):
+        y_true = torch.cat(y_true, dim=0)
+    if isinstance(y_pred, list):
+        y_pred = torch.cat(y_pred, dim=0)
+
+    y_true_mean = torch.mean(y_true)
+    ss_tot = torch.sum((y_true - y_true_mean) ** 2)
+    ss_res = torch.sum((y_true - y_pred) ** 2)
+    return 1 - ss_res / ss_tot
+
