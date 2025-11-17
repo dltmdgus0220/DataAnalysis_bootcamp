@@ -99,3 +99,92 @@ def r2_score_torch(y_true, y_pred):
     ss_res = torch.sum((y_true - y_pred) ** 2)
     return 1 - ss_res / ss_tot
 
+# 반복학습
+num_epochs = 200
+patience = 15 # 조기 종료 임계값
+
+best_val_loss = np.inf
+best_state = None
+no_improve_cnt = 0 # 성능 개선 안된 횟수 저장
+
+train_losses = []
+val_losses = []
+
+for epoch in range(num_epochs):
+    # train
+    model.train() # 훈련모드, dropout 켜고 batchnorm을 train 모드
+    running_train_loss = 0.0
+
+    # r2 score 계산을 위해 모든 예측과 타겟을 저장하는 리스트
+    all_train_preds = []
+    all_train_targets = []
+
+    for xb, yb in train_loader:
+        optimizer.zero_grad() # 기울기 초기화
+
+        pred = model(xb) # 예측
+        loss = criterion(pred, yb) # loss 계산
+
+        loss.backward() # loss 기울기 계산
+        optimizer.step() # 기울기로 가중치 업데이트
+
+        running_train_loss += loss.item() # loss 합산
+
+        all_train_preds.append(pred.detach())
+        # detach:requires_grad=False로 만들어서 gradient가 추적을 못하게 해주고
+        # 이로 인해 쓸데없는 메모리를 사용하거나 역전파 그래프가 커져 느려지는 상황을 예방할 수 있음.
+        all_train_targets.append(yb)
+
+    train_mse = running_train_loss/len(train_loader)
+    train_rmse = np.sqrt(train_mse)
+    train_r2 = r2_score_torch(all_train_targets, all_train_preds)
+    train_losses.append(train_mse) # 시각화할 때 사용
+
+    # validate
+    model.eval()
+    running_val_loss = 0.0
+
+    # r2 score 계산을 위해 모든 예측과 타겟을 저장하는 리스트
+    all_val_preds = []
+    all_val_targets = []
+
+    with torch.no_grad():
+        for xb, yb in val_loader:
+            pred = model(xb)
+            loss = criterion(pred, yb)
+            running_val_loss += loss.item()
+
+            all_val_preds.append(pred)
+            all_val_targets.append(yb)
+
+        val_mse = running_val_loss / len(val_loader)
+        val_rmse = np.sqrt(val_mse)
+        val_r2 = r2_score_torch(all_val_targets, all_val_preds)
+        val_losses.append(val_mse) # 시각화할 때 사용
+    
+    # 베스트 모델 저장
+    if val_mse < best_val_loss:
+        best_val_loss = val_mse
+        best_state = model.state_dict() # 모델 파라미터(즉, 가중치)를 저장
+        no_improve_cnt = 0
+    else:
+        no_improve_cnt += 1
+
+    # 중간 결과 출력
+    if (epoch + 1) % 10 == 0: 
+        print(f"Epoch [{epoch+1}/{num_epochs}]")
+        print(f'Train MSE: {train_mse:.4f}, RMSE: {train_rmse:.4f}, R^2: {train_r2:.4f}')
+        print(f'Val MSE: {val_mse:.4f}, RMSE: {val_rmse:.4f}, R^2: {val_r2:.4f}')
+        print(f'(no_imporve_cnt: {no_improve_cnt})')
+
+    # 조기 종료
+    if no_improve_cnt >= patience:
+        print(f'\nEarly stopping at epoch {epoch+1}')
+        break
+
+
+if best_state is not None:
+    model.load_state_dict(best_state) # 가장 성능이 좋았던 파라미터로 모델 저장
+    print('[Best State]')
+    print(best_state)
+
