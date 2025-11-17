@@ -13,7 +13,7 @@ from sklearn.metrics import mean_squared_error
 df = sns.load_dataset('mpg').dropna().copy()
 
 X = df[['horsepower', 'weight']]
-y = df['mpg']
+y = df['mpg'].values
 
 x_tr, x_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)
 scaler = StandardScaler()
@@ -58,4 +58,4 @@ class MLPRegressor(nn.Module):
         return self.net(x)
     
         total_loss += loss.item()
-    print(f"Test Loss(MSE): {total_loss/len(test_loader):.4f}")
+    print(f"Test Loss(RMSE): {np.sqrt(total_loss/len(test_loader)):.4f}")
