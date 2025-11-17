@@ -57,5 +57,27 @@ class MLPRegressor(nn.Module):
     def forward(self, x):
         return self.net(x)
     
+model = MLPRegressor()
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
+num_epoch = 200
+for epoch in range(num_epoch):
+    model.train() # 훈련모드, 과적합을 방지하기 위해 느슨하게 학습하는 느낌.
+    running_loss = 0.0
+
+    for xb, yb in train_loader:
+        optimizer.zero_grad() # 기울기 초기화
+
+        pred = model(xb) # 예측
+        loss = criterion(pred, yb) # 로스 계산
+
+        loss.backward() # 로스 기울기 계산
+        optimizer.step() # 기울기로 가중치 업데이트
+
+        running_loss += loss.item() # 로스 합산
+
+    if (epoch + 1) % 20 == 0: # 20에폭마다 로스 출력
+        print(f"Epoch [{epoch+1}/{num_epoch}]  Loss(RMSE): {np.sqrt(running_loss/len(train_loader)):.4f}")
         total_loss += loss.item()
     print(f"Test Loss(RMSE): {np.sqrt(total_loss/len(test_loader)):.4f}")
