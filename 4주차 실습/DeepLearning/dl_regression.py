@@ -43,3 +43,19 @@ test_dataset = TensorDataset(x_te_tensor, y_te_tensor)
 train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
 
+class MLPRegressor(nn.Module):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.net = nn.Sequential(
+            nn.Linear(2, 16), # horsepower, weight 2차원 입력
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 1) # mpg 예측
+        )
+
+    def forward(self, x):
+        return self.net(x)
+    
+        total_loss += loss.item()
+    print(f"Test Loss(MSE): {total_loss/len(test_loader):.4f}")
