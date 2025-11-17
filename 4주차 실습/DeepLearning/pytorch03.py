@@ -32,3 +32,23 @@ class MLPRegressor(nn.Module):
     def forward(self, x):
         return self.net(x)
 
+model = MLPRegressor()
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
+num_epoch = 20
+for epoch in range(num_epoch):
+    model.train() # 훈련모드, 과적합을 방지하기 위해 느슨하게 학습하는 느낌.
+    running_loss = 0.0
+
+    for xb, yb in train_loader:
+        optimizer.zero_grad()
+        pred = model(xb)
+        loss = criterion(pred, yb)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item()
+        # running_loss += loss.item() * xb.size(0) # loss.item():현재 배치(batch)의 평균 loss, xb.size(0):현재 배치사이즈
+        # 이때는 len(train_dataset)으로 나눠줘야함
+
+    print(f"Epoch [{epoch+1}/{num_epoch}]  Loss: {running_loss/len(train_loader):.4f}")
