@@ -26,3 +26,9 @@ def preprocess(text):
         tokens.append(word)
     
     return tokens
+
+if __name__ == '__main__':
+    for r in reviews:
+        print(f'원문: {r}')
+        print(f'전처리 후: {preprocess(r)}')
+        print()
