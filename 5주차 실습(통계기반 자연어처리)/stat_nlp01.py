@@ -55,3 +55,17 @@ m = re.search(r'code=(\d+)', text)
 print(m)
 print(m.group(0)) # 매칭된거 전부다
 print(m.group(1)) # 캡처한 거 중 1번째
+
+
+m = re.search(r'\d+', 'abc123def')
+print(m.group())
+print(m.start())
+print(m.end())
+print(m.span())
+
+
+m = re.search(r'(\d+)-(\d+)', 'tel:010-1234-5678')
+print(m.group())
+print(m.group(0))
+print(m.group(1))
+print(m.group(2))
