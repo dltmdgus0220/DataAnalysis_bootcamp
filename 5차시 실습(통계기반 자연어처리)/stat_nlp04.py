@@ -16,6 +16,7 @@ def preprocess(text):
     pattern = r'[^0-9가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]+' # 영문,한글,숫자
     pos_list = ['Noun', 'Verb', 'Adjective', 'Number']
     clean = re.sub(pattern, ' ', text) # 특수문자, 문장 기호 등 영문,한글,숫자 제외한 나머지 공백으로 변환
+    clean = re.sub(r'\s+',' ', clean).strip() # 공백이 1개 이상 반복되면 하나로 바꾸고 양쪽 끝 공백 제거
 
     tokens = []
     for word, pos in okt.pos(clean, norm=True, stem=True):
