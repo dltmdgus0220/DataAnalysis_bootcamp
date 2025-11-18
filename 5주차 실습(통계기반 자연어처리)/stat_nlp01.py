@@ -64,8 +64,25 @@ print(m.end())
 print(m.span())
 
 
-m = re.search(r'(\d+)-(\d+)', 'tel:010-1234-5678')
+m = re.search(r'(\d+)-(\d+)-(\d+)', 'tel:010-1234-5678')
 print(m.group())
 print(m.group(0))
 print(m.group(1))
 print(m.group(2))
+
+
+# 불용어 처리
+stopwords = set([
+"은", "는", "이", "가", "을", "를", "에", "에서", "으로", "그리고", "그러나", "하지만", "또는",
+"도", "만", "와", "과", "저", "그", "이", "것", "수", "들", "등"
+])
+
+sentence = "하지만 이런 불용어는 분석에 큰 도움이 되지 않습니다."
+
+# 1단계: 형태소 분석
+tokens = okt.morphs(sentence)
+print("토큰:", tokens)
+
+# 2단계: 불용어 제거
+tokens_clean = [t for t in tokens if t not in stopwords]
+print("불용어 제거 후:", tokens_clean)
