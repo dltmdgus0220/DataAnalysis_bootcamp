@@ -27,3 +27,8 @@ def korean_tokenize_okt(
 
     return tokens
 
+if __name__ == '__main__':
+    sentence = '오늘은 날씨가 너무 좋습니다. 그래서 기분이 더 좋습니다.'
+    print('원문:', sentence)
+    print('Okt 품사:', okt.pos(sentence, norm=True, stem=True))
+    print('전처리 결과:', korean_tokenize_okt(sentence))
