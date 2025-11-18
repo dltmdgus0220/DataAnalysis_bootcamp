@@ -11,3 +11,18 @@ reviews = ['거듭할수록 트릭이 드러난다는 핸디캡을 안고',
 with open('E:/데이터분석가 부트캠프/실습/DataAnalysis_bootcamp/5차시 실습(통계기반 자연어처리)/stopwords-ko.txt', encoding='utf-8') as f:
     stopwords = set(w.strip() for w in f if w.strip())
 
+# okt, stopwords 전역변수 사용
+def preprocess(text):
+    pattern = r'[^0-9가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]+' # 영문,한글,숫자
+    pos_list = ['Noun', 'Verb', 'Adjective', 'Number']
+    clean = re.sub(pattern, ' ', text) # 특수문자, 문장 기호 등 영문,한글,숫자 제외한 나머지 공백으로 변환
+
+    tokens = []
+    for word, pos in okt.pos(clean, norm=True, stem=True):
+        if pos not in pos_list: # 품사확인
+            continue
+        if word in stopwords: # 단어확인
+            continue
+        tokens.append(word)
+    
+    return tokens
