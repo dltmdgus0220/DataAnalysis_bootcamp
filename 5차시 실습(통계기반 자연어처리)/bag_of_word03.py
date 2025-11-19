@@ -13,3 +13,10 @@ print("unigram vocab:", cv_uni.get_feature_names_out())
 print(X_uni.toarray())
 print()
 
+# bigram (단어 두개씩)
+cv_bi = CountVectorizer(ngram_range=(2, 2))
+X_bi = cv_bi.fit_transform(docs)
+print("bigram vocab:", cv_bi.get_feature_names_out())
+print(X_bi.toarray())
+print()
+
