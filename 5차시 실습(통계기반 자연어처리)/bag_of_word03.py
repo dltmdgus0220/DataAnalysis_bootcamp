@@ -20,3 +20,8 @@ print("bigram vocab:", cv_bi.get_feature_names_out())
 print(X_bi.toarray())
 print()
 
+# uni+bi
+cv_uni_bi = CountVectorizer(ngram_range=(1, 2))
+X_uni_bi = cv_uni_bi.fit_transform(docs)
+print("uni+bi vocab:", cv_uni_bi.get_feature_names_out())
+print(X_uni_bi.toarray())
