@@ -11,3 +11,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
 
+# 1. 데이터로드
+df = pd.read_csv('5차시 실습(통계기반 자연어처리)/movie_reviews.csv', encoding='utf8').dropna()
+# print(df)
+
+
