@@ -29,5 +29,5 @@ texts = [
 
 labels = [1,0,1,0,1,0]
 
-# train/test 분할s
+# train/test 분할
 x_tr, x_te, y_tr, y_te = train_test_split(texts, labels, test_size=0.3, random_state=42)
