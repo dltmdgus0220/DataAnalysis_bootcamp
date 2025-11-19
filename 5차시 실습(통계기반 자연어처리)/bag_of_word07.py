@@ -31,7 +31,7 @@ stopwords = [
     "하면", "하고", "같은", "좀", "조금", "너무"
 ]
 
-def tokenize_text(text:str):
+def tokenize_text(text:str) -> list:
     # 소문자 변환(영어)
     text_lower = text.lower()
     # 한글/영문/숫자/공백 외 특수문자 제거
