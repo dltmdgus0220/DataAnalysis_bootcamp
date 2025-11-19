@@ -23,3 +23,25 @@ x_tr, x_te, y_tr, y_te = train_test_split(text, label, test_size=0.2, random_sta
 # print(len(x_tr), len(x_te))
 
 
+# 3. 텍스트 전처리 함수
+okt = Okt()
+stopwords = [
+    "이", "그", "저", "것", "거", "수",
+    "그리고", "그런데", "하지만", "또는",
+    "하면", "하고", "같은", "좀", "조금", "너무"
+]
+
+def tokenize_text(text:str):
+    # 소문자 변환(영어)
+    text_lower = text.lower()
+    # 한글/영문/숫자/공백 외 특수문자 제거
+    clean_text = re.sub(r"[^가-힣a-zA-Z0-9\s]", " ", text_lower)
+    clean_text = re.sub(r'\s+', ' ', clean_text).strip() # 연속적인 공백 제거 및 양끝 공백 제거
+    # 형태소 분석 + 품사 태깅
+    morphs_text = okt.pos(clean_text, norm=True, stem=True)
+    # 사용할 품사만 선택 (명사, 동사, 형용사)
+    # 불용어 제거
+    content_words = [w for w,p in morphs_text if p in ['Noun', 'Verb', 'Adjective'] and w not in stopwords]
+
+    return content_words
+
