@@ -31,3 +31,9 @@ labels = [1,0,1,0,1,0]
 
 # train/test 분할
 x_tr, x_te, y_tr, y_te = train_test_split(texts, labels, test_size=0.3, random_state=42)
+
+# TF-IDF 벡터화
+vectorizer = TfidfVectorizer(ngram_range=(1,2)) # mid_df:min_df보다 적게 등장하는 단어는 단어집에서 제거
+x_tr_vec = vectorizer.fit_transform(x_tr)
+x_te_vec = vectorizer.transform(x_te)
+
