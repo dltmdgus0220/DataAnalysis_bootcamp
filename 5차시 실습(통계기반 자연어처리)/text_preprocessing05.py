@@ -19,7 +19,7 @@ stopwords = [
 
 # for text in reviews:
 #     clean = re.sub(r"[^가-힣0-9\s]", " ", text)
-#     clean = re.sub(r"\s+", " ", clean).strip()
+#     clean = re.sub(r"\s+", " ", clean).strip() 
 #     tokens = clean.split(" ")
 #     tokens_no_stop = [ w for w in tokens if w not in stopwords]
 #     print(tokens_no_stop)
@@ -52,11 +52,38 @@ def preprocess_korean(text:str):
         "content_words": content_words
     }   
 
- 
 
-for i, text in enumerate(reviews, 1):
-    result = preprocess_korean(text)
-    print(f'[{i}번 리뷰문]')
-    for k, v in result.items():
-        print(f"{k} : {v}")
-    print()
+def extract_pos(texts):
+    all_nouns, all_verbs, all_adjectives = set(), set(), set()
+
+    for sent in texts:
+        morphs = okt.pos(sent, norm=True, stem=True)
+
+        for w, p in morphs:
+            # update는 여러 요소를 한번에 넣을 수 있지만 각 요소가 쪼개져서 들어감 s.update([1,2],[2,3],'hi') -> (1,2,3,'h','i')
+            if p == 'Noun':
+                # all_nouns.update({w})
+                all_nouns.add(w)
+            if p == 'Verb':
+                # all_verbs.update({w})
+                all_verbs.add(w)
+            elif p == 'Adjective':
+                # all_adjectives.update({w})
+                all_adjectives.add(w)
+
+    return {
+        'Noun' : all_nouns,
+        'Verb' : all_verbs,
+        'Adjective' : all_adjectives,
+    }
+
+pos_dict = extract_pos(reviews)
+print(pos_dict)
+
+
+# for i, text in enumerate(reviews, 1):
+#     result = preprocess_korean(text)
+#     print(f'[{i}번 리뷰문]')
+#     for k, v in result.items():
+#         print(f"{k} : {v}")
+#     print()
