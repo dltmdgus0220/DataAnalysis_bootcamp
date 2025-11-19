@@ -53,7 +53,7 @@ vectorizer = TfidfVectorizer(
     token_pattern=None, # 기본 정규식 비활성화
     min_df=1, # 1이면 의미없음
     ngram_range=(1,2) # uni+bi
-)
+) # max_features 파라미터로 단어집 개수 조절가능
 x_tr_vec = vectorizer.fit_transform(x_tr)
 x_te_vec = vectorizer.transform(x_te)
 # print(vectorizer.get_feature_names_out().shape) # 10197개의 단어
