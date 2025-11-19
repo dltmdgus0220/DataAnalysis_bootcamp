@@ -66,3 +66,28 @@ clf.fit(x_tr_vec, y_tr) # 학습
 
 y_pred = clf.predict(x_te_vec) # 테스트
 print(classification_report(y_te, y_pred, digits=3))
+
+
+# 6. 새 리뷰 문장에 대한 감성 예측 함수
+def predict_sentiment(text: str):
+    # 기존 TF-IDF 벡터라이저로 변환 (fit X, transform O)
+    vec = vectorizer.transform([text]) # 그냥 text로 넣어주면 각 글자 하나하나를 문서로 인식해버림. 하나의 문서로 동작할 수 있도록 리스트로 입력
+    # 예측
+    pred = clf.predict(vec)[0] # [1] 이런식으로 리턴되기 때문에 숫자만 뽑기 위해서 인덱싱해줌.
+    prob = clf.predict_proba(vec)[0][pred] # 얘도 [[0일 확률, 1일 확률]] 이렇게 리턴되기 때문에 [0]으로 안에 배열 가져오고 [pred]로 우리가 원하는 확률 가져옴.
+    
+    label = "긍정" if pred == 1 else "부정"
+    return label, prob 
+
+test_texts = [
+    "연기가 너무 좋고 스토리가 감동적이어서 또 보고 싶어요.",
+    "시간이 아까울 정도로 지루하고 재미가 없었어요.",
+    "그냥 그랬어요. 크게 인상적인 부분은 없었습니다."
+]
+
+print("\n=== 새 문장 예측 ===")
+for t in test_texts:
+    label, prob = predict_sentiment(t)
+    print(f"원문: {t}")   
+    print(f"예측: {label} (확률: {prob:.3f})")
+    print("-" * 40)
