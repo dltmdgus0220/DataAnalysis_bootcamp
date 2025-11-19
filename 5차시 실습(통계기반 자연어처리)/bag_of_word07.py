@@ -21,6 +21,7 @@ df_sample, _ = train_test_split(df, train_size=10000, random_state=42, stratify=
 text, label = df_sample['document'], df_sample['label']
 x_tr, x_te, y_tr, y_te = train_test_split(text, label, test_size=0.2, random_state=42, stratify=label)
 # print(len(x_tr), len(x_te))
+# print(type(x_tr), type(y_tr)) # 둘 다 series
 
 
 # 3. 텍스트 전처리 함수
