@@ -37,3 +37,7 @@ vectorizer = TfidfVectorizer(ngram_range=(1,2)) # mid_df:min_df보다 적게 등
 x_tr_vec = vectorizer.fit_transform(x_tr)
 x_te_vec = vectorizer.transform(x_te)
 
+# 로지스틱 회귀(이진분류)
+clf = LogisticRegression(max_iter=1000)
+clf.fit(x_tr_vec, y_tr)
+
