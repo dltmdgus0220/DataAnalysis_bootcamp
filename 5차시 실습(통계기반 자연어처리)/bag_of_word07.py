@@ -45,3 +45,16 @@ def tokenize_text(text:str):
 
     return content_words
 
+
+# 4. TfidfVectorizer로 벡터화
+vectorizer = TfidfVectorizer(
+    tokenizer=tokenize_text,
+    token_pattern=None, # 기본 정규식 비활성화
+    min_df=1, # 1이면 의미없음
+    ngram_range=(1,1) # unigram
+)
+x_tr_vec = vectorizer.fit_transform(x_tr)
+x_te_vec = vectorizer.transform(x_te)
+# print(vectorizer.get_feature_names_out().shape) # 10197개의 단어
+# print(x_te_vec) # Coords(i,j):i번 문서의 j번 단어, values:TF-IDF 값
+
