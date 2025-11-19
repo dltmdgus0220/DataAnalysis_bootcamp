@@ -41,3 +41,6 @@ x_te_vec = vectorizer.transform(x_te)
 clf = LogisticRegression(max_iter=1000)
 clf.fit(x_tr_vec, y_tr)
 
+# 평가
+y_pred = clf.predict(x_te_vec)
+print(classification_report(y_te, y_pred, digits=3))
