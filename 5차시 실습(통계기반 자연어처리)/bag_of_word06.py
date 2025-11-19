@@ -30,3 +30,9 @@ vectorizer = TfidfVectorizer(
 # \b:단어경계(공백,문장부호,문자열 시작과 끝을 기준)
 # \w\w+:문자한개+문자이상, 즉 문자 두개이상 받음
 
+X_tfidf = vectorizer.fit_transform(docs)
+print("단어집(vocabulary):")
+print(vectorizer.get_feature_names_out())
+
+print("\nTF-IDF 행렬 shape:", X_tfidf.shape)
+print(X_tfidf.toarray().round(3))
