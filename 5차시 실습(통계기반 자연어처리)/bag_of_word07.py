@@ -51,7 +51,7 @@ vectorizer = TfidfVectorizer(
     tokenizer=tokenize_text,
     token_pattern=None, # 기본 정규식 비활성화
     min_df=1, # 1이면 의미없음
-    ngram_range=(1,1) # unigram
+    ngram_range=(1,2) # uni+bi
 )
 x_tr_vec = vectorizer.fit_transform(x_tr)
 x_te_vec = vectorizer.transform(x_te)
