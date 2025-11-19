@@ -58,3 +58,10 @@ x_te_vec = vectorizer.transform(x_te)
 # print(vectorizer.get_feature_names_out().shape) # 10197개의 단어
 # print(x_te_vec) # Coords(i,j):i번 문서의 j번 단어, values:TF-IDF 값
 
+
+# 5. 모델 훈련(LogisticRegression)
+clf = LogisticRegression(max_iter=1000) # 기본은 100이지만 nlp처럼 단어수가 많고 희소행렬이 클때, 또는 특징수가 많을 때 더 늘려줌.
+clf.fit(x_tr_vec, y_tr) # 학습
+
+y_pred = clf.predict(x_te_vec) # 테스트
+print(classification_report(y_te, y_pred, digits=3))
