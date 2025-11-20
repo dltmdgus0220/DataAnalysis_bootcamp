@@ -14,3 +14,12 @@ texts = [
     "완전 만족스러운 식사였습니다",         # 1,
 ]
 labels = [0, 0, 1, 1, 0, 1]
+
+
+x_tr, x_te, y_tr, y_te = train_test_split(texts, labels, test_size=0.2, stratify=labels, random_state=42)
+
+nb_clf = Pipeline(steps=[
+    ('vect', CountVectorizer()),
+    ('nb', MultinomialNB(alpha=1.0))
+])
+
