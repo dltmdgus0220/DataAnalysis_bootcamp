@@ -35,3 +35,20 @@ probs = nb_clf.predict_proba([
 ])
 
 print(probs)
+
+
+vect = nb_clf.named_steps['vect']
+nb = nb_clf.named_steps['nb']
+
+feature_names = np.array(vect.get_feature_names_out())
+print(feature_names)
+# print(nb.classes_)
+# # print(nb.class_log_prior_)
+# print(np.exp(nb.class_log_prior_)) # 데이터의 클래스별 비율
+# print(np.exp(nb.feature_log_prob_)) # 각 클래스에서 각 단어가 등장할 조건부확률, (0,0) : 0번 클래스에서 0번째 단어가 등장할 조건부확률
+
+for i, c in enumerate(nb.classes_):
+    print(f'===클래스 {c} 대표 단어===')
+    log_prob = nb.feature_log_prob_[i]
+    top10_idx = log_prob.argsort()[-10:] # 상위 10등
+    print(feature_names[top10_idx])
