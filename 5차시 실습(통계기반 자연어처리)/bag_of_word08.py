@@ -11,3 +11,12 @@ texts = [
     "이 수업은 지루하고 별로 도움이 안 된다",
 ]
 
+
+NORMALIZE_RULES = [
+    (r'딥[\s-]*러닝','딥러닝'),
+    (r'deep[\s-]*learning','딥러닝'),
+    (r'머신[\s-]*러닝','머신러닝'),
+    (r'machine[\s-]*learning','머신러닝'),
+    (r'\bai\b', '인공지능(AI)')
+]
+
