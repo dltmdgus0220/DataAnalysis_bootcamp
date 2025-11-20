@@ -20,3 +20,14 @@ NORMALIZE_RULES = [
     (r'\bai\b', '인공지능(AI)')
 ]
 
+def normalize_text(text:str) -> str:
+    text = text.lower() # 소문자 변환
+    text = re.sub(r'\s+',' ', text).strip() # 공백 처리
+
+    for pattern, repl in NORMALIZE_RULES:
+        text = re.sub(pattern, repl, text)
+
+    return text
+
+for t in texts:
+    print(normalize_text(t))
