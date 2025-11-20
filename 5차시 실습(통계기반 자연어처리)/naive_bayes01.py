@@ -29,3 +29,9 @@ pred = nb_clf.predict(x_te) # CountVectorizer().transform(x_te), MultinomialNB()
 
 print(classification_report(y_te, pred, digits=3))
 
+probs = nb_clf.predict_proba([
+    '배송이 빠르고 친절해서 만족스럽다.',
+    '제품이 고장나서 너무 화가 난다.'
+])
+
+print(probs)
