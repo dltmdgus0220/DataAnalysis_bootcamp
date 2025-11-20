@@ -23,3 +23,9 @@ nb_clf = Pipeline(steps=[
     ('nb', MultinomialNB(alpha=1.0))
 ])
 
+nb_clf.fit(x_tr, y_tr) # CountVectorizer().fit_transform(x_tr), MultinomialNB().fit(x_tr_vectorized, y_tr) 수행
+pred = nb_clf.predict(x_te) # CountVectorizer().transform(x_te), MultinomialNB().predict(x_te_vectorized) 수행
+# 파이프라인이기 때문에 알아서 자동으로 다 수행
+
+print(classification_report(y_te, pred, digits=3))
+
