@@ -44,3 +44,13 @@ while True: # 클래스별 데이터 수가 500개가 될때까지 반복
 
 print(len(rows))
 df = pd.DataFrame(rows)
+
+X = df["RawText"]
+y = df["GeneralPolarity"].astype(int)
+
+print("\n레이블 분포(클래스별 샘플 수)")
+print(y.value_counts())
+
+with open("5차시 실습(통계기반 자연어처리)/stopwords-ko.txt", encoding="utf-8") as f:
+    stopwords = set(w.strip() for w in f if w.strip())
+
