@@ -37,3 +37,22 @@ def preprocess_text(text:str):
     return ret 
 
 
+#============================
+# 데이터로드
+#============================
+folder = '5차시 실습(통계기반 자연어처리)/1-1. 여성의류'
+
+dfs = [] # 성능(속도, 메모리)적으로 리스트에 저장해놨다가 나중에 한번에 concat하는게 더 좋음.
+for i in range(1,11):
+    path = os.path.join(folder, f'1-1.여성의류({i}).json')
+    if os.path.isfile(path):
+        with open(path, encoding='utf-8') as f:
+            data = json.load(f) # 100개씩 가지고 있음
+            df_tmp = pd.DataFrame(data)
+            dfs.append(df_tmp[['RawText','GeneralPolarity']])
+df = pd.concat(dfs, ignore_index=True)
+# print(df)
+# print(df.info())
+# print(df.isna().sum())
+df = df.dropna() # 결측치 8개 행 제거 (998,2)
+
