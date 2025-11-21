@@ -64,3 +64,26 @@ X, y = df['RawText'], df['GeneralPolarity'].astype(int)
 x_tr, x_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 # print(len(x_tr), len(x_te)) # 793, 199
 
+
+#============================
+# 파이프라인 생성
+#============================
+# CountVectorizer
+nb_ct_clf = Pipeline(steps=[
+    ('vect', CountVectorizer(
+        tokenizer=preprocess_text,
+        token_pattern=None,
+        lowercase=False
+    )),
+    ('model', MultinomialNB())
+])
+# TfidfVectorizer
+nb_tfidf_clf = Pipeline(steps=[
+    ('vect', TfidfVectorizer(
+        tokenizer=preprocess_text,
+        token_pattern=None,
+        lowercase=False
+    )),
+    ('model', MultinomialNB())
+])
+
