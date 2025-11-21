@@ -134,3 +134,28 @@ result = pd.DataFrame({
 
 print("\nVertorizer 성능비교 : \n", result)
 
+
+print("\nTfidfVectorizer + MultinomialNB : ")
+tfidf_nb = tfidf_nb_pipe.named_steps["vect"]
+nb = tfidf_nb_pipe.named_steps["clf"]
+
+feature_names = np.array(tfidf_nb.get_feature_names_out())
+
+for i, class_label in enumerate(nb.classes_):
+    log_prob = nb.feature_log_prob_[i]
+    top10_idx = log_prob.argsort()[-10:]
+    print(f"===클래스 {class_label} 대표 단어(상위 10개)====")
+    print(feature_names[top10_idx])
+
+
+print("\nCountVectorizer + MultinomialNB : ")
+cnt_nb = cnt_nb_pipe.named_steps["vect"]
+cnb = cnt_nb_pipe.named_steps["clf"]
+
+feature_names = np.array(cnt_nb.get_feature_names_out())
+
+for i, class_label in enumerate(cnb.classes_):
+    log_prob = cnb.feature_log_prob_[i]
+    top10_idx = log_prob.argsort()[-10:]
+    print(f"===클래스 {class_label} 대표 단어(상위 10개)====")
+    print(feature_names[top10_idx])
