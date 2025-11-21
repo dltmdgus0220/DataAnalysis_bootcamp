@@ -114,3 +114,10 @@ param_grid ={
     # "clf__alpha" : [0.01, 0.1, 1.0, 10]
 }
 
+tfidf = TfidfVectorizer(
+    token_pattern=None, 
+    tokenizer=preprocess_text
+)
+
+tfidf_nb_pipe, tfidf_nb_f1 = train_and_evaluate("MultinomalNB + TfidfVectorizer", tfidf, param_grid)
+
