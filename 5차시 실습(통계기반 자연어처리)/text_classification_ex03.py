@@ -72,3 +72,37 @@ x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratif
 print("\n학습데이터 개수 :", len(x_train))
 print("테스트데이터 개수:", len(x_test))
 
+def train_and_evaluate(model_name, vectorizer, param_grid=None):
+    print("======================")
+    print(model_name)
+
+    pipe = Pipeline(steps=[
+        ("vect", vectorizer),
+        ("clf", MultinomialNB(alpha=1.0)), # class_prior=[1/3,1/3,1/3], fit_prior=False
+    ])
+
+    gs = GridSearchCV(
+        pipe, 
+        param_grid=param_grid,
+        cv = 5,
+        scoring="f1_macro",
+        refit=True
+    )
+
+    # sample_w = compute_sample_weight(class_weight="balanced", y=y_train)
+
+    gs.fit(x_train, y_train) #, clf__sample_weight = sample_w)
+
+    print("Best Params : ", gs.best_params_)
+    print("Best macro F1 : ", gs.best_score_)
+
+    best_meodel = gs.best_estimator_
+
+    y_pred = best_meodel.predict(x_test)
+    print("Classification Report:")
+    print(classification_report(y_test, y_pred, digits=3))
+
+    macro_f1 = f1_score(y_test, y_pred, average="macro")
+    print(f"macro-F1 : {macro_f1:.3f}")
+
+    return best_meodel, macro_f1 
