@@ -54,3 +54,16 @@ print(y.value_counts())
 with open("5차시 실습(통계기반 자연어처리)/stopwords-ko.txt", encoding="utf-8") as f:
     stopwords = set(w.strip() for w in f if w.strip())
 
+def preprocess_text(text: str) -> list:
+    text = text.lower()
+
+    text = re.sub(r"[^0-9a-zA-Z가-힣\s]", " ", text)
+
+    morphs = okt.pos(text, norm=True, stem=True)
+    tokens = []
+    for word, tag in morphs:
+        if tag in ["Noun", "Verb", "Adjective"]:
+            if word not in stopwords and len(word) > 1:
+                tokens.append(word)
+    return tokens
+
