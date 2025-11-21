@@ -132,3 +132,13 @@ for i, c in enumerate(nb_ct.classes_):
     print(feature_names[top20_idx])
 
 
+
+# MultinomialNB + TfidfVectorizer
+gs_tfidf = GridSearchCV(
+    nb_tfidf_clf,
+    param_grid=nb_param_grid,
+    scoring="f1_macro", # 불균형 데이터 고려하면 macro-F1 추천
+    cv=3,
+    n_jobs=1 # okt를 쓰게되면 병렬처리가 불가능, 미리 전처리하고 기본 토크나이저를 쓰면 해결가능
+)
+
