@@ -155,3 +155,15 @@ print(classification_report(y_te, y_pred, digits=3))
 macro_f1_tfidf = f1_score(y_te, y_pred, average='macro')
 print(f"macro_f1 : {macro_f1_tfidf:.3f}")
 
+# 클래스별 대표 단어 출력
+vect_tfidf = best_gs_tfidf.named_steps['vect']
+nb_tfidf = best_gs_tfidf.named_steps['model']
+
+feature_names = np.array(vect_tfidf.get_feature_names_out())
+# print(feature_names)
+
+for i, c in enumerate(nb_tfidf.classes_):
+    print(f'===클래스 {c} 대표 단어===')
+    log_prob = nb_tfidf.feature_log_prob_[i]
+    top20_idx = log_prob.argsort()[-20:] # 상위 20등
+    print(feature_names[top20_idx])
