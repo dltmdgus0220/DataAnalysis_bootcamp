@@ -105,3 +105,16 @@ gs_ct = GridSearchCV(
     n_jobs=1 # okt를 쓰게되면 병렬처리가 불가능, 미리 전처리하고 기본 토크나이저를 쓰면 해결가능
 )
 
+# 학습
+gs_ct.fit(x_tr, y_tr)
+print("== MultinomialNB + CountVectorizer ==")
+print("Best params:", gs_ct.best_params_)
+print("Best macro-F1 (cv):", gs_ct.best_score_)
+
+# 테스트
+best_gs_ct = gs_ct.best_estimator_
+y_pred = best_gs_ct.predict(x_te)
+print(classification_report(y_te, y_pred, digits=3))
+macro_f1_ct = f1_score(y_te, y_pred, average='macro')
+print(f"macro_f1 : {macro_f1_ct:.3f}")
+
