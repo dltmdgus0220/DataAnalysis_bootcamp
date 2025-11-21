@@ -106,3 +106,11 @@ def train_and_evaluate(model_name, vectorizer, param_grid=None):
     print(f"macro-F1 : {macro_f1:.3f}")
 
     return best_meodel, macro_f1 
+
+param_grid ={
+    "vect__ngram_range":[(1,1), (1,2)],   
+    # "vect__max_features" : [1000,2000, 3000], 
+    # "vect__min_df" : [1,2,3],
+    # "clf__alpha" : [0.01, 0.1, 1.0, 10]
+}
+
