@@ -118,3 +118,17 @@ print(classification_report(y_te, y_pred, digits=3))
 macro_f1_ct = f1_score(y_te, y_pred, average='macro')
 print(f"macro_f1 : {macro_f1_ct:.3f}")
 
+# 클래스별 대표 단어 출력
+vect_ct = best_gs_ct.named_steps['vect']
+nb_ct = best_gs_ct.named_steps['model']
+
+feature_names = np.array(vect_ct.get_feature_names_out())
+# print(feature_names)
+
+for i, c in enumerate(nb_ct.classes_):
+    print(f'===클래스 {c} 대표 단어===')
+    log_prob = nb_ct.feature_log_prob_[i]
+    top20_idx = log_prob.argsort()[-20:] # 상위 20등
+    print(feature_names[top20_idx])
+
+
