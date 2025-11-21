@@ -56,3 +56,11 @@ df = pd.concat(dfs, ignore_index=True)
 # print(df.isna().sum())
 df = df.dropna() # 결측치 8개 행 제거 (998,2)
 
+
+#============================
+# train/test 분할
+#============================
+X, y = df['RawText'], df['GeneralPolarity'].astype(int)
+x_tr, x_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+# print(len(x_tr), len(x_te)) # 793, 199
+
