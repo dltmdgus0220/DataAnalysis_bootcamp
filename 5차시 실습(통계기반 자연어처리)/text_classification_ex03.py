@@ -127,3 +127,10 @@ count = CountVectorizer(
 
 cnt_nb_pipe, cnt_nb_f1 = train_and_evaluate("MultinomalNB + CountfVectorizer", count, param_grid)
 
+result = pd.DataFrame({
+    "vectorizer":["TfidfVectorizer", "CountVectorizer"],
+    "macro-F1" : [tfidf_nb_f1, cnt_nb_f1]
+})
+
+print("\nVertorizer 성능비교 : \n", result)
+
