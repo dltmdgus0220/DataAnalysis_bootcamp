@@ -67,3 +67,8 @@ def preprocess_text(text: str) -> list:
                 tokens.append(word)
     return tokens
 
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+
+print("\n학습데이터 개수 :", len(x_train))
+print("테스트데이터 개수:", len(x_test))
+
