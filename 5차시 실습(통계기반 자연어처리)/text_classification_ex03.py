@@ -121,3 +121,9 @@ tfidf = TfidfVectorizer(
 
 tfidf_nb_pipe, tfidf_nb_f1 = train_and_evaluate("MultinomalNB + TfidfVectorizer", tfidf, param_grid)
 
+count = CountVectorizer(
+    token_pattern=None, 
+    tokenizer=preprocess_text)
+
+cnt_nb_pipe, cnt_nb_f1 = train_and_evaluate("MultinomalNB + CountfVectorizer", count, param_grid)
+
