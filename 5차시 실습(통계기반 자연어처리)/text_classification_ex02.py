@@ -77,6 +77,11 @@ nb_ct_clf = Pipeline(steps=[
     )),
     ('model', MultinomialNB())
 ])
+# nb_ct_clf = Pipeline(steps=[
+#     ('vect', CountVectorizer()),
+#     ('model', MultinomialNB())
+# ])
+
 # TfidfVectorizer
 nb_tfidf_clf = Pipeline(steps=[
     ('vect', TfidfVectorizer(
@@ -86,6 +91,11 @@ nb_tfidf_clf = Pipeline(steps=[
     )),
     ('model', MultinomialNB())
 ])
+# nb_tfidf_clf = Pipeline(steps=[
+#     ('vect', TfidfVectorizer()),
+#     ('model', MultinomialNB())
+# ])
+
 
 #============================
 # 그리드 서치
@@ -124,13 +134,13 @@ nb_ct = best_gs_ct.named_steps['model']
 
 feature_names = np.array(vect_ct.get_feature_names_out())
 # print(feature_names)
-
+print()
 for i, c in enumerate(nb_ct.classes_):
     print(f'===클래스 {c} 대표 단어===')
     log_prob = nb_ct.feature_log_prob_[i]
     top20_idx = log_prob.argsort()[-20:] # 상위 20등
     print(feature_names[top20_idx])
-
+print()
 
 
 # MultinomialNB + TfidfVectorizer
@@ -161,7 +171,7 @@ nb_tfidf = best_gs_tfidf.named_steps['model']
 
 feature_names = np.array(vect_tfidf.get_feature_names_out())
 # print(feature_names)
-
+print()
 for i, c in enumerate(nb_tfidf.classes_):
     print(f'===클래스 {c} 대표 단어===')
     log_prob = nb_tfidf.feature_log_prob_[i]
