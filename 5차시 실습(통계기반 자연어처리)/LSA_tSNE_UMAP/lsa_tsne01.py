@@ -19,3 +19,10 @@ def simple_korea_clean(text):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
+df = pd.read_csv('5차시 실습(통계기반 자연어처리)/movie_reviews.csv', encoding='utf-8').dropna()
+
+_, df_sample = train_test_split(df, test_size=1000, stratify=df['label'], shuffle=True, random_state=42)
+
+df_sample['clean'] = df_sample['document'].astype(str).apply(simple_korea_clean)
+texts = df_sample['clean']
+
