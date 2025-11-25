@@ -31,3 +31,13 @@ X = tfidf.fit_transform(docs)
 print("TF-IDF shape:", X.shape)  # (문서 수, 단어 수)
 
 
+# LSA
+n_topics = 2
+svd = TruncatedSVD(n_components=n_topics, random_state=42)
+X_lsa = svd.fit_transform(X)
+print("LSA shape:", X_lsa.shape)  # (문서 수, 토픽 수)
+
+lsa_df = pd.DataFrame(X_lsa, columns=[f'topic_{i}' for i in range(n_topics)])
+lsa_df['text'] = docs
+# print(lsa_df)
+
