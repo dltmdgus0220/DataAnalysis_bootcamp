@@ -47,3 +47,15 @@ topic_name = {
 }
 lsa_df = lsa_df.rename(columns=topic_name)
 print(lsa_df)
+topic_cols_name = lsa_df.columns.tolist()[:2]
+
+heatmap_df = lsa_df.set_index('text')[topic_cols_name]
+print(heatmap_df)
+
+plt.figure(figsize=(8,4))
+sns.heatmap(heatmap_df, annot=True, fmt='.2f', cmap='YlGnBu')
+plt.title('문서-토픽 좌표 히트맵(LSA)')
+plt.xlabel('토픽')
+plt.ylabel('문서')
+plt.tight_layout()
+plt.show()
