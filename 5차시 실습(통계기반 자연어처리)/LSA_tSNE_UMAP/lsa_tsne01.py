@@ -40,3 +40,11 @@ pipe_lsa = Pipeline(steps=[
     ))
 ])
 
+
+X_lsa = pipe_lsa.fit_transform(texts)
+tfidf = pipe_lsa.named_steps['tfidf']
+svd = pipe_lsa.named_steps['svd']
+
+print(f'TF-IDF shape : {tfidf.transform(texts).shape}')
+print(f'LSA shape : {X_lsa.shape}')
+
