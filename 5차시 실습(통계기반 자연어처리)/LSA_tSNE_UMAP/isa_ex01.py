@@ -33,5 +33,23 @@ def preprocess(text):
 
     return ' '.join(content_words)
 
+
+def fit_and_print_topic_word(pipe, texts):
+    X_lsa = pipe.fit_transform(texts)
+    tfidf = pipe.named_steps['tfidf']
+    svd = pipe.named_steps['svd']
+
+    print(f'TF-IDF shape : {tfidf.transform(texts).shape}')
+    print(f'LSA shape : {X_lsa.shape}')
+
+    terms = tfidf.get_feature_names_out()
+
+    for topic_idx, comp in enumerate(svd.components_):
+        term_idx = comp.argsort()[::-1][:20]
+        print(f'[토픽 {topic_idx}]')
+        print(', '.join(terms[i] for i in term_idx))
+    
+    return (X_lsa, tfidf, svd)
+
 # 이후에 HDBSCAN이나 KMeans등으로 군집을 생성하고 군집별 데이터를 확인하는 작업이 필요함.
 
