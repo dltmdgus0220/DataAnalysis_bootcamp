@@ -20,3 +20,14 @@ docs = [
 "가격은 비싼 편인데 품질이 좋아요",
 ]
 
+# tfidf 벡터화
+tfidf = TfidfVectorizer(
+    max_df=0.8,     # 너무 자주 나오는 단어 무시
+    min_df=1,       # 너무 드문 단어 제거 기준
+    token_pattern= r"(?u)\b\w+\b"  # 한글 포함 토큰 패턴
+)
+
+X = tfidf.fit_transform(docs)
+print("TF-IDF shape:", X.shape)  # (문서 수, 단어 수)
+
+
