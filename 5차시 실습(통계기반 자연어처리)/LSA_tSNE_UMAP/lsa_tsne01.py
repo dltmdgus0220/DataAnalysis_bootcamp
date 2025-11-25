@@ -55,3 +55,24 @@ for topic_idx, comp in enumerate(svd.components_):
     print(f'\n[토픽 {topic_idx}]')
     print(', '.join(terms[i] for i in term_idx))
 
+tsne = TSNE(n_components=2, perplexity=30, random_state=42)
+X_2d = tsne.fit_transform(X_lsa)
+
+df_sample['tsne_x'] = X_2d[:, 0]
+df_sample['tsne_y'] = X_2d[:, 1]
+
+plt.figure(figsize=(6,5))
+scatter = plt.scatter(
+    df_sample['tsne_x'],
+    df_sample['tsne_y'],
+    c=df_sample['label'],
+    s=15,
+    alpha=0.7
+)
+plt.title('문서들의 2D LSA공간(t-SNE)')
+plt.xlabel('dim 1')
+plt.ylabel('dim 2')
+plt.colorbar(scatter)
+plt.tight_layout()
+plt.show()
+
