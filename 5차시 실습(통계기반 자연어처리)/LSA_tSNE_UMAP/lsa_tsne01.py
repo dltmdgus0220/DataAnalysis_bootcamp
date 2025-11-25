@@ -26,3 +26,17 @@ _, df_sample = train_test_split(df, test_size=1000, stratify=df['label'], shuffl
 df_sample['clean'] = df_sample['document'].astype(str).apply(simple_korea_clean)
 texts = df_sample['clean']
 
+n_topics = 5
+
+pipe_lsa = Pipeline(steps=[
+    ('tfidf', TfidfVectorizer(
+        max_df=0.7,
+        min_df=5,
+        token_pattern=r'(?u)\b\w+\b' 
+    )),
+    ('svd', TruncatedSVD(
+        n_components=n_topics,
+        random_state=42
+    ))
+])
+
