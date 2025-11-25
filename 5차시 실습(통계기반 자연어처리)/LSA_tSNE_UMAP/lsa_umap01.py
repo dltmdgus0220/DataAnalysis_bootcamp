@@ -45,3 +45,36 @@ X_lsa = pipe_lsa.fit_transform(texts)
 tfidf = pipe_lsa.named_steps['tfidf']
 svd = pipe_lsa.named_steps['svd']
 
+neighbors_list = [5, 10, 15]
+
+plt.figure(figsize=(15,4))
+
+for i, n_nb in enumerate(neighbors_list, start=1):
+    reducer = umap.UMAP(
+        n_components=2,
+        n_neighbors=n_nb,
+        min_dist=0.5,
+        metric='cosine',
+        random_state=42
+    )
+
+    X_umap = reducer.fit_transform(X_lsa)
+
+    plt.subplot(1,3,i)
+    sc = plt.scatter(
+        X_umap[:, 0],
+        X_umap[:, 1],
+        c = df_sample['label'],
+        s = 5,
+        cmap = 'bwr',
+        alpha = 0.7
+    )
+    plt.title(f'UMAP (n_neighbors = {n_nb})')
+    plt.xticks([])
+    plt.yticks([])
+
+plt.suptitle('UMAP : n_neighbors에 따른 시각화 비교')
+plt.tight_layout()
+plt.show()
+
+# 이후에 HDBSCAN이나 KMeans등으로 군집을 생성하고 군집별 데이터를 확인하는 작업이 필요함.
