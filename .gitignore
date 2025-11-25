@@ -179,6 +179,6 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
-test.ipynb
+test.*
 /5차시 실습(통계기반 자연어처리)/1-1. 여성의류
 *.json
