@@ -41,3 +41,9 @@ lsa_df = pd.DataFrame(X_lsa, columns=[f'topic_{i}' for i in range(n_topics)])
 lsa_df['text'] = docs
 # print(lsa_df)
 
+topic_name = {
+    'topic_0' : '배송',
+    'topic_1' : '가격/품질'
+}
+lsa_df = lsa_df.rename(columns=topic_name)
+print(lsa_df)
