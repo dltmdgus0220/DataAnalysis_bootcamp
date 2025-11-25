@@ -15,3 +15,8 @@ tsne = TSNE(
 
 X_2d = tsne.fit_transform(X)
 
+# 시각화
+plt.figure(figsize=(8, 6))
+scatter = plt.scatter(X_2d[:, 0], X_2d[:, 1], c=y, s=10)
+plt.title("t-SNE visualization of digits")
+plt.show()
