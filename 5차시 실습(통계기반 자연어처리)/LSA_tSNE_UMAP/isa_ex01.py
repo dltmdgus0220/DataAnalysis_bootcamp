@@ -85,5 +85,14 @@ reducer = umap.UMAP(
     random_state=42
 )
 
+print("================전체================")
+X_lsa, tfidf, svd = fit_and_print_topic_word(pipe_lsa, texts)
+print("\n================불만================")
+fit_and_print_topic_word(pipe_lsa, texts_neg)
+print("\n================보통================")
+fit_and_print_topic_word(pipe_lsa, texts_neu)
+print("\n================만족================")
+fit_and_print_topic_word(pipe_lsa, texts_pos)
+
 # 이후에 HDBSCAN이나 KMeans등으로 군집을 생성하고 군집별 데이터를 확인하는 작업이 필요함.
 
