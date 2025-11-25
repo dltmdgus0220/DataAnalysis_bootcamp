@@ -63,5 +63,18 @@ df_neg, df_neu, df_pos = df[df['GeneralPolarity']==-1], df[df['GeneralPolarity']
 # print(len(df_pos), len(df_neg), len(df_neu))
 texts_neg, texts_neu, texts_pos = df_neg['clean'], df_neu['clean'], df_pos['clean']
 
+n_topics = 5
+pipe_lsa = Pipeline(steps=[
+    ('tfidf', TfidfVectorizer(
+        max_df=0.7,
+        min_df=5,
+        token_pattern=r'(?u)\b\w+\b' 
+    )),
+    ('svd', TruncatedSVD(
+        n_components=n_topics,
+        random_state=42
+    ))
+])
+
 # 이후에 HDBSCAN이나 KMeans등으로 군집을 생성하고 군집별 데이터를 확인하는 작업이 필요함.
 
