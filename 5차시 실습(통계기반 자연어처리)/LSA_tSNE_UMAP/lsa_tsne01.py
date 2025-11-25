@@ -48,3 +48,10 @@ svd = pipe_lsa.named_steps['svd']
 print(f'TF-IDF shape : {tfidf.transform(texts).shape}')
 print(f'LSA shape : {X_lsa.shape}')
 
+terms = tfidf.get_feature_names_out()
+
+for topic_idx, comp in enumerate(svd.components_):
+    term_idx = comp.argsort()[::-1][:10]
+    print(f'\n[토픽 {topic_idx}]')
+    print(', '.join(terms[i] for i in term_idx))
+
