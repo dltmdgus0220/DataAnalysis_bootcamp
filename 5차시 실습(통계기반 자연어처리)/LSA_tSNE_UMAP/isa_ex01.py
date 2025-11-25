@@ -94,5 +94,23 @@ fit_and_print_topic_word(pipe_lsa, texts_neu)
 print("\n================만족================")
 fit_and_print_topic_word(pipe_lsa, texts_pos)
 
+
+X_umap = reducer.fit_transform(X_lsa)
+
+plt.figure(figsize=(15,8))
+sc = plt.scatter(
+    X_umap[:, 0],
+    X_umap[:, 1],
+    c = df['GeneralPolarity'],
+    s = 7,
+    cmap = 'coolwarm',
+    alpha = 0.7
+)
+plt.title(f'UMAP (n_neighbors = {n_nb})')
+plt.xticks([])
+plt.yticks([])
+plt.tight_layout()
+plt.show()
+
 # 이후에 HDBSCAN이나 KMeans등으로 군집을 생성하고 군집별 데이터를 확인하는 작업이 필요함.
 
