@@ -51,5 +51,17 @@ def fit_and_print_topic_word(pipe, texts):
     
     return (X_lsa, tfidf, svd)
 
+
+df = pd.read_json('5차시 실습(통계기반 자연어처리)/woman_wear_sample_600.json', encoding='utf-8')
+# print(df.shape)
+# print(df.head())
+df['clean'] = df['RawText'].astype(str).apply(preprocess)
+texts = df['clean']
+print(texts[:5])
+
+df_neg, df_neu, df_pos = df[df['GeneralPolarity']==-1], df[df['GeneralPolarity']==0], df[df['GeneralPolarity']==1] 
+# print(len(df_pos), len(df_neg), len(df_neu))
+texts_neg, texts_neu, texts_pos = df_neg['clean'], df_neu['clean'], df_pos['clean']
+
 # 이후에 HDBSCAN이나 KMeans등으로 군집을 생성하고 군집별 데이터를 확인하는 작업이 필요함.
 
