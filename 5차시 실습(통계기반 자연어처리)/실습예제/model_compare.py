@@ -35,7 +35,7 @@ print("데이터 크기:" , df_sample.shape)
 print("레이블 분포:", df_sample["label"].value_counts())
 print("결측값 개수:", df_sample.isna().sum())
 
-with open(r"D:\multicompus\example\nlp\stat_nlp\naive_bayes_svm\stopwords-ko.txt", encoding="utf-8") as f:
+with open(r"5차시 실습(통계기반 자연어처리)\stopwords-ko.txt", encoding="utf-8") as f:
     stopwords = set(w.strip() for w in f if w.strip())
 
 def preprocess_text(text: str) -> list:
