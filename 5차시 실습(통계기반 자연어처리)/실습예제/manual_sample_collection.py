@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 import os, re
 
-FOLDER_PATH = Path(r"D:\multicompus\example\nlp\stat_nlp\naive_bayes_svm\1-1. 여성의류")
+FOLDER_PATH = Path(r"5차시 실습(통계기반 자연어처리)\1-1. 여성의류")
 
 TARGET_PER_CLASS = 600
 TARGET_CLASS = [-1, 0, 1]
@@ -61,7 +61,7 @@ current_path = current_file_path.parent
 
 # current_path = os.getcwd()
 
-OUT_PATH = current_path.name + "\woman_wear_sample_600.json"
+OUT_PATH = "5차시 실습(통계기반 자연어처리)\woman_wear_sample_600.json"
 df_final.to_json(OUT_PATH, orient="records", force_ascii=False, indent=4)
 print("저장완료: ", OUT_PATH)
 
