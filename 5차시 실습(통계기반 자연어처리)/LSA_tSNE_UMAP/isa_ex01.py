@@ -76,5 +76,14 @@ pipe_lsa = Pipeline(steps=[
     ))
 ])
 
+n_nb = 10
+reducer = umap.UMAP(
+    n_components=2,
+    n_neighbors=n_nb,
+    min_dist=0.5,
+    metric='cosine',
+    random_state=42
+)
+
 # 이후에 HDBSCAN이나 KMeans등으로 군집을 생성하고 군집별 데이터를 확인하는 작업이 필요함.
 
