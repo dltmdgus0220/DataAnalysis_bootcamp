@@ -76,3 +76,8 @@ plt.colorbar(scatter)
 plt.tight_layout()
 plt.show()
 
+
+extract_df = df_sample[(df_sample['tsne_y'] >= -40) & (df_sample['tsne_y'] <= -30)]
+# print(len(extract_df))
+random10_df = extract_df.sample(n=10, random_state=42)
+print(random10_df['document'])
