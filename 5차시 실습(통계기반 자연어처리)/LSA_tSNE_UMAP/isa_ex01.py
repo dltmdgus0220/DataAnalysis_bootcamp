@@ -17,7 +17,8 @@ plt.rcParams['axes.unicode_minus']=False
 okt = Okt()
 stopwords = ['하다', '입다', '이다', '같다', '좀', 
              '조금', '있다', '개', '이다', '요',
-             '성은', '듭니', '해', '해도', '이렇다', '나다']
+             '성은', '듭니', '해', '해도', '이렇다',
+             '나다', '후', '그냥', '것', '이']
 
 
 def preprocess(text):
@@ -97,7 +98,7 @@ fit_and_print_topic_word(pipe_lsa, texts_pos)
 
 X_umap = reducer.fit_transform(X_lsa)
 
-plt.figure(figsize=(15,8))
+plt.figure(figsize=(12,6))
 sc = plt.scatter(
     X_umap[:, 0],
     X_umap[:, 1],
