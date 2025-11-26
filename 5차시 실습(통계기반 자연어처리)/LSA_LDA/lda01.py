@@ -20,3 +20,9 @@ lda = LatentDirichletAllocation(
     learning_method='batch',
     random_state=42
 )
+
+#  학습 (문서-토픽 분포 θ_hat을 반환)
+doc_topic = lda.fit_transform(X)
+# print(doc_topic)
+# print(doc_topic.sum(axis=1))
+# print(lda.components_) # 각 토픽의 단어 분포, 크면 클수록 해당 토픽에서 그 단어가 등장할 가능성이 높다
