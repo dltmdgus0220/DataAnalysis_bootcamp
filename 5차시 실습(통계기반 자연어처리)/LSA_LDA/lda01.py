@@ -34,3 +34,7 @@ def print_topics(model, feature_names, n_top_word=5):
         top_words = [feature_names[i] for i in top_indices]
         print(f'Topic {topic_idx} : {", ".join(top_words)}')
 
+feature_names = vectorizer.get_feature_names_out()
+print_topics(lda, feature_names, 5)
+print()
+
