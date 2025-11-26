@@ -10,3 +10,7 @@ docs = [
     "품질이 안 좋아서 실망했어요",
     "배송은 빠르지만 품질이 너무 안 좋아요",
 ]
+
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(docs)
+
