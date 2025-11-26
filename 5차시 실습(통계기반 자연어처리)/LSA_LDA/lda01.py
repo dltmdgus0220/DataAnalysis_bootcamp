@@ -14,3 +14,9 @@ docs = [
 vectorizer = CountVectorizer()
 X = vectorizer.fit_transform(docs)
 
+n_topics = 3
+lda = LatentDirichletAllocation(
+    n_components=n_topics,
+    learning_method='batch',
+    random_state=42
+)
