@@ -25,3 +25,15 @@ def dijkstra(graph, start_node):
         print(distances)
     return distances
 
+
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('C', 2), ('D', 5)],
+    'C': [('D', 1)],
+    'D': [('E', 3)],
+    'E': []
+}
+
+start_node = 'A'
+dis = dijkstra(graph, start_node)
+print(dis)
