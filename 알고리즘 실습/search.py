@@ -27,3 +27,9 @@ target_list = [5, 2, 8, 1, 9, 4]
 print(target_list)
 for i in range(8, 11):
     print(linear_search(target_list, i))
+
+sorted_list = [1, 4, 8, 9, 11, 15, 20]
+print(sorted_list)
+print(binary_search(sorted_list, 4))
+print(binary_search(sorted_list, 11))
+print(binary_search(sorted_list, 10))
