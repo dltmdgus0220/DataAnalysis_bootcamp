@@ -21,3 +21,19 @@ class LinkedList:
             cur = cur.next
         return count
     
+    # 삽입
+    def insert(self, index, data):
+        new_node = Node(data)
+
+        if index == 0:
+            new_node.next = self.head
+            self.head = new_node
+            return
+        prev = self.head
+        for _ in range(index-1):
+            if prev is None:
+                raise IndexError('Index Out of Range')
+            prev = prev.next
+        new_node.next = prev.next
+        prev.next = new_node
+            
