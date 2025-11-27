@@ -34,3 +34,18 @@ def bubble_sort(data_list):
             break
         print(data_list)
 
+def quick_sort(data_list): # 재귀로
+    if len(data_list) <= 1:
+        return data_list
+    
+    pivot = data_list[0] # pivot 위치가 정렬된 위치
+    rest_of_list = data_list[1:]
+
+    # 피봇 기준
+    # 왼쪽 : pivot보다 작은 값들
+    left = [x for x in rest_of_list if x <= pivot]
+    # 오른쪽 : pivot보다 큰 값들
+    right = [x for x in rest_of_list if x >= pivot]
+    
+    return quick_sort(left) + [pivot] + quick_sort(right)
+
