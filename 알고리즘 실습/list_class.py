@@ -77,3 +77,10 @@ class LinkedList:
             cur = cur.next
         cur.data = data
 
+    # 출력
+    def printList(self):
+        cur = self.head
+        while cur:
+            print(cur.data, end=' -> ')
+            cur = cur.next
+
