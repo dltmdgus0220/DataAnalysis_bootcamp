@@ -5,3 +5,7 @@ def linear_search(data_list, target):
             return i
     return -1
 
+target_list = [5, 2, 8, 1, 9, 4]
+print(target_list)
+for i in range(8, 11):
+    print(linear_search(target_list, i))
