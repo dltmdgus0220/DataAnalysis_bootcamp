@@ -65,3 +65,15 @@ class LinkedList:
             cur = cur.next
         return cur.data
     
+    # 수정하기
+    def update(self, index, data):
+        if self.head is None: # 비어있는지
+            raise IndexError('Index Out of Range')
+        if index >= self.length(): # 인덱스 범위 벗어나는지
+            raise IndexError('Index Out of Range')
+        
+        cur = self.head
+        for _ in range(index):
+            cur = cur.next
+        cur.data = data
+
