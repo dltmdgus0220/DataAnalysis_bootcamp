@@ -1,3 +1,5 @@
+import time
+
 # 선형 탐색 O(n), 정렬되지 않은 무작위 데이터를 찾을 때 용이
 def linear_search(data_list, target):
     for i in range(len(data_list)):
@@ -21,8 +23,6 @@ def binary_search(data_list, target):
     return -1
 
 
-
-
 target_list = [5, 2, 8, 1, 9, 4]
 print(target_list)
 for i in range(8, 11):
@@ -33,3 +33,20 @@ print(sorted_list)
 print(binary_search(sorted_list, 4))
 print(binary_search(sorted_list, 11))
 print(binary_search(sorted_list, 10))
+
+
+big_list = []
+for i in range(100000000):
+    big_list.append(i)
+
+target = 99999998
+
+start = time.time()
+print(linear_search(big_list, target))
+end = time.time()
+print(f'Linear Search: {end-start:.6f}')
+
+start = time.time()
+print(binary_search(big_list, target))
+end = time.time()
+print(f'Binary Search: {end-start:.6f}')
