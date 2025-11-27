@@ -49,3 +49,10 @@ def quick_sort(data_list): # 재귀로
     
     return quick_sort(left) + [pivot] + quick_sort(right)
 
+test = [5, 3, 4, 1, 2]
+print('원본 :', test)
+# selection_sort(test)
+# insertion_sort(test)
+# bubble_sort(test)
+test = quick_sort(test)
+print('결과 :', test)
