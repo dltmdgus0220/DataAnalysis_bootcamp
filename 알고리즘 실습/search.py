@@ -50,3 +50,7 @@ start = time.time()
 print(binary_search(big_list, target))
 end = time.time()
 print(f'Binary Search: {end-start:.6f}')
+
+# 항상 이진탐색이 좋은건아님. 
+# 서비스에 따라서 매번 정렬하는게 코스트가 높다면 정렬하지 않고 
+# 선형탐색하는게 이득일 수 있음.
