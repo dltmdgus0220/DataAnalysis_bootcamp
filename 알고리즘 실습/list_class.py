@@ -8,3 +8,7 @@ class LinkedList:
     def __init__(self):
         self.head = None
         
+    # 빈 리스트인지
+    def isEmpty(self):
+        return self.head is None
+    
