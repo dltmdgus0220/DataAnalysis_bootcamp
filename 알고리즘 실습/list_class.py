@@ -53,3 +53,15 @@ class LinkedList:
             prev = prev.next
         prev.next = prev.next.next
 
+    # 값 가져오기
+    def get(self, index):
+        if self.head is None: # 비어있는지
+            raise IndexError('Index Out of Range')
+        if index >= self.length(): # 인덱스 범위 벗어나는지
+            raise IndexError('Index Out of Range')
+        
+        cur = self.head
+        for _ in range(index):
+            cur = cur.next
+        return cur.data
+    
