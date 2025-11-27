@@ -21,3 +21,16 @@ def insertion_sort(data_list):
         data_list[j + 1] = key
         print(data_list)
 
+def bubble_sort(data_list):
+    n = len(data_list)
+
+    for i in range(n - 1):
+        swapped = False
+        for j in range(n - 1 - i):
+            if data_list[j] > data_list[j+1]:
+                data_list[j], data_list[j+1] = data_list[j+1], data_list[j]
+                swapped = True
+        if not swapped:
+            break
+        print(data_list)
+
