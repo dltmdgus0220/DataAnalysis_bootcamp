@@ -9,3 +9,15 @@ def selection_sort(data_list):
         data_list[i], data_list[target_index] = data_list[target_index], data_list[i]
         print(data_list)
 
+def insertion_sort(data_list):
+    n = len(data_list)
+
+    for i in range(1, n):
+        key = data_list[i]
+        j = i - 1
+        while j >= 0 and data_list[j] > key:
+            data_list[j + 1] = data_list[j]
+            j -= 1
+        data_list[j + 1] = key
+        print(data_list)
+
