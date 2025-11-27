@@ -84,3 +84,29 @@ class LinkedList:
             print(cur.data, end=' -> ')
             cur = cur.next
 
+
+if __name__ == '__main__':
+    Llist = LinkedList()
+    print(Llist.isEmpty())
+    print(Llist.printList())
+    Llist.insert(0, 10)
+    Llist.insert(0, 20)
+    print(Llist.printList())
+    Llist.insert(1, 30)
+    print(Llist.printList())
+    Llist.delete(1)
+    print(Llist.printList())
+    Llist.delete(0)
+    print(Llist.printList())
+    # Llist.delete(3)
+    Llist.insert(1, 20)
+    Llist.insert(2, 30)
+    print(Llist.printList())
+    print(Llist.get(0))
+    print(Llist.get(1))
+    # print(Llist.get(3))
+    Llist.update(0, 100)
+    Llist.update(2, 300)
+    # Llist.update(3, 40)
+    print(Llist.printList())
+
