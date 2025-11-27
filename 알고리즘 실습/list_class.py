@@ -12,3 +12,12 @@ class LinkedList:
     def isEmpty(self):
         return self.head is None
     
+    # 전체 길이
+    def length(self):
+        count = 0
+        cur = self.head
+        while cur:
+            count += 1
+            cur = cur.next
+        return count
+    
