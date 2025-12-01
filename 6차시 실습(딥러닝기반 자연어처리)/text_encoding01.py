@@ -37,3 +37,10 @@ for word, _ in counter.most_common():
     vocab[word] = len(vocab)
 # print(vocab)
 
+def encode(tokens, vocab, unk_token=UNK_TOKEN):
+    unk_idx = vocab[unk_token]
+    return [vocab.get(t, unk_idx) for t in tokens]
+
+encoded_sentences = [encode(tokens, vocab) for tokens in tokenized_sentences]
+# print(encoded_sentences)
+
