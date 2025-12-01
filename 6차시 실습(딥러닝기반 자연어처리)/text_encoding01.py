@@ -116,3 +116,23 @@ class ReviewRawDataset(Dataset):
     def __getitem__(self, idx):
         return self.encoded_sequences[idx], self.labels[idx]
     
+
+def collate_fn(batch, pad_value=0):    
+    # batch: list of (seq_tensor, label)    
+    seqs, labels = zip(*batch)  # unzip
+    # 길이 다른 시퀀스를 pad_sequence로 패딩
+    padded_seqs = pad_sequence(
+        seqs,
+        batch_first=True, # (batch, max_len) 형태
+        padding_value=pad_value
+    )
+
+    # 마스크 생성: 패딩이 아닌 부분(≠pad_value)을 1로
+    attention_mask = (padded_seqs != pad_value).long()
+    labels = torch.stack(labels) # tuple을 tensor로 변경
+    return {
+        "input_ids": padded_seqs,
+        "attention_mask": attention_mask,
+        "labels": labels
+    }
+    
