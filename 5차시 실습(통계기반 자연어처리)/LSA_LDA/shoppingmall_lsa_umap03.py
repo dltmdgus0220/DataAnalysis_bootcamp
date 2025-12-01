@@ -133,3 +133,29 @@ X_umap = reducer.fit_transform(X_lsa)
 df["umap_x"] = X_umap[:, 0]
 df["umap_y"] = X_umap[:, 1]
 
+plt.figure(figsize=(7, 6))
+
+label_info = [
+    (-1, "부정(-1)", "tab:blue"),
+    (0,  "중립(0)",  "tab:gray"),
+    (1,  "긍정(1)",  "tab:red"),
+]
+
+for label, name, color in label_info:
+    mask = (df["GeneralPolarity"] == label)
+    plt.scatter(
+        df.loc[mask, "umap_x"],
+        df.loc[mask, "umap_y"],
+        s=8,
+        alpha=0.7,
+        label=name,
+        c=color
+    )
+
+plt.title("UMAP : GeneralPolarity에 따른 전체 리뷰 시각화")
+plt.xticks([])
+plt.yticks([])
+plt.legend()
+plt.tight_layout()
+plt.show()
+
