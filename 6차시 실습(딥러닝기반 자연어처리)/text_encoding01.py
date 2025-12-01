@@ -102,3 +102,17 @@ print("input_ids batch shape:", batch["input_ids"].shape)
 print("attention_mask batch shape:", batch["attention_mask"].shape)
 print("labels batch:", batch["labels"])
 
+
+# =========================================================
+class ReviewRawDataset(Dataset):
+    # 아직 패딩하지 않은 정수 시퀀스를 보관하는 Dataset
+    def __init__(self, encoded_sequences, labels):
+        self.encoded_sequences = [torch.tensor(seq, dtype=torch.long) for seq in encoded_sequences]
+        self.labels = torch.tensor(labels, dtype=torch.long)
+
+    def __len__(self):
+        return len(self.labels)
+    
+    def __getitem__(self, idx):
+        return self.encoded_sequences[idx], self.labels[idx]
+    
