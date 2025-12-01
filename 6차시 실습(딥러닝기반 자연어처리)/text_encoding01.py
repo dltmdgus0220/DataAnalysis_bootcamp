@@ -44,3 +44,30 @@ def encode(tokens, vocab, unk_token=UNK_TOKEN):
 encoded_sentences = [encode(tokens, vocab) for tokens in tokenized_sentences]
 # print(encoded_sentences)
 
+
+
+def pad_sequences(encoded_list, max_len, pad_value=0):
+    padded = []
+    masks = []
+    for seq in encoded_list:
+        if len(seq) > max_len:
+            # 너무 길면 자르기
+            seq = seq[:max_len]
+        # 패딩 길이 계산
+        pad_len = max_len - len(seq)
+        padded_seq = seq + [pad_value] * pad_len
+        mask = [1] * len(seq) + [0] * pad_len
+
+        padded.append(padded_seq)
+        masks.append(mask)
+    return torch.tensor(padded), torch.tensor(masks)
+
+
+max_len = 6
+padded_inputs, attention_masks = pad_sequences(encoded_sentences, max_len, pad_value=vocab[PAD_TOKEN])
+print('Padded inputs :\n')
+print(padded_inputs)
+print('Attention masks :\n')
+print(attention_masks)
+print('Tensor shape :',padded_inputs.shape)
+
