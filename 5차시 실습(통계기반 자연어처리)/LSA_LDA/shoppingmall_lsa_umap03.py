@@ -119,3 +119,17 @@ X_lsa = svd.fit_transform(X_tfidf)
 print("TF-IDF shape :", X_tfidf.shape)
 print("LSA shape    :", X_lsa.shape)
 
+reducer = umap.UMAP(
+    n_components=2,
+    n_neighbors=15,
+    min_dist=0.2,
+    metric="cosine",
+    random_state=42
+)
+
+print("\n[UMAP] 2차원 임베딩 중...")
+X_umap = reducer.fit_transform(X_lsa)
+
+df["umap_x"] = X_umap[:, 0]
+df["umap_y"] = X_umap[:, 1]
+
