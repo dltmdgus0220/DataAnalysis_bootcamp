@@ -14,6 +14,7 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import KMeans
 import umap.umap_ as umap
 from module.preprocess_tfidf import get_vectorize_value
+from module.optimize_kmeans import elbow, silhouette
 
 
 if platform.system() == "Windows":
@@ -88,7 +89,10 @@ df["umap_y"] = X_umap[:, 1]
 # -----------------------------
 # UMAP 좌표 기준 K-Means 군집 & 군집별 샘플 보기
 # -----------------------------
-n_clusters = 6   # 군집 개수(원하는 대로 조정 가능)
+elbow(X_umap)
+silhouette(X_umap)
+
+n_clusters = 3   # 군집 개수(원하는 대로 조정 가능)
 print(f"\n[K-Means] UMAP 좌표로 {n_clusters}개 군집 생성 중...")
 
 kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init="auto")
@@ -117,24 +121,24 @@ plt.show()
 # -----------------------------
 # 7. 각 군집에서 예시 리뷰 몇 개씩 출력
 # -----------------------------
-SAMPLES_PER_CLUSTER = 5  # 군집당 보고 싶은 예시 개수
-print(df.head())
-# for c in range(n_clusters):
-#     sub = df[df["cluster"] == c]
+SAMPLES_PER_CLUSTER = 3  # 군집당 보고 싶은 예시 개수
+# print(df.head())
+for c in range(n_clusters):
+    sub = df[df["cluster"] == c]
 
-#     print("\n" + "=" * 80)
-#     print(f"[클러스터 {c}] 샘플 수: {len(sub)}")
-#     print("감성 라벨 분포:")
-#     print(sub["GeneralPolarity"].value_counts())
+    print("\n" + "=" * 80)
+    print(f"[클러스터 {c}] 샘플 수: {len(sub)}")
+    print("감성 라벨 분포:")
+    print(sub["GeneralPolarity"].value_counts())
 
-#     if len(sub) == 0:
-#         continue
+    if len(sub) == 0:
+        continue
 
-#     # 군집에서 몇 개 샘플 뽑기
-#     sample_n = min(SAMPLES_PER_CLUSTER, len(sub))
-#     samples = sub.sample(sample_n, random_state=42)
+    # 군집에서 몇 개 샘플 뽑기
+    sample_n = min(SAMPLES_PER_CLUSTER, len(sub))
+    samples = sub.sample(sample_n, random_state=42)
 
-#     for i, (_, row) in enumerate(samples.iterrows(), start=1):
-#         print("-" * 80)
-#         print(f"[예시 {i}] 라벨={row['GeneralPolarity']}")
-#         print(row["RawText"])
+    for i, (_, row) in enumerate(samples.iterrows(), start=1):
+        print("-" * 80)
+        print(f"[예시 {i}] 라벨={row['GeneralPolarity']}")
+        print(row["RawText"])
