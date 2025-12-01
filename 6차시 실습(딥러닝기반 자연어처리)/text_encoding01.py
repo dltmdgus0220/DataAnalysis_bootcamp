@@ -27,3 +27,13 @@ for tokens in tokenized_sentences:
     counter.update(tokens)
 # print(counter)
 
+
+# 특수 토큰 정의
+PAD_TOKEN = "<PAD>"
+UNK_TOKEN = "<UNK>"
+
+vocab = {PAD_TOKEN: 0, UNK_TOKEN: 1}
+for word, _ in counter.most_common():
+    vocab[word] = len(vocab)
+# print(vocab)
+
