@@ -20,3 +20,15 @@ plt.rcParams['axes.unicode_minus'] = False
 
 okt = Okt()
 
+def preprocess_text(text: str, local_stopwords: str) -> list:
+    text = text.lower()    
+    text = re.sub(r"[^0-9a-zA-Z가-힣\s]", " ", text)  
+    morphs = okt.pos(text, stem=True)  
+
+    tokens = []
+    for word, tag in morphs:
+        if tag in ["Noun", "Verb", "Adjective"]:            
+            if word not in local_stopwords and len(word) > 1:
+                tokens.append(word)
+
+    return tokens
