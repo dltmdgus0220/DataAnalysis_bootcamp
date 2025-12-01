@@ -159,3 +159,33 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
+
+# -----------------------------
+# UMAP 좌표 기준 K-Means 군집 & 군집별 샘플 보기
+# -----------------------------
+n_clusters = 6   # 군집 개수(원하는 대로 조정 가능)
+print(f"\n[K-Means] UMAP 좌표로 {n_clusters}개 군집 생성 중...")
+
+kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init="auto")
+df["cluster"] = kmeans.fit_predict(X_umap) 
+# kmeans.fit(X_umap)만 하고 kmeans.labels_를 확인해도 같은 결과
+
+# (선택) 군집별 색으로 다시 시각화
+plt.figure(figsize=(7, 6))
+for c in range(n_clusters):
+    mask = (df["cluster"] == c)
+    plt.scatter(
+        df.loc[mask, "umap_x"],
+        df.loc[mask, "umap_y"],
+        s=8,
+        alpha=0.7,
+        label=f"cluster {c}"
+    )
+
+plt.title("UMAP + KMeans 군집 시각화")
+plt.xticks([])
+plt.yticks([])
+plt.legend()
+plt.tight_layout()
+plt.show()
+
