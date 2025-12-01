@@ -136,3 +136,14 @@ def collate_fn(batch, pad_value=0):
         "labels": labels
     }
     
+
+raw_dataset = ReviewRawDataset(encoded_sentences, labels)
+loader2 = DataLoader(
+    raw_dataset,
+    batch_size=2,
+    shuffle=True,
+    collate_fn=lambda batch: collate_fn(batch, pad_value=vocab[PAD_TOKEN])
+)
+batch2 = next(iter(loader2))
+print("동적 패딩 input_ids shape:", batch2["input_ids"].shape)
+print("동적 패딩 attention_mask:\n", batch2["attention_mask"])
