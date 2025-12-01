@@ -32,3 +32,19 @@ def preprocess_text(text: str, local_stopwords: str) -> list:
                 tokens.append(word)
 
     return tokens
+
+def get_vectorize_value(
+        filename: str, 
+        file_type: str, 
+        vectorize_column_name: str, # 벡터화할 컬럼 이름(함수의 재사용성을 위해: 여러파일에서 벡터대상 컬럼이 다를 수 있으므로)
+        label_column_name: str, # 샘플링을 할때 층화추출을 하고 싶다면 그 기준이되는 칼럼이름
+        add_stopwords: set, # 불용어에 추가단어가 있을때
+        sample_size:int) -> tuple:   
+    if file_type == "csv" :
+        df = pd.read_csv(filename, encoding="utf-8")
+    elif file_type == "json" :
+        df = pd.read_json(filename, encoding="utf-8")
+    else:
+        print("지원하지 않는 파일타입입니다.")
+        return 
+    
