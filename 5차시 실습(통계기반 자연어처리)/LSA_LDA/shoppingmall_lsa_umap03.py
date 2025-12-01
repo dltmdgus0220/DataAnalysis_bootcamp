@@ -75,7 +75,7 @@ def get_vectorize_value(
 
     df_sample = df_sample.reset_index(drop=True)    
     
-    with open(r"D:\multicompus\exam\nlp\stat_nlp\common\stopwords-ko.txt",
+    with open(r"5차시 실습(통계기반 자연어처리)\stopwords-ko.txt",
             encoding="utf-8") as f:
         stopwords = set(w.strip() for w in f if w.strip())
 
@@ -100,7 +100,7 @@ def get_vectorize_value(
 add_word = set(["하다", "입다", "이다", "않다", "입다"])
 
 df, X_tfidf, tfidf = get_vectorize_value(
-    filename =r"D:\multicompus\exam\nlp\stat_nlp\naive_bayes_linearsvc\woman_wear_balanced_stream_600_each.json",
+    filename =r"5차시 실습(통계기반 자연어처리)\woman_wear_sample_600.json",
     file_type="json",
     vectorize_column_name="RawText",
     label_column_name="GeneralPolarity",
