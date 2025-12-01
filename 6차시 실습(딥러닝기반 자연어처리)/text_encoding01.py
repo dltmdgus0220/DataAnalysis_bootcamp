@@ -1,0 +1,14 @@
+import re
+from collections import Counter
+import torch
+from torch.utils.data import Dataset, DataLoader
+from torch.nn.utils.rnn import pad_sequence
+
+sentences = [
+    "배송이 빠르고 포장이 깔끔해요",
+    "배송이 너무 느리고 제품이 마음에 안 들어요",
+    "가격이 저렴해서 만족스러워요",
+    "포장이 엉망이고 배송도 늦었어요",
+]
+labels = [1, 0, 1, 0]
+
