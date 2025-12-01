@@ -12,3 +12,12 @@ sentences = [
 ]
 labels = [1, 0, 1, 0]
 
+def tokenize(text:str)->list:
+    text = re.sub(r'[^가-힣0-9\s]', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    tokens = text.split()
+    return tokens
+
+tokenized_sentences = [tokenize(s) for s in sentences]
+# print(tokenized_sentences)
+
