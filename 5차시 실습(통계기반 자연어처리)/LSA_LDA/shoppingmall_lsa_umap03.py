@@ -107,3 +107,15 @@ df, X_tfidf, tfidf = get_vectorize_value(
     add_stopwords=add_word,
     sample_size=1800)
 
+
+svd = TruncatedSVD(
+        n_components=n_topics,
+        random_state=42
+    )
+
+print("\n[LSA] 전체 데이터에 대해 TF-IDF → SVD 학습 중...")
+X_lsa = svd.fit_transform(X_tfidf)
+
+print("TF-IDF shape :", X_tfidf.shape)
+print("LSA shape    :", X_lsa.shape)
+
