@@ -71,3 +71,34 @@ print('Attention masks :\n')
 print(attention_masks)
 print('Tensor shape :',padded_inputs.shape)
 
+
+# =========================================================================
+class ReviewDataset(Dataset):
+    def __init__(self, inputs, masks, labels):
+        self.inputs = inputs
+        self.masks = masks
+        self.labels = torch.tensor(labels, dtype=torch.long)
+
+    def __len__(self):
+        return len(self.labels)
+    
+    def __getitem__(self, idx):
+        return {
+            'input_ids':self.inputs[idx],
+            'attention_mask':self.masks[idx],
+            'labels':self.labels[idx]
+        }
+    
+dataset = ReviewDataset(padded_inputs, attention_masks, labels)
+
+loader = DataLoader(
+    dataset,
+    batch_size=2,
+    shuffle=True
+)
+
+batch = next(iter(loader))
+print("input_ids batch shape:", batch["input_ids"].shape)
+print("attention_mask batch shape:", batch["attention_mask"].shape)
+print("labels batch:", batch["labels"])
+
