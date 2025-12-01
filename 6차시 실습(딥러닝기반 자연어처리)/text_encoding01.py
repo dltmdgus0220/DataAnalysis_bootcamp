@@ -21,3 +21,9 @@ def tokenize(text:str)->list:
 tokenized_sentences = [tokenize(s) for s in sentences]
 # print(tokenized_sentences)
 
+
+counter = Counter()
+for tokens in tokenized_sentences:
+    counter.update(tokens)
+# print(counter)
+
