@@ -96,3 +96,14 @@ def get_vectorize_value(
     X_tfidf = tfidf.fit_transform(df_sample[TEXT_COL])
     return df_sample, X_tfidf, tfidf
 
+
+add_word = set(["하다", "입다", "이다", "않다", "입다"])
+
+df, X_tfidf, tfidf = get_vectorize_value(
+    filename =r"D:\multicompus\exam\nlp\stat_nlp\naive_bayes_linearsvc\woman_wear_balanced_stream_600_each.json",
+    file_type="json",
+    vectorize_column_name="RawText",
+    label_column_name="GeneralPolarity",
+    add_stopwords=add_word,
+    sample_size=1800)
+
