@@ -107,6 +107,7 @@ df, X_tfidf, tfidf = get_vectorize_value(
     add_stopwords=add_word,
     sample_size=1800)
 
+n_topics = 5
 
 svd = TruncatedSVD(
         n_components=n_topics,
@@ -189,3 +190,27 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
+# -----------------------------
+# 7. 각 군집에서 예시 리뷰 몇 개씩 출력
+# -----------------------------
+SAMPLES_PER_CLUSTER = 5  # 군집당 보고 싶은 예시 개수
+# print(df.head())
+for c in range(n_clusters):
+    sub = df[df["cluster"] == c]
+
+    print("\n" + "=" * 80)
+    print(f"[클러스터 {c}] 샘플 수: {len(sub)}")
+    print("감성 라벨 분포:")
+    print(sub["GeneralPolarity"].value_counts())
+
+    if len(sub) == 0:
+        continue
+
+    # 군집에서 몇 개 샘플 뽑기
+    sample_n = min(SAMPLES_PER_CLUSTER, len(sub))
+    samples = sub.sample(sample_n, random_state=42)
+
+    for i, (_, row) in enumerate(samples.iterrows(), start=1):
+        print("-" * 80)
+        print(f"[예시 {i}] 라벨={row['GeneralPolarity']}")
+        print(row["RawText"])
