@@ -82,3 +82,17 @@ def get_vectorize_value(
     if add_stopwords is not None:
         stopwords.update(add_stopwords)
 
+    def tokenizer(text: str):        
+        return preprocess_text(text, stopwords)   
+    
+
+    tfidf = TfidfVectorizer(
+    max_df=0.8,
+    min_df=1,
+    token_pattern=None,
+    tokenizer=tokenizer       
+    )
+
+    X_tfidf = tfidf.fit_transform(df_sample[TEXT_COL])
+    return df_sample, X_tfidf, tfidf
+
