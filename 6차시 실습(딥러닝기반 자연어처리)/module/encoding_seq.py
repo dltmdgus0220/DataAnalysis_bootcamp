@@ -12,3 +12,17 @@ counter = Counter()
 PAD_TOKEN = "<PAD>"
 UNK_TOKEN = "<UNK>"
 
+# 텍스트 전처리(불용어처리, 정제식, 품사)
+def preprocess_text(text: str, stopwords: str) -> list:
+    text = text.lower()    
+    text = re.sub(r"[^0-9a-zA-Z가-힣\s]", " ", text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    morphs = okt.pos(text, stem=True)  
+
+    tokens = []
+    for word, tag in morphs:
+        if tag in ["Noun", "Verb", "Adjective"]:            
+            if word not in stopwords:# and len(word) > 1:
+                tokens.append(word)
+
+    return tokens
