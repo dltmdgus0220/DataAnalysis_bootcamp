@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from collections import Counter
 
 # 1) 간단한 말뭉치
 sentences = [
@@ -10,3 +11,16 @@ sentences = [
     '스토리가 지루하지만 배우는 좋았어요.'
 ]
 
+# 2) vocab 만들기
+tokens = [s.split() for s in sentences]
+# print(tokens)
+
+counter = Counter()
+for t in tokens:
+    counter.update(t)
+# print(counter)
+
+vocab = {'<PAD>': 0, '<UNK>': 1}
+for word, _ in counter.most_common():
+    vocab[word] = len(vocab)
+print(vocab)
