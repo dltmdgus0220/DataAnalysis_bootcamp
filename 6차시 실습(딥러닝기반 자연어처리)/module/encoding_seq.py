@@ -26,3 +26,10 @@ def preprocess_text(text: str, stopwords: str) -> list:
                 tokens.append(word)
 
     return tokens
+
+# 인코딩
+def encode(tokens, vocab, unk_token=UNK_TOKEN):
+    unk_idx = vocab[unk_token]
+    return [vocab.get(t, unk_idx) for t in tokens]
+
+
