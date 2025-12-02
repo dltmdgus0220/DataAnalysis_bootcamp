@@ -52,3 +52,29 @@ def get_encoding_value(
         print("지원하지 않는 파일타입입니다.")
         return 
     
+    
+    # 층화추출
+    df = df.dropna()
+    if label_column_name is not None :
+        stratify_column = df[label_column_name]
+    else:
+        stratify_column = None
+
+    sample_flag = True
+
+    if len(df) <= sample_size :
+        sample_flag = False
+    
+    if sample_flag :
+        _, df_sample = train_test_split(
+            df,
+            test_size=sample_size,
+            stratify = stratify_column,
+            shuffle=True,      
+            random_state=42
+        )
+    else:
+        df_sample = df.copy()
+
+    df_sample = df_sample.reset_index(drop=True)    
+    
