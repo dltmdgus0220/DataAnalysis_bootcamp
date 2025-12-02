@@ -78,3 +78,14 @@ def get_encoding_value(
 
     df_sample = df_sample.reset_index(drop=True)    
     
+
+    # 전처리
+    with open(r"5차시 실습(통계기반 자연어처리)\stopwords-ko.txt",
+            encoding="utf-8") as f:
+        stopwords = set(w.strip() for w in f if w.strip())
+
+    if add_stopwords is not None:
+        stopwords.update(add_stopwords)
+
+    df_sample['tokens'] = df_sample[encoding_column_name].apply(lambda x : preprocess_text(x, stopwords))
+    
