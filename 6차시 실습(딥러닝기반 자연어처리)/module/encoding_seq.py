@@ -33,3 +33,22 @@ def encode(tokens, vocab, unk_token=UNK_TOKEN):
     return [vocab.get(t, unk_idx) for t in tokens]
 
 
+
+# 인코딩 우선 파일 받고 층화추출하고 패딩은 안하고
+def get_encoding_value(
+        filename: str, 
+        file_type: str, 
+        encoding_column_name: str, # 인코딩할 컬럼 이름(함수의 재사용성을 위해: 여러파일에서 벡터대상 컬럼이 다를 수 있으므로)
+        label_column_name: str, # 샘플링을 할때 층화추출을 하고 싶다면 그 기준이 되는 칼럼이름
+        add_stopwords: set, # 불용어에 추가단어가 있을때
+        sample_size:int) -> tuple:
+    
+    # 데이터로드
+    if file_type == "csv" :
+        df = pd.read_csv(filename, encoding="utf-8")
+    elif file_type == "json" :
+        df = pd.read_json(filename, encoding="utf-8")
+    else:
+        print("지원하지 않는 파일타입입니다.")
+        return 
+    
