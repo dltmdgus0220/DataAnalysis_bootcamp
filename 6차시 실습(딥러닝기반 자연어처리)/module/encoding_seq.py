@@ -89,3 +89,14 @@ def get_encoding_value(
 
     df_sample['tokens'] = df_sample[encoding_column_name].apply(lambda x : preprocess_text(x, stopwords))
     
+    # vocab 생성
+    for tokens in df_sample['tokens']:
+        counter.update(tokens)
+
+    vocab = {PAD_TOKEN: 0, UNK_TOKEN: 1}
+    for word, _ in counter.most_common():
+        vocab[word] = len(vocab)
+
+    df_sample['encoded'] = df_sample['tokens'].apply(lambda x : encode(x, vocab))
+
+    return df_sample, vocab
