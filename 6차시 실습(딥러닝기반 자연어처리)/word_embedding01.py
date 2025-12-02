@@ -11,6 +11,6 @@ print(f'W 가중치 표 : {embed.weight}')
 sentence = ['나는', '밥을', '먹었다']
 idxs = [vocab[w] for w in sentence]
 idx_tensor = torch.tensor(idxs)
-print(idx_tensor.shape)
+
 emb_vect = embed(idx_tensor)
 print(emb_vect)
