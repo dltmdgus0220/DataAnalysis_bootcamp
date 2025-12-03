@@ -87,4 +87,30 @@ def build_embedding_from_w2v(pretrained_weight, freeze:bool)->nn.Embedding:
 
     return embedding
 
+
+def train_model(model, loader, num_epochs=50, lr=0.01):
+    criterion = nn.BCEWithLogitsLoss()
+
+    optimizer = optim.Adam(
+        [p for p in model.parameters() if p.requires_grad],
+        lr=lr
+    )
+
+    for epoch in range(1, num_epochs+1):
+        total_loss = 0.0
+
+        for x, y in loader: # 배치 학습
+            optimizer.zero_grad()
+            logits = model(x)
+
+            loss = criterion(logits, y)
+            loss.backward() # 역전파
+            optimizer.step() # 가중치 업데이트
+
+            total_loss += loss.item()
+
+        avg_loss = total_loss / len(loader)
+        if epoch % 10 == 0 or epoch == 1:
+            print(f"Epoch [{epoch}/{num_epochs}] | Loss: {avg_loss:.4f}")
+
     
