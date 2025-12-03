@@ -20,3 +20,11 @@ model = Word2Vec(
     epochs=100 # 에폭수를 늘려서 더 수렴시키기
 )
 
+# 단어 벡터 확인
+print("단어 '최고' 벡터 크기:", model.wv["최고"].shape)
+print("벡터 앞 5개 값:", model.wv["최고"][:5])
+
+# 비슷한 단어 찾기
+print("\n[단어 '최고'와 비슷한 단어 Top-5]")
+for w, score in model.wv.most_similar("최고", topn=5):
+    print(f"{w:10s} 유사도: {score:.3f}")
