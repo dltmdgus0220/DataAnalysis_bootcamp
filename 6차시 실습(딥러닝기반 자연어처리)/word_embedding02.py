@@ -32,3 +32,10 @@ embed_dim = 8
 
 embed = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embed_dim)
 
+
+def sentence_to_indices(sentence_tokens, vocab):
+    return [vocab[w] for w in sentence_tokens]
+
+indexed_sentence = [sentence_to_indices(t, vocab) for t in tokens]
+print('indexed_sentence :', indexed_sentence)
+
