@@ -34,3 +34,21 @@ embed_dim = model.vector_size
 
 pretrained_weights = model.wv.vectors
 
+class SimpleTestDataset(Dataset):
+    def __init__(self, sentences, labels, word_index):
+        self.sentences = sentences # 문장 리스트
+        self.labels = labels # 라벨 리스트
+        self.word_index = word_index # 
+
+    def __len__(self):
+        return len(self.sentences)
+    
+    def __getitem__(self, index):
+        tokens = self.sentences[index]
+        y = self.labels[index]
+
+        # 문장을 단어 인덱스 벡터로 변환
+        idx = [self.word_index[w] for w in tokens]
+
+        return torch.tensor(idx, dtype=torch.long), torch.tensor(y, dtype=torch.float32)
+    
