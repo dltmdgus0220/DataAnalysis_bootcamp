@@ -113,4 +113,8 @@ def train_model(model, loader, num_epochs=50, lr=0.01):
         if epoch % 10 == 0 or epoch == 1:
             print(f"Epoch [{epoch}/{num_epochs}] | Loss: {avg_loss:.4f}")
 
+
+dataset = SimpleTestDataset(sentences, labels, word_index)
+loader = DataLoader(dataset, batch_size=1, shuffle=True)
+
     
