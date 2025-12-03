@@ -48,3 +48,12 @@ def get_sentence_embedding(idx_list):
 
 sentence_embedding = torch.stack([get_sentence_embedding(idx_list) for idx_list in indexed_sentence])
 # print(sentence_embedding)
+
+def cosine_sim(a, b):
+    return F.cosine_similarity(a, b, dim=0).item()
+
+print('\n문장유사도\n')
+for i in range(len(sentences)):
+    for j in range(i+1, len(sentences)):
+        sim = cosine_sim(sentence_embedding[i], sentence_embedding[j])
+        print(f'({i}) {sentences[i]} vs ({j}) {sentences[j]} -> 유사도 : {sim:.3f}')
