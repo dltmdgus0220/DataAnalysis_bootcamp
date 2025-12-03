@@ -70,4 +70,21 @@ class SimpleSentClassifier(nn.Module):
         logit = self.fc(sent_vec).squeeze(1) # (batch_size, embbeding_dim)
 
         return logit
+
+
+def build_embedding_from_w2v(pretrained_weight, freeze:bool)->nn.Embedding:
+    vocab_size, embed_dim = pretrained_weight.shape
+
+    embedding = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embed_dim)
+
+    with torch.no_grad():
+        embedding.weight.copy_(torch.from_numpy(pretrained_weight))
+        # 자연어처리에서는 vocab_size가 크기 때문에 메모리를 고려하여 from_numpy를 사용
+        # embedding.weight = torch.tensor(pretrained_weight, dtype=float32) 이런 식으로 할당하는 것과 동작은 같음.
+        # 그러나 torch.tensor로 씌우는 과정에서 새 메모리 복사가 일어나기 때문에 메모리나 속도 측면에서 from_numpy를 사용.
+
+    embedding.weight.requires_grad = not freeze
+
+    return embedding
+
     
