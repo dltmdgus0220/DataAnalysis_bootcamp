@@ -10,3 +10,13 @@ sentences = [["이", "영화", "정말", "최고", "였다"],
     ["이", "브랜드", "가격", "은", "비싸다"]
 ]
 
+model = Word2Vec(
+    sentences=sentences,
+    vector_size=50, # 임베딩 차원
+    window=3, # 문맥 범위
+    min_count=1, # 최소 등장 횟수
+    sg=1, # 1=Skip-gram, 0=CBOW
+    workers=1, # 실습 환경에서는 1로 해도 충분
+    epochs=100 # 에폭수를 늘려서 더 수렴시키기
+)
+
