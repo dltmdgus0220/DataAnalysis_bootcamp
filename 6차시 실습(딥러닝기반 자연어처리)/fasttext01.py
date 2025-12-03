@@ -9,3 +9,13 @@ sentences = [
     ["이", "브랜드", "가격", "은", "비싸다"],
 ]
 
+# FastText 모델 학습
+ft_model = FastText(
+    sentences,
+    vector_size=50, window=3,
+    min_count=1,
+    sg=1,        # Skip-gram
+    workers=1,
+    epochs=100
+)
+
