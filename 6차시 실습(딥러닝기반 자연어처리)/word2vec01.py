@@ -59,3 +59,21 @@ embedding.weight.data.copy_(torch.from_numpy(pretrained_weights))
 print("\n[임베딩 레이어 정보]")
 print("embedding.weight.shape:", embedding.weight.shape)
 
+
+# 실제로 단어를넣어보기
+word1 = "최고"
+word2 = "지루하다"
+
+idx1 = word_index[word1]
+idx2 = word_index[word2]
+
+print(f"\n단어 '{word1}'의 인덱스:", idx1)
+print(f"단어 '{word2}'의 인덱스:", idx2)
+
+# 인덱스를 텐서로 만들어 Embedding 통과
+idx_tensor = torch.tensor([idx1, idx2]) # shape:(2,)
+emb_vecs = embedding(idx_tensor) # shape:(2, embed_dim)
+
+print("\n[PyTorch Embedding으로 가져온 벡터]")
+print(f"'{word1}' 벡터 (앞 5개):", emb_vecs[0][:5])
+print(f"'{word2}' 벡터 (앞 5개):", emb_vecs[1][:5])
