@@ -43,3 +43,7 @@ embed_dim = model.vector_size
 print("vocab_size : ", vocab_size)
 print("embed_dim : ", embed_dim)
 
+# 단어 벡터들 (shape: (vocab_size, embed_dim))
+pretrained_weights = model.wv.vectors # numpy array
+print("pretrained_weights.shape:", pretrained_weights.shape)
+
