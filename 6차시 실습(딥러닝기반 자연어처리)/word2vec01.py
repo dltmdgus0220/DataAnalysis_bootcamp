@@ -34,3 +34,12 @@ print("\n[단어 간 유사도]")
 print("최고 vs 별로 :", model.wv.similarity("최고", "별로"))
 print("지루하다 vs 별로 :", model.wv.similarity("지루하다", "별로"))
 
+word_index = model.wv.key_to_index
+index_word = model.wv.index_to_key
+
+vocab_size = len(word_index)
+embed_dim = model.vector_size
+
+print("vocab_size : ", vocab_size)
+print("embed_dim : ", embed_dim)
+
