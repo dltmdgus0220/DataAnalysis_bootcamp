@@ -130,3 +130,13 @@ print("FC Layer requires_grad :", model_frozen.fc.weight.requires_grad)
 train_model(model_frozen, loader, num_epochs=50, lr=0.01)
 
 
+print("\n==================")
+print("2. 임베딩 미세조정(fine-tuning) 버전")
+print("==================")
+
+frozen_embedding = build_embedding_from_w2v(pretrained_weights, freeze=False)
+model_fine = SimpleSentClassifier(frozen_embedding)
+print("임베딩 requires_grad :", model_fine.embedding.weight.requires_grad)
+print("FC Layer requires_grad :", model_fine.fc.weight.requires_grad)
+
+train_model(model_fine, loader, num_epochs=50, lr=0.01)
