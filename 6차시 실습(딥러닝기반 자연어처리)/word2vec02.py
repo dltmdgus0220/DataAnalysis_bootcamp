@@ -52,3 +52,22 @@ class SimpleTestDataset(Dataset):
 
         return torch.tensor(idx, dtype=torch.long), torch.tensor(y, dtype=torch.float32)
     
+
+class SimpleSentClassifier(nn.Module):
+    def __init__(self, embedding:nn.Embedding): # embedding:사전학습된 모델
+        super().__init__()
+        self.embedding = embedding
+        self.fc = nn.Linear(embedding.embedding_dim, 1)
+
+    def forward(self, idx_tensor):
+        if idx_tensor.dim() == 1:
+            idx_tensor = idx_tensor.unsqueeze(0) # (1, embedding_dim) 즉 (1,1) shape으로 만들어줌, [2]->[[2]]
+
+        emb = self.embedding(idx_tensor) # idx_tensor:(batch_size=문장수, 문장길이=단어수) -> emb:(batch_size, 문장길이, embedding_dim)
+        sent_vec = emb.mean(dim=1) # 단어별 인덱스 번호별로 평균구함
+        # [[[1,2,3,4],[2,2,2,2],[1,3,1,3]]] (1,3,4) -> [[[4/3,7/3,2,3]]] (1,1,4)
+        
+        logit = self.fc(sent_vec).squeeze(1) # (batch_size, embbeding_dim)
+
+        return logit
+    
