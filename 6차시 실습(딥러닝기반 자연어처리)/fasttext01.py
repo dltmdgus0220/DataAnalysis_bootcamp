@@ -19,3 +19,11 @@ ft_model = FastText(
     epochs=100
 )
 
+
+# 기존 단어 벡터
+print("단어 '브랜드' 벡터 크기:", ft_model.wv["브랜드"].shape) # OOV 단어(오타) 테스트
+oov_word = "브랜드맛집"   # 말뭉치에 없다고 가정
+oov_vec = ft_model.wv[oov_word]
+print("OOV 단어 '브랜드맛집' 벡터 크기:", oov_vec.shape)
+print("브랜드 vs 브랜드맛집 유사도:", ft_model.wv.similarity("브랜드", "브랜드맛집"))
+
