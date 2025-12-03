@@ -118,3 +118,15 @@ dataset = SimpleTestDataset(sentences, labels, word_index)
 loader = DataLoader(dataset, batch_size=1, shuffle=True)
 
     
+print("\n==================")
+print("1. 임베딩 고정 freeze 버전")
+print("==================")
+
+frozen_embedding = build_embedding_from_w2v(pretrained_weights, freeze=True)
+model_frozen = SimpleSentClassifier(frozen_embedding)
+print("임베딩 requires_grad :", model_frozen.embedding.weight.requires_grad)
+print("FC Layer requires_grad :", model_frozen.fc.weight.requires_grad)
+
+train_model(model_frozen, loader, num_epochs=50, lr=0.01)
+
+
