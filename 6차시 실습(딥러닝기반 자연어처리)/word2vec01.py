@@ -28,3 +28,9 @@ print("벡터 앞 5개 값:", model.wv["최고"][:5])
 print("\n[단어 '최고'와 비슷한 단어 Top-5]")
 for w, score in model.wv.most_similar("최고", topn=5):
     print(f"{w:10s} 유사도: {score:.3f}")
+
+# 유사도 예시
+print("\n[단어 간 유사도]")
+print("최고 vs 별로 :", model.wv.similarity("최고", "별로"))
+print("지루하다 vs 별로 :", model.wv.similarity("지루하다", "별로"))
+
