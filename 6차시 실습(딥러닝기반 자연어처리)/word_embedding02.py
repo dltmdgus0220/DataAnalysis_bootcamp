@@ -39,3 +39,12 @@ def sentence_to_indices(sentence_tokens, vocab):
 indexed_sentence = [sentence_to_indices(t, vocab) for t in tokens]
 print('indexed_sentence :', indexed_sentence)
 
+
+def get_sentence_embedding(idx_list):
+    idx_tensor = torch.tensor(idx_list)
+    word_embed = embed(idx_tensor)
+    doc_embed = word_embed.mean(dim=0)
+    return doc_embed
+
+sentence_embedding = torch.stack([get_sentence_embedding(idx_list) for idx_list in indexed_sentence])
+# print(sentence_embedding)
