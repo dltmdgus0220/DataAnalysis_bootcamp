@@ -47,3 +47,15 @@ print("embed_dim : ", embed_dim)
 pretrained_weights = model.wv.vectors # numpy array
 print("pretrained_weights.shape:", pretrained_weights.shape)
 
+# PyTorch nn.Embedding 생성
+embedding = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embed_dim)
+
+# gensim에서 가져온 Word2Vec 가중치로 교체
+embedding.weight.data.copy_(torch.from_numpy(pretrained_weights))
+
+# 사전학습 임베딩을 고정하고 싶다면 freeze
+# embedding.weight.requires_grad = False
+
+print("\n[임베딩 레이어 정보]")
+print("embedding.weight.shape:", embedding.weight.shape)
+
