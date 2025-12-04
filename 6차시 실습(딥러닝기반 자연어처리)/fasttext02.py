@@ -66,3 +66,49 @@ class PaddedTextDataset(Dataset):
 
         return idx_tensor, y_tensor
 
+
+class PaddedSentClassifier(nn.Module):
+    def __init__(self, embedding:nn.Embedding, pad_idx:int):
+        super().__init__()
+        self.embedding = embedding
+        self.pad_idx = pad_idx
+        self.fc = nn.Linear(embedding.embedding_dim, 1)
+
+    def forward(self, idx_batch):
+        # idx_batch = [[3, 5, 0, 0]]
+
+        # emb = tensor([
+        # [ [0.1, 0.2, 0.3],   # token 3
+        #     [0.4, 0.5, 0.6],   # token 5
+        #     [0.7, 0.8, 0.9],   # PAD
+        #     [1.0, 1.1, 1.2] ]  # PAD
+        # ]) (1, 4, 3) (batch_size, seq_len, emb_dim)
+
+        # mask = tensor([[1., 1., 0., 0.]]) (1,4) 
+        # extended_mask = tensor([ [ [1.],[1.],[0.],[0.] ] ]) -> unsqueeze(2)를 통해 (1,4,1)
+        # 이후 emb*extend_mask 연산 시 broadcast 규칙에 따라
+        # [
+        # [ [1., 1., 1.],
+        #     [1., 1., 1.],
+        #     [0., 0., 0.],
+        #     [0., 0., 0.] ]
+        # ] 이런 식으로 확장되서 연산 -> 패딩된 원소들 0으로 만들어버림
+
+        emb = self.embedding(idx_batch) 
+        mask = (idx_batch != self.pad_idx).float() # broadcast 연산
+
+        length = mask.sum(dim=1, keepdim=True) # 패딩이 아닌 원래 길이 저장
+        # [[1,1,1,1], [1,1,0,0]] (2,4) -> [[4], [2]] (2,1)
+
+        extended_mask = mask.unsqueeze(2) # (batch_size, seq_len, 1) 이후 연산을 위해 차원 추가
+        masked_emb = emb * extended_mask # (batch, seq_len, embedded_dim) * (batch, seq_len, 1)
+
+        sum_emb = masked_emb.sum(dim=1) # (batch, seq_len, embedded_dim) -> (batch, embedded_dim)
+
+        length = length.clamp(min=1.0) # 0으로 나누는 상황 방지, 1보다 작은 값은 모두 1로
+        sent_vec = sum_emb / length # (batch, emb_dim) / (batch, 1) = (batch, emb_dim) , broadcast 연산
+
+        logits = self.fc(sent_vec).squeeze(1) # (batch, 1) -> (batch,)
+
+        return logits
+    
