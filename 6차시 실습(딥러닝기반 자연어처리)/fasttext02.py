@@ -112,3 +112,31 @@ class PaddedSentClassifier(nn.Module):
 
         return logits
     
+
+def train_model(model, loader, num_epochs=50, lr=0.01):
+    criterion = nn.BCEWithLogitsLoss()
+
+    optimizer = optim.Adam(
+        [p for p in model.parameters() if p.requires_grad],
+        lr=lr
+    )
+
+    for epoch in range(1, num_epochs+1):
+        model.train()
+        total_loss = 0.0
+
+        for x, y in loader: # 배치 학습
+            optimizer.zero_grad()
+            logits = model(x)
+            y = y.float() # bceloss는 float여야함
+            
+            loss = criterion(logits, y)
+            loss.backward() # 역전파
+            optimizer.step() # 가중치 업데이트
+
+            total_loss += loss.item()
+
+        avg_loss = total_loss / len(loader)
+        if epoch % 10 == 0 or epoch == 1:
+            print(f"Epoch [{epoch}/{num_epochs}] | Loss: {avg_loss:.4f}")
+
