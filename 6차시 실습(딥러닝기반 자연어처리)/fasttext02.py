@@ -203,5 +203,5 @@ padded_embedding = nn.Embedding.from_pretrained(
 )
 
 padded_model = PaddedSentClassifier(padded_embedding, pad_idx=PAD_IDX)
-train_model(padded_model, train_loader, 50, 0.01)
+train_model(padded_model, train_loader, 10, 0.01)
 eval_model(padded_model, test_loader)
