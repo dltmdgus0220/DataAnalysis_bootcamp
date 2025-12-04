@@ -174,3 +174,25 @@ def collate_fn_with_pad(batch): # 배치를 만드는 규칙
     labels = torch.stack(labels) # 텐서들을 모아놓은 튜플에서 하나의 큰 텐서로 변환
     return padded_seq, labels
 
+
+# train/test 분할
+x_tr, x_te, y_tr, y_te = train_test_split(tokenized_sentences, labels, test_size=0.2, stratify=labels, random_state=42)
+
+train_dataset = PaddedTextDataset(x_tr, y_tr, word_index)
+test_dataset  = PaddedTextDataset(x_te, y_te, word_index)
+
+BATCH_SIZE = 32
+train_loader = DataLoader(
+    train_dataset,
+    batch_size=BATCH_SIZE,
+    shuffle=True,
+    collate_fn=collate_fn_with_pad
+)
+
+test_loader = DataLoader(
+    test_dataset,
+    batch_size=BATCH_SIZE,
+    shuffle=False,
+    collate_fn=collate_fn_with_pad
+)
+
