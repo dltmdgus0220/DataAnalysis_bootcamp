@@ -140,3 +140,29 @@ def train_model(model, loader, num_epochs=50, lr=0.01):
         if epoch % 10 == 0 or epoch == 1:
             print(f"Epoch [{epoch}/{num_epochs}] | Loss: {avg_loss:.4f}")
 
+
+def eval_model(model, loader):
+    model.eval()
+    criterion = nn.BCEWithLogitsLoss()
+    
+    total_loss = 0.0
+    total = 0
+    correct = 0
+
+    with torch.no_grad():
+        for x, y in loader: # 배치 학습
+            logits = model(x) # (batch,)
+            y = y.float()
+
+            loss = criterion(logits, y)
+            total_loss += loss.item()
+
+            probs = torch.sigmoid(logits) # (batch,), 0과 1사이 값으로 변환
+            preds = (probs >= 0.5).long() # 0 또는 1
+            correct += (preds == y.long()).sum().item()
+            total += y.size(0)
+
+    avg_loss = total_loss / len(loader)
+    acc = correct / total
+    print(f"Test Loss: {avg_loss:.4f} | Test Acc: {acc:.4f}")
+
