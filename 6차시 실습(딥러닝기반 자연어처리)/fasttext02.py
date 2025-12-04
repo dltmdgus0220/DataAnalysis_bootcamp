@@ -166,3 +166,11 @@ def eval_model(model, loader):
     acc = correct / total
     print(f"Test Loss: {avg_loss:.4f} | Test Acc: {acc:.4f}")
 
+
+def collate_fn_with_pad(batch): # 배치를 만드는 규칙
+    seq, labels = zip(*batch)
+
+    padded_seq = pad_sequence(seq, batch_first=True, padding_value=PAD_IDX)
+    labels = torch.stack(labels) # 텐서들을 모아놓은 튜플에서 하나의 큰 텐서로 변환
+    return padded_seq, labels
+
