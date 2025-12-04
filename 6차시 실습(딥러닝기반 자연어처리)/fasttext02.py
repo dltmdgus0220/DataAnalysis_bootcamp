@@ -16,3 +16,8 @@ df = df.reset_index(drop=True) # 결측치 제거 후 인덱스 재배열
 # print(df.info())
 # print(df['label'].value_counts()) # 1(긍정):99996, 0(부정):99996
 
+# 층화추출
+_, df_sample = train_test_split(df, test_size=10000, random_state=42, stratify=df['label'])
+tokenized_sentences = [doc.split() for doc in df_sample['document']] # 공백 기준 토큰화
+labels = df_sample['label'].values # numpy array로
+
