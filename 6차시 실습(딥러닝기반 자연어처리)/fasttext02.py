@@ -46,3 +46,23 @@ extended_weights = np.zeros((vocab_size_with_pad, embed_dim), dtype=np.float32) 
 extended_weights[:vocab_size, :] = pretrained_weights
 extended_weights[PAD_IDX, : ] = 0.0 # 0으로 초기화했기 때문에 안해도 됨.
 
+
+class PaddedTextDataset(Dataset):
+    def __init__(self, tokenized_sentences, labels, word_index):
+        self.sentences = tokenized_sentences
+        self.labels = labels
+        self.word_index = word_index
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        tokens = self.sentences[idx] # 몇번째 문장인지
+        y = self.labels[idx]
+
+        indices = [self.word_index[token] for token in tokens]
+        idx_tensor = torch.tensor(indices, dtype=torch.long)
+        y_tensor = torch.tensor(y, dtype=torch.long)
+
+        return idx_tensor, y_tensor
+
