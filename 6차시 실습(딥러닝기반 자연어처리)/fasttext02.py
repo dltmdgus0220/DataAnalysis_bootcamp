@@ -196,3 +196,12 @@ test_loader = DataLoader(
     collate_fn=collate_fn_with_pad
 )
 
+padded_embedding = nn.Embedding.from_pretrained(
+    torch.from_numpy(extended_weights),
+    freeze=False,           # 파인튜닝 허용
+    padding_idx=PAD_IDX     # 패딩 인덱스 명시 (가독성 ↑)
+)
+
+padded_model = PaddedSentClassifier(padded_embedding, pad_idx=PAD_IDX)
+train_model(padded_model, train_loader, 50, 0.01)
+eval_model(padded_model, test_loader)
