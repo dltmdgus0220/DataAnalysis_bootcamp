@@ -27,3 +27,18 @@ oov_vec = ft_model.wv[oov_word]
 print("OOV 단어 '브랜드맛집' 벡터 크기:", oov_vec.shape)
 print("브랜드 vs 브랜드맛집 유사도:", ft_model.wv.similarity("브랜드", "브랜드맛집"))
 
+print(ft_model.wv.vectors_ngrams.shape)
+
+word = '지루하고'
+idx = ft_model.wv.key_to_index[word]
+print(f'word index : {idx}')
+
+# ngram으로 만들어진 subword들의 인덱스 가져오기, <브랜, 브랜드, 랜드> 이런 것들의 인덱스, 해시로 저장되기 때문에 실제 단어는 확인불가
+bucket_indices = ft_model.wv.buckets_word[idx] 
+print(f'bucket indices for this word : {bucket_indices}')
+
+subword_vectors = ft_model.wv.vectors_ngrams[bucket_indices] # 서브워드들의 임베딩된 벡터값
+idx_to_word = ft_model.wv.index_to_key
+print(len(idx_to_word)) # vocab 단어 수
+print(f'num subword : {subword_vectors.shape[0]}') # 그냥 shape은 (서브워드수, 임베딩차원)
+print(f'one subword vector (first 5) : {subword_vectors[0][:5]}')
