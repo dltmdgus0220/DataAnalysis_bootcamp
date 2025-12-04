@@ -181,7 +181,7 @@ x_tr, x_te, y_tr, y_te = train_test_split(tokenized_sentences, labels, test_size
 train_dataset = PaddedTextDataset(x_tr, y_tr, word_index)
 test_dataset  = PaddedTextDataset(x_te, y_te, word_index)
 
-BATCH_SIZE = 32
+BATCH_SIZE = 128
 train_loader = DataLoader(
     train_dataset,
     batch_size=BATCH_SIZE,
