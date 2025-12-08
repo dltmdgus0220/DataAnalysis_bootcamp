@@ -160,3 +160,13 @@ def predict_sentiment(text, model):
     print(f"예측 확률: {prob:.4f}")
     print(f"예측 감정: {label_str}")
 
+    
+
+test_sentences = [
+    '스토리가 정말 지루하고 재미없었어요',
+    '완전 감동적이고 눈물났어요'
+]
+
+for t in test_sentences:
+    predict_sentiment(t, model)
+
