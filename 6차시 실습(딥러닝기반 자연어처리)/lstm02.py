@@ -48,3 +48,9 @@ idx2word = {i : w for w, i in word2idx.items()}
 
 vocab_size = len(word2idx)
 
+def encode_tokens(tokens, word2idx, max_len):
+    indices = [word2idx.get(t, word2idx[UNK_TOKEN]) for t in tokens]
+
+    diff = max((max_len - len(indices)), 0)
+    indices += [word2idx[PAD_TOKEN]] * diff
+    return indices[:max_len]
