@@ -11,3 +11,8 @@ PAD_TOKEN = '<pad>'
 SOS_TOKEN = '<sos>'
 EOS_TOKEN = '<eos>'
 
+itos = [PAD_TOKEN, SOS_TOKEN, EOS_TOKEN] + chars
+stoi = {ch:i for i, ch in enumerate(itos)} # vocab 역할
+# print(itos)
+# print(stoi)
+
