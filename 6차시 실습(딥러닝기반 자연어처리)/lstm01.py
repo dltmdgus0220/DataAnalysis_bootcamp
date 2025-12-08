@@ -11,3 +11,9 @@ vocab = {
     "라면을": 2,
     "먹었다": 3
 }
+sent1 = [vocab["나는"], vocab["밥을"],  vocab["먹었다"]] # [0, 1, 3]
+sent2 = [vocab["나는"], vocab["라면을"], vocab["먹었다"]] # [0, 2, 3]
+# 배치 만들기: (batch_size=2, seq_len=3)
+batch = torch.tensor([sent1, sent2]) # shape: (2, 3)
+print("batch:", batch)
+print("batch.shape:", batch.shape)
