@@ -17,3 +17,10 @@ raw_texts = [
 ]
 raw_labels = [1, 0, 1, 0, 1, 0]
 
+
+def simple_tokenize(text: str):   
+    text = re.sub(r"[^0-9a-zA-Z가-힣\s]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    tokens = text.split()
+    return tokens
+
