@@ -26,3 +26,23 @@ def random_string(min_len=3, max_len=7): #random.randint():문자열 길이 결�
     length = random.randint(min_len, max_len)
     return ''.join([random.choice(chars) for _ in range(length)])
 
+def encode_sequence(text:str): # abcd(입력) -> dcba(예측)
+    # 'abcd' -> '3 4 5 6' -> <sos><eos> 붙여서 '1 3 4 5 6 2' 이런 형태로
+    encode_text = [stoi[SOS_TOKEN]] + [stoi[t] for t in text] + [stoi[EOS_TOKEN]]
+    return encode_text
+
+def decode_sequence(indices): # '1 3 4 5 6 2' -> <sos><eos> 떼고 다시 'abcd'로
+    result = []
+    for idx in indices:
+        ch = itos[idx]
+        if ch in [PAD_TOKEN, SOS_TOKEN, EOS_TOKEN]:
+            continue
+        result.append(ch)
+    return ''.join(result)
+
+# text = 'abcd'
+# encode_text = encode_sequence(text)
+# print(encode_text)
+# print(decode_sequence(encode_text))
+# print(random_string())
+
