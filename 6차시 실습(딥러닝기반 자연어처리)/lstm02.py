@@ -70,3 +70,28 @@ train_loader = DataLoader(
     shuffle=True
 )
 
+class LTSMSentimentClassifier(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_size, num_layer = 1, pad_idx = 0):
+        super().__init__()
+        self.embedding = nn.Embedding(
+            num_embeddings=vocab_size,
+            embedding_dim=embed_dim,
+            padding_idx=pad_idx
+        )
+
+        self.lstm = nn.LSTM(
+            input_size=embed_dim,
+            hidden_size=hidden_size,
+            num_layers=num_layer,
+            batch_first=True,
+            bidirectional=False
+        )
+        
+        self.fc = nn.Linear(hidden_size, 1)
+
+    def forward(self, input_idx):
+        emb = self.embedding(input_idx) # (batch, seq_len, embed_dim)
+        output, (h_n, c_n) = self.lstm(emb) # h_n : (n_layers, batch, hidden_size)
+        last_hidden = h_n[-1]
+        logits = self.fc(last_hidden).squeeze(1)
+        return logits
