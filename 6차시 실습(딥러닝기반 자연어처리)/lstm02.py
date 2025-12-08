@@ -108,3 +108,32 @@ model = LTSMSentimentClassifier(
     num_layer=num_layers,
     pad_idx=pad_idx
 )
+
+criterion = nn.BCEWithLogitsLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+def train_one_epoch(model, loader, criterion, optimizer, epoch=1):
+    model.train()
+
+    total_loss = 0.0
+    total = 0
+    correct = 0
+
+    for x, y in tqdm(loader, desc=f"Epoch {epoch}", leave=False):
+        optimizer.zero_grad()
+        logits = model(x)
+
+        loss = criterion(logits, y)
+        loss.backward()
+        optimizer.step()
+
+        total_loss += loss.item() * x.size(0)
+
+        prob = torch.sigmoid(logits)
+        pred = (prob >= 0.5).float()
+        correct += (pred == y).sum().item()
+        total += y.size(0)
+    
+    avg_loss = total_loss / total
+    acc = correct / total
+    print(f'Train loss : {avg_loss:.4f} | Train acc : {acc:.4f} ')
