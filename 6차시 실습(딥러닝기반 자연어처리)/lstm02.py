@@ -137,3 +137,8 @@ def train_one_epoch(model, loader, criterion, optimizer, epoch=1):
     avg_loss = total_loss / total
     acc = correct / total
     print(f'Train loss : {avg_loss:.4f} | Train acc : {acc:.4f} ')
+
+EPOCHS = 20
+for epoch in range(1, EPOCHS+1):
+    train_one_epoch(model, train_loader, criterion, optimizer, epoch)
+
