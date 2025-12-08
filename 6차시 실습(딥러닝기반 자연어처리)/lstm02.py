@@ -59,3 +59,14 @@ MAX_LEN = 10
 encoded = [encode_tokens(t, word2idx, MAX_LEN) for t in tokenized]
 print(encoded)
 
+x = torch.tensor(encoded, dtype=torch.long)
+y = torch.tensor(raw_labels, dtype=torch.float32)
+
+dataset = TensorDataset(x, y)
+
+train_loader = DataLoader(
+    dataset,
+    batch_size=2,
+    shuffle=True
+)
+
