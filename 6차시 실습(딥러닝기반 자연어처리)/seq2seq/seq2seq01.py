@@ -46,3 +46,19 @@ def decode_sequence(indices): # '1 3 4 5 6 2' -> <sos><eos> 떼고 다시 'abcd'
 # print(decode_sequence(encode_text))
 # print(random_string())
 
+
+class ReverseDataset(Dataset):
+    def __init__(self, num_sample=2000, min_len=3, max_len=7):
+        self.data = []
+        for _ in range(num_sample):
+            s = random_string(min_len, max_len)
+            input = encode_sequence(s)
+            target = encode_sequence(s[::-1])
+            self.data.append((input, target))
+
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        return self.data[index]
+    
