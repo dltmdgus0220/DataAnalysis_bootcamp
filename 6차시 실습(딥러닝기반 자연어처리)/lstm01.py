@@ -17,3 +17,11 @@ sent2 = [vocab["나는"], vocab["라면을"], vocab["먹었다"]] # [0, 2, 3]
 batch = torch.tensor([sent1, sent2]) # shape: (2, 3)
 print("batch:", batch)
 print("batch.shape:", batch.shape)
+
+# 임베딩 레이어
+embedding = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embed_dim)
+# 단어 인덱스 → 임베딩 벡터
+emb = embedding(batch) # shape: (2, 3, 4)
+print("\n[임베딩 통과 후]")
+print("emb.shape:", emb.shape) # (batch, seq_len, embed_dim)
+
