@@ -22,3 +22,7 @@ EOS_IDX = stoi[EOS_TOKEN]
 
 vocab_size = len(stoi)
 
+def random_string(min_len=3, max_len=7): #random.randint():문자열 길이 결정, random.choice():복원추출
+    length = random.randint(min_len, max_len)
+    return ''.join([random.choice(chars) for _ in range(length)])
+
