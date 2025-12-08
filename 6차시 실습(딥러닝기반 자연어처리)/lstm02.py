@@ -54,3 +54,8 @@ def encode_tokens(tokens, word2idx, max_len):
     diff = max((max_len - len(indices)), 0)
     indices += [word2idx[PAD_TOKEN]] * diff
     return indices[:max_len]
+
+MAX_LEN = 10
+encoded = [encode_tokens(t, word2idx, MAX_LEN) for t in tokenized]
+print(encoded)
+
