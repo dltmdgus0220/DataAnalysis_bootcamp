@@ -25,3 +25,20 @@ emb = embedding(batch) # shape: (2, 3, 4)
 print("\n[임베딩 통과 후]")
 print("emb.shape:", emb.shape) # (batch, seq_len, embed_dim)
 
+# LSTM 레이어
+lstm = nn.LSTM(
+    input_size=embed_dim, # 각 타임스텝 입력 벡터 크기
+    hidden_size=hidden_size,
+    num_layers=1,
+    batch_first=True # (batch, seq_len, feature) 형태 사용
+)
+
+# LSTM 통과
+output, (h_n, c_n) = lstm(emb)
+print("\n[LSTM 결과]")
+print("output.shape:", output.shape) # (batch, seq_len, hidden_size)
+print("h_n.shape:", h_n.shape) # (num_layers, batch, hidden_size)
+print("c_n.shape:", c_n.shape) # (num_layers, batch, hidden_size)
+print("\noutput:", output)
+print("\nh_n:", h_n)
+print("\nc_n:", c_n)
