@@ -24,3 +24,27 @@ def simple_tokenize(text: str):
     tokens = text.split()
     return tokens
 
+
+tokenized = [simple_tokenize(t) for t in raw_texts]
+
+PAD_TOKEN = '[PAD]'
+UNK_TOKEN = '[UNK]'
+
+word2idx = {
+    PAD_TOKEN:0,
+    UNK_TOKEN:1
+}
+
+counter = Counter()
+for t in tokenized:
+    counter.update(t)
+
+for w, _ in counter.most_common():
+    word2idx[w] = len(word2idx)
+# print(word2idx)
+
+idx2word = {i : w for w, i in word2idx.items()}
+# print(idx2word)
+
+vocab_size = len(word2idx)
+
