@@ -62,3 +62,16 @@ class ReverseDataset(Dataset):
     def __getitem__(self, index):
         return self.data[index]
     
+
+def collate_fn(batch):
+    seq, target = zip(*batch)
+
+    # 텐서로 변환
+    seq = [torch.tensor(s, dtype=torch.long) for s in seq]
+    target = [torch.tensor(t, dtype=torch.long) for t in target]
+
+    # 가장 긴 시퀀스 길이로 패딩
+    padded_seq = pad_sequence(seq, batch_first=True, padding_value=PAD_IDX)
+    padded_target = pad_sequence(target, batch_first=True, padding_value=PAD_IDX)
+
+    return padded_seq, padded_target
