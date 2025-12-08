@@ -95,3 +95,16 @@ class LTSMSentimentClassifier(nn.Module):
         last_hidden = h_n[-1]
         logits = self.fc(last_hidden).squeeze(1)
         return logits
+    
+embed_dim = 50
+hidden_size = 64
+num_layers = 1
+pad_idx = word2idx[PAD_TOKEN]
+
+model = LTSMSentimentClassifier(
+    vocab_size=vocab_size,
+    embed_dim=embed_dim,
+    hidden_size=hidden_size,
+    num_layer=num_layers,
+    pad_idx=pad_idx
+)
