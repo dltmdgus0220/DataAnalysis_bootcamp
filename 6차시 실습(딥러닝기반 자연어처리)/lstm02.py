@@ -142,3 +142,21 @@ EPOCHS = 20
 for epoch in range(1, EPOCHS+1):
     train_one_epoch(model, train_loader, criterion, optimizer, epoch)
 
+
+def predict_sentiment(text, model):
+    model.eval()
+    tokens = simple_tokenize(text)
+    encoded = encode_tokens(tokens, word2idx, MAX_LEN)
+    x = torch.tensor(encoded, dtype=torch.long).unsqueeze(0)
+
+    with torch.no_grad():
+        logits = model(x)
+        prob = torch.sigmoid(logits).item()
+        pred = 1 if prob >= 0.5 else 0
+
+    # 결과 출력
+    label_str = "긍정 😊" if pred == 1 else "부정 😢"
+    print(f"\n입력 문장: {text}")
+    print(f"예측 확률: {prob:.4f}")
+    print(f"예측 감정: {label_str}")
+
