@@ -16,3 +16,9 @@ stoi = {ch:i for i, ch in enumerate(itos)} # vocab 역할
 # print(itos)
 # print(stoi)
 
+PAD_IDX = stoi[PAD_TOKEN]
+SOS_IDX = stoi[SOS_TOKEN]
+EOS_IDX = stoi[EOS_TOKEN]
+
+vocab_size = len(stoi)
+
