@@ -118,4 +118,22 @@ class Encoder(nn.Module):
         outputs, hidden = self.gru(embedded)
         return outputs, hidden
 
-    return padded_seq, padded_target
+class Decoder(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embedding_dim=embed_dim, padding_idx=PAD_IDX)
+        self.gru = nn.GRU(embed_dim, hidden_size=hidden_dim, batch_first=True)
+        self.fc_out = nn.Linear(hidden_dim, vocab_size)
+
+    def forward(self, input_step, hidden):
+        input_step = input_step.unsqueeze(1) # (32,) -> (32,1)
+        embedded = self.embedding(input_step) # (batch, seq_len) -> (batch, seq_len, hidden_size)
+        output, hidden = self.gru(embedded, hidden)
+        # output = (batch, seq_len, hidden) = (32, 1, hidden_size)
+        # hidden = (1, batch, hidden) = (1, 32, hidden_size)
+
+        output = output.squeeze(1) # (batch, 1, hidden_size) -> (batch, hidden_size)
+        logits = self.fc_out(output) # (batch, vocab_size)
+
+        return logits, hidden
+    
