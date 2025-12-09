@@ -137,3 +137,33 @@ class Decoder(nn.Module):
 
         return logits, hidden
     
+
+class Seq2Seq(nn.Module):
+    def __init__(self, encoder, decoder):
+        super().__init__()
+        self.encoder = encoder
+        self.decoder = decoder
+
+    def forward(self, src, tgt, teacher_forcing_rate=0.7):
+        batch_size = src.size(0)
+        tgt_len = tgt.size(1)
+
+        outputs = torch.zeros(batch_size, tgt_len, vocab_size)
+
+        _, hidden = self.encoder(src)
+        input_step = tgt[:, 0] # <SOS>
+
+        for t in range(1, tgt_len):
+            logits, hidden = self.decoder(input_step, hidden)
+            outputs[:, t , :] = logits # logits:(batch, vocab_size)
+
+            teacher_force = (random.random() < teacher_forcing_rate)
+
+            top1 = logits.argmax(dim=1)
+
+            if teacher_force:
+                input_step = tgt[:, t]
+            else:
+                input_step = top1
+
+        return outputs
