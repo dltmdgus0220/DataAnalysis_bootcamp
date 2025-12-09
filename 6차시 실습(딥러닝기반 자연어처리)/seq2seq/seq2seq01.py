@@ -202,3 +202,25 @@ for epoch in range(1, num_epochs+1):
 
     avg_loss = total_loss / total_token
     print(f'Epoch : {epoch} - loss : {avg_loss:.4f}')
+
+def predict(model, s, max_len=20):
+    model.eval()
+    with torch.no_grad():
+        src = encode_sequence(s).unsqueeze(0)
+
+        _, hidden = model.encoder(src)
+
+        input_step = torch.tensor([SOS_IDX])
+        outputs = []
+
+        for _ in range(max_len):
+            logits, hidden = model.decoder(input_step, hidden)
+            top1 = logits.argmax(dim=1)
+            if top1.item() == EOS_IDX:
+                break
+            outputs.append(top1.item())
+            input_step = top1
+            
+        pred_str = decode_sequence(outputs)
+        return pred_str
+
