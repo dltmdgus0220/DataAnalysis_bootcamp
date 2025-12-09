@@ -167,3 +167,15 @@ class Seq2Seq(nn.Module):
                 input_step = top1
 
         return outputs
+    
+embedded_dim = 64
+hidden_dim = 256
+num_epochs = 30
+
+encoder = Encoder(vocab_size, embedded_dim, hidden_dim)
+decoder = Decoder(vocab_size, embedded_dim, hidden_dim)
+model = Seq2Seq(encoder, decoder)
+
+criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
+optimizer = torch.optim.Adam(model.parameters(), lr = 0.01)
+
