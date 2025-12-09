@@ -107,5 +107,15 @@ train_loader = DataLoader(
     collate_fn=collate_fn
 )
 
+class Encoder(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embedding_dim=embed_dim, padding_idx=PAD_IDX)
+        self.gru = nn.GRU(embed_dim, hidden_size=hidden_dim, batch_first=True)
+
+    def forward(self, src):
+        embedded = self.embedding(src)
+        outputs, hidden = self.gru(embedded)
+        return outputs, hidden
 
     return padded_seq, padded_target
