@@ -224,3 +224,10 @@ def predict(model, s, max_len=20):
         pred_str = decode_sequence(outputs)
         return pred_str
 
+test_sample = ['abcde', 'xyz', 'hello', 'korea']
+for t in test_sample:
+    print(f"원본 : {t}")
+    print(f"정답 : {t[::-1]}")
+    print(f"예측 : {predict(model, t)}")
+    print()
+
