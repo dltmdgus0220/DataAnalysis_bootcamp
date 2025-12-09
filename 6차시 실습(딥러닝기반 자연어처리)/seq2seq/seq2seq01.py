@@ -99,5 +99,13 @@ def collate_fn(batch):
     return batch_inp, batch_tgt
 
 
+train_dataset = ReverseDataset(num_sample=2000)
+train_loader = DataLoader(
+    train_dataset,
+    batch_size=32,
+    shuffle=True,
+    collate_fn=collate_fn
+)
+
 
     return padded_seq, padded_target
