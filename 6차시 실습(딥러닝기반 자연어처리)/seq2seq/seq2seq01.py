@@ -76,5 +76,28 @@ def collate_fn(batch):
 
     # return padded_seq, padded_tgt
 
+    inp_lens = [len(s) for s in inp_seq]
+    tgt_lens = [len(t) for t in tgt_seq]
+
+    # 당연히 길이 같지만 가독성을 위해
+    max_inp = max(inp_lens)
+    max_tgt = max(tgt_lens)
+
+    padded_inp = []
+    padded_tgt = []
+
+    for inp, tgt in zip(inp_seq, tgt_seq):
+        pad_len_inp = max_inp - len(inp)
+        padded_inp.append(torch.cat([inp, torch.full((pad_len_inp,), PAD_IDX, dtype=torch.long)])) # PAD_IDX를 (pad_len_inp,) shape만큼 채우기
+
+        pad_len_tgt = max_tgt - len(tgt)
+        padded_tgt.append(torch.cat([tgt, torch.full((pad_len_tgt,), PAD_IDX, dtype=torch.long)]))
+
+    batch_inp = torch.stack(padded_inp, dim=0)
+    batch_tgt = torch.stack(padded_tgt, dim=0)
+
+    return batch_inp, batch_tgt
+
+
 
     return padded_seq, padded_target
