@@ -179,3 +179,26 @@ model = Seq2Seq(encoder, decoder)
 criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
 optimizer = torch.optim.Adam(model.parameters(), lr = 0.01)
 
+for epoch in range(1, num_epochs+1):
+    model.train()
+    total_loss = 0.0
+    total_token = 0
+
+    for src_batch, tgt_batch in tqdm(train_loader, desc=f'Epoch {epoch}', leave=False):
+        optimizer.zero_grad()
+
+        outputs = model(src_batch, tgt_batch, teacher_forcing_rate=0.7) # (batch_size, tgt_len, vocab_size)
+        outputs_reshape = outputs[:, 1:, :].reshape(-1, vocab_size) # (N, C) = (batch*tgt_len, vocab_size)
+        tgt_reshape = tgt_batch[:, 1:].reshape(-1) # (N,) = (tgt_len*vocab_size)
+
+        loss = criterion(outputs_reshape, tgt_reshape)
+
+        loss.backward()
+        optimizer.step()
+
+        valid_tokens = (tgt_reshape != PAD_IDX).sum().item()
+        total_loss += (loss.item() * valid_tokens)
+        total_token += valid_tokens
+
+    avg_loss = total_loss / total_token
+    print(f'Epoch : {epoch} - loss : {avg_loss:.4f}')
