@@ -29,7 +29,7 @@ def random_string(min_len=3, max_len=7): #random.randint():문자열 길이 결�
 def encode_sequence(text:str): # abcd(입력) -> dcba(예측)
     # 'abcd' -> '3 4 5 6' -> <sos><eos> 붙여서 '1 3 4 5 6 2' 이런 형태로
     encode_text = [stoi[SOS_TOKEN]] + [stoi[t] for t in text] + [stoi[EOS_TOKEN]]
-    return encode_text
+    return torch.tensor(encode_text, dtype=torch.long)
 
 def decode_sequence(indices): # '1 3 4 5 6 2' -> <sos><eos> 떼고 다시 'abcd'로
     result = []
