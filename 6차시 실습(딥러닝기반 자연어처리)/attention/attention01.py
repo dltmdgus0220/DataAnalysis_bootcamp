@@ -8,6 +8,8 @@ from torch.utils.data import Dataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence
 import matplotlib.pyplot as plt
 import numpy as np
+from tqdm import tqdm
+
 
 
 # 상수 선언
@@ -35,7 +37,7 @@ NUM_EPOCHS = 15
 LEARNING_RATE = 1e-3
 
 
-# 데이터셋 생성
+# 데이터셋 클래스
 class CopyDataset(Dataset):
     def __init__(
             self,
@@ -70,7 +72,7 @@ class CopyDataset(Dataset):
     def __getitem__(self, index:int) -> Tuple[torch.tensor, torch.tensor]:
         return self.data[index]
     
-
+# 배치 생성 규칙 함수
 def collate_fn(batch:List[Tuple[torch.tensor, torch.tensor]]):
     src, tgt = zip(*batch)
     # src=[3,7,9,12] / tgt=[1,3,7,9,12,2]
@@ -78,12 +80,35 @@ def collate_fn(batch:List[Tuple[torch.tensor, torch.tensor]]):
     # tgt_output = [3,7,9,12,2]
 
     padded_src = pad_sequence(src, batch_first=True, padding_value=PAD_IDX)
-    mask = (padded_src != PAD_IDX)
+    mask = (padded_src != PAD_IDX).long()
 
-    tgt_input  = [t[:-1] for t in tgt]
-    tgt_output = [t[1:]  for t in tgt]
+    for t in tgt:
+        tgt_input  = [t[:-1]]
+        tgt_output = [t[1:]]
     padded_tgt_input = pad_sequence(tgt_input, batch_first=True, padding_value=PAD_IDX)
     padded_tgt_output = pad_sequence(tgt_output, batch_first=True, padding_value=PAD_IDX)
     
 
     return padded_src, mask, padded_tgt_input, padded_tgt_output # 각각은 전부 텐서
+
+# 인코더 클래스
+class Encoder(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_size, pad_idx):
+        super().__init__()
+        self.embedding = nn.Embedding(
+            vocab_size,
+            embed_dim,
+            padding_idx=pad_idx
+        )
+
+        self.rnn = nn.GRU(
+            embed_dim,
+            hidden_size,
+            batch_first=True,
+            bidirectional=False
+        )
+
+    def forward(self, src, src_len=None):
+        emb = self.embedding(src)
+        outputs, hidden = self.rnn(emb)
+        return outputs, hidden.squeeze(0)
