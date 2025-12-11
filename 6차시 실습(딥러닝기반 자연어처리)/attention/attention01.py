@@ -278,3 +278,37 @@ def train_one_epoch(model, loader, criterion, optimizer, epoch=1):
         total_tokens += batch_tokens
 
     return total_loss / total_token
+
+# 데이터셋 생성
+train_dataset = CopyDataset(
+    num_samples=NUM_TRAIN_SAMPLES,
+    min_len=MIN_SEQ_LEN,
+    max_len=MAX_SEQ_LEN,
+    vocab_start=3,
+    vocab_end=3 + NUM_LETTERS - 1,
+    sos_index=SOS_IDX,
+    eos_index=EOS_IDX
+)
+valid_dataset = CopyDataset(
+    num_samples=NUM_VALID_SAMPLES,
+    min_len=MIN_SEQ_LEN,
+    max_len=MAX_SEQ_LEN,
+    vocab_start=3,
+    vocab_end=3 + NUM_LETTERS - 1,
+    sos_index=SOS_IDX,
+    eos_index=EOS_IDX
+)
+
+# 데이터로더 생성
+train_loader = DataLoader(
+    train_dataset,
+    batch_size=BATCH_SIZE,
+    shuffle=True,
+    collate_fn=collate_fn
+)
+valid_loader = DataLoader(
+    valid_dataset,
+    batch_size=BATCH_SIZE,
+    shuffle=False,
+    collate_fn=collate_fn
+)
