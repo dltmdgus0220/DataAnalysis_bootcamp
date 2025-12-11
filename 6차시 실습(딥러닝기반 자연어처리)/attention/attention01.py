@@ -251,3 +251,30 @@ class Seq2Seq(nn.Module):
 
         return logits, attn_weights_all
 
+
+def train_one_epoch(model, loader, criterion, optimizer, epoch=1):
+    model.train()
+
+    total_loss = 0.0
+    total_token = 0
+
+    for src_batch, src_mask, tgt_input, tgt_output in tqdm(loader, desc=f"Epoch {epoch}", leave=False):
+        # src_batch:(B, src_len), src_mask:(B, src_len), tgt_input(B, tgt_len), tgt_output(B, tgt_len)
+        # tgt_len = src_len+1
+
+        optimizer.zero_grad()
+        logits, attn = model(src_batch, src_mask, tgt_input)
+
+        loss = criterion(
+            logits.reshape(-1, logits.size(-1)),
+            tgt_output.reshape(-1)
+        )
+        loss.backward()
+        optimizer.step()
+
+        batch_tokens = (tgt_output != PAD_IDX).sum().item()
+
+        total_loss += loss.item() * batch_tokens
+        total_tokens += batch_tokens
+
+    return total_loss / total_token
