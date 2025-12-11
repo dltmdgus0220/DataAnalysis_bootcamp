@@ -214,3 +214,40 @@ def print_example(src, trg_input, trg_output, pred_indices):
     print("PRED       :", " ".join(pred_tokens))
     print("-------------------------------------------------")
 
+
+"""
+1. 훈련데이터셋생성(CopyDataset)
+2. 검증데이터셋생성
+3. 훈련/검증 데이터로더 생성
+4. encoder 생성
+5. decoder 생성
+6. seq2seq 모델 생성
+7. 손실함수 생성
+8. 옵티마이저생성
+9. train_one_epoch() 생성
+    - 손실을 구할 때 logits(N,C) , tgt_output(N)을 넘김
+    - 평균 손실은 토큰 단위로
+    - 1 epoch 동안 (훈련(2000) / 검증(200)) 둘다 출력
+"""
+
+# seq2seq 클래스
+class Seq2Seq(nn.Module):
+    def __init__(self, encoder, decoder):
+        super().__init__()
+        self.encoder = encoder
+        self.decoder = decoder
+
+    def forward(self, src, src_mask, tgt_input):
+        # src:(B, src_len), mask:(B, src_len), tgt_input(B, tgt_len)
+        # tgt_len = src_len+1
+
+        encoder_outputs, encoder_hidden = self.encoder(src)
+        logits, attn_weights_all = self.decoder(
+            tgt_input,
+            encoder_outputs,
+            src_mask,
+            encoder_hidden
+        )
+
+        return logits, attn_weights_all
+
