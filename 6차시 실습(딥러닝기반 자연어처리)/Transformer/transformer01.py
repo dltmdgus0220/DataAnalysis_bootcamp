@@ -124,3 +124,25 @@ def collate_fn(batch: List[Tuple[torch.Tensor, torch.Tensor]]):
 
     return src_batch, trg_input, trg_output, src_key_padding_mask, tgt_key_padding_mask
 
+
+class PositionalEncoding(nn.Module):
+    def __init__(self, d_model:int, dropout:float=0.1, max_len:int=5000):
+        super().__init__()
+        self.dropout = nn.Dropout(dropout)
+
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len, dtype=torch.float32).unsqueeze(1) # (max_len, 1)
+
+        div_term = torch.exp(torch.arange(0,d_model,2).float() * (-math.log(10000.0) / d_model)) # 스케일링을 위한 값
+
+        pe[:, 0::2] = torch.sin(position * div_term) # 짝수 차원
+        pe[:, 1::2] = torch.cos(position * div_term) # 홀수 차원
+
+        pe = pe.unsqueeze(0) # (1, max_len, d_model)
+        self.register_buffer('pe', pe) # 모델 파라미터들 저장할 때 같이 저장됨.
+
+    def forward(self, x:torch.Tensor) -> torch.Tensor:
+        seq_len = x.size(1)
+        x += self.pe[:, :seq_len, :]
+        return self.dropout(x)
+    
