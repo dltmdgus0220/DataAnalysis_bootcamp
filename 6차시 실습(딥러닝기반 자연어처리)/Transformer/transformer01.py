@@ -146,3 +146,92 @@ class PositionalEncoding(nn.Module):
         x += self.pe[:, :seq_len, :]
         return self.dropout(x)
     
+
+class TransformerCopyModel(nn.Module):
+    def __init__(
+            self,
+            vocab_size:int,
+            d_model:int,
+            nhead:int,
+            num_encoder_layers:int,
+            num_decoder_layers:int,
+            dim_feedforward:int,
+            dropout:float,
+            pad_idx:int):
+        
+        super().__init__()
+        self.d_model = d_model
+        self.pad_idx = pad_idx
+
+        self.tok_embedding = nn.Embedding(vocab_size, d_model, pad_idx)
+        self.pos_encoder = PositionalEncoding(d_model, dropout)
+
+        self.encoder_layer = nn.TransformerEncoderLayer(
+            d_model,
+            nhead, # d_model을 nhead만큼 나눠서 q,k,v 따로 attention 계산 후 concat -> 그 다음 linear projection, shape 변화 없음.
+            dim_feedforward,
+            dropout,
+            batch_first=True
+        ) # Self-Attention(단어간 관계 학습) -> FFN(단어 각각의 의미 학습), 각 단계마다 Residual(잔차 더해줌) -> LayerNorm(정규화) 수행
+        # (batch, seq_len, d_model)
+        self.encoder = nn.TransformerEncoder(
+            self.encoder_layer,
+            num_encoder_layers
+        ) # encoder_layer를 num_encoder_layer 만큼 쌓아서 블록구조로 만들어줌
+        # 인코더의 output은 입력 문장의 문맥정보를 요약한 벡터, 이에 어떤 가중치를 곱해주냐에 따라 q,k,v로 활용
+
+        self.decoder_layer = nn.TransformerDecoderLayer(
+            d_model,
+            nhead,
+            dim_feedforward,
+            dropout,
+            batch_first=True
+        ) # mask mha(문장 내 모든 단어들에 대해 병렬적으로 수행) -> cross mha(인코더의 k,v를 통해 어떤 정보를 참고할지 결정)
+        # -> FFN(비선형변환, 표현강화) -> 다음단어 생성
+        self.decoder = nn.TransformerDecoder(
+            self.decoder_layer,
+            num_decoder_layers
+        ) # 디코더의 output은 다음단어를 예측하기 위한 고차원의 의미 벡터
+
+        self.fc_out = nn.Linear(d_model, vocab_size) # 고차원의 의미 벡터를 vocab_size로 차원을 줄여줌. 이후 softmax를 통과하여 확률분포로 만들고 제일 높은 확률의 단어로 예측
+
+    def generate_square_subsequent_mask(self, sz:int):
+        mask = torch.triu(torch.ones(sz, sz, dtype=torch.bool), diagonal=1)
+        # (sz,sz) 짜리 1로 채워진, 즉 true로 채워진 정사각행렬 생성
+        # triu:상삼각행렬, diagonal=1 대각선 위 한칸부터 상삼각행렬로 보겠다는 뜻, 이 부분만 true로 남기고 나머지 false로
+        # true인 부분이 마스크
+        return mask
+    
+    def forward(
+            self,
+            src:torch.Tensor,
+            tgt_input:torch.Tensor,
+            src_key_padding_mask:torch.Tensor,
+            tgt_key_padding_mask:torch.Tensor
+    ):
+        B, S = src.size()
+        B2, T = tgt_input.size()
+
+        # 임베딩 + 위치 인코딩
+        src_emb = self.tok_embedding(src) * math.sqrt(self.d_model) # 임베딩 정보에 더 가중치를 줌
+        src_emb = self.pos_encoder(src_emb)
+
+        tgt_emb = self.tok_embedding(tgt_input) * math.sqrt(self.d_model)
+        tgt_emb = self.pos_encoder(tgt_emb)
+
+        memory = self.encoder(src_emb, src_key_padding_mask=src_key_padding_mask) # 인코더 통과
+
+        tgt_mask = self.generate_square_subsequent_mask(T)
+
+        out = self.decoder(
+            tgt = tgt_emb,
+            memory = memory,
+            tgt_mask = tgt_mask,
+            tgt_key_padding_mask = tgt_key_padding_mask,
+            memory_key_padding_mask = src_key_padding_mask
+        ) # 디코더 통과
+        
+        logits = self.fc_out(out)
+
+        return logits
+
