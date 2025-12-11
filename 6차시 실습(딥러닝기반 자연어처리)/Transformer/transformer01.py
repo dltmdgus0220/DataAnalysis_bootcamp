@@ -235,3 +235,22 @@ class TransformerCopyModel(nn.Module):
 
         return logits
 
+
+def indices_to_tokens(indices: List[int]) -> List[str]:
+    return [VOCAB_TOKENS[i] for i in indices]
+
+def print_example(src, trg_output, pred_indices):
+    """
+    src: (S,)
+    trg_output: (T,)
+    pred_indices: (T,)
+    """
+    src_tokens = indices_to_tokens(src)
+    trg_tokens = indices_to_tokens(trg_output)
+    pred_tokens = indices_to_tokens(pred_indices)
+    print("-------------------------------------------------")
+    print("SRC        :", " ".join(src_tokens))
+    print("TRG (gold) :", " ".join(trg_tokens))
+    print("PRED       :", " ".join(pred_tokens))
+    print("-------------------------------------------------")
+
