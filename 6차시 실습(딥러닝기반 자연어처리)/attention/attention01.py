@@ -312,3 +312,24 @@ valid_loader = DataLoader(
     shuffle=False,
     collate_fn=collate_fn
 )
+
+# 인코더/디코더 생성
+encoder = Encoder(
+    vocab_size=VOCAB_SIZE,
+    embed_dim=EMBED_DIM,
+    hidden_size=HIDDEN_SIZE,
+    pad_idx=PAD_IDX
+)
+decoder = DecoderWithAttention(
+    vocab_size=VOCAB_SIZE,
+    embed_dim=EMBED_DIM,
+    hidden_size=HIDDEN_SIZE,
+    pad_idx=PAD_IDX
+)
+
+# seq2seq 모델 생성
+model = Seq2Seq(encoder, decoder)
+
+# 손실함수/옵티마이저 생성
+criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
+optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
