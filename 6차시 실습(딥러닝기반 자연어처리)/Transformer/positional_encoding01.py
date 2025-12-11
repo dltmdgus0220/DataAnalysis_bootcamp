@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import math
 
 def get_positional_encoding(max_len, d_model):
@@ -18,3 +19,10 @@ def get_positional_encoding(max_len, d_model):
     # 문장 내 장거리 의존성과 단거리 의존성을 동시에 표현할 수 있음.
     # sin, cos 범위가 무한대이기 때문에 학습 중 보지 못한 긴 문장도 일반화 가능.
     # sinusodial 방식은 수학적 공식에 대입해 계산하면 되기 때문에 학습이 필요없다는 장점도 있음.
+
+batch_size = 2
+seq_len = 5
+d_model = 16
+vocab_size = 100
+embedding = nn.Embedding(vocab_size, d_model)
+
