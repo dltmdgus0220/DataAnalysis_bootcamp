@@ -60,17 +60,13 @@ class CopyDataset(Dataset):
 
     def _make_sample(self) -> Tuple[torch.Tensor, torch.Tensor]:
         length = random.randint(self.min_len, self.max_len)
+
         # 문자 영역: [vocab_start, vocab_end] (정수 토큰)
-        src_tokens = [
-            random.randint(self.vocab_start, self.vocab_end)
-            for _ in range(length)
-        ]
+        src_tokens = [random.randint(self.vocab_start, self.vocab_end) for _ in range(length)]
         src = torch.tensor(src_tokens, dtype=torch.long)
+
         # trg: [<sos>, x1, ..., xL, <eos>]
-        trg = torch.tensor(
-            [self.sos_idx] + src_tokens + [self.eos_idx],
-            dtype=torch.long
-        )
+        trg = torch.tensor([self.sos_idx] + src_tokens + [self.eos_idx], dtype=torch.long)
         return src, trg
     
     def __len__(self) -> int:
