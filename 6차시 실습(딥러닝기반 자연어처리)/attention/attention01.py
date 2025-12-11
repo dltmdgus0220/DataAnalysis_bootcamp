@@ -133,3 +133,62 @@ class AdditiveAttention(nn.Module):
         context = torch.bmm(attn_weights.unsqueeze(1), encoder_hidden) # (B, 1, H)
 
         return context, attn_weights
+    
+# 디코더 클래스
+class DecoderWithAttention(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_size, pad_idx):
+        super().__init__()
+        self.embedding = nn.Embedding(
+            vocab_size,
+            embed_dim,
+            padding_idx=pad_idx
+        )
+
+        self.rnn = nn.GRU(
+            embed_dim + hidden_size,
+            hidden_size,
+            batch_first=True
+        )
+
+        self.fc_out = nn.Linear(hidden_size, vocab_size)
+
+        self.attention = AdditiveAttention(
+            hidden_size_enc=hidden_size,
+            hidden_size_dec=hidden_size,
+            attn_dim=hidden_size
+        )
+
+    def forward(self, tgt_input, encoder_outputs, encoder_mask, hidden):
+        B, T_in = tgt_input.size()
+        emb = self.embedding(tgt_input) # (B, T_in, E)
+
+        outputs = []
+        attn_list = []
+
+        decoder_hidden = hidden
+        input_step = emb[:, 0, :] # 첫 입력 <sos> , (B, E)
+        
+        for t in range(1, T_in):
+            context, attn_weights = self.attention(
+                encoder_outputs,
+                decoder_hidden,
+                encoder_mask
+            ) # context:(B, S)
+
+            attn_list.append(attn_weights.unsqueeze(1)) # (B, 1, S)
+
+            rnn_input = torch.cat([input_step, context], dim=-1).unsqueeze(1) # (B,E)+(B,H) => (B,E+H) => (B,1,E+H)
+            output, new_hidden = self.rnn(
+                rnn_input, # (B,1,E+H)
+                decoder_hidden.unsqueeze(0) # (1,B,H)
+            ) # output:(B,1,H), new_hidden:(1,B,H)
+            decoder_hidden = new_hidden.squeeze(0)   # (B, H)
+
+            logits = self.fc_out(output.squeeze(1))  # (B, vocab_size)
+            outputs.append(logits.unsqueeze(1))
+
+            input_step = emb[:, t, :] # (B, E), teacher forcing
+
+        outputs = torch.cat(outputs, dim=1) # (B, T-1, vocab_size)
+        attn_weights_all = torch.cat(attn_list, 1) # (B, T-1, S)
+        return outputs, attn_weights_all
