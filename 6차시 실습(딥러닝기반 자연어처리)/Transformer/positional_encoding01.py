@@ -26,3 +26,16 @@ d_model = 16
 vocab_size = 100
 embedding = nn.Embedding(vocab_size, d_model)
 
+# 입력 토큰 (예: 랜덤 인덱스)
+x_idx = torch.randint(0, vocab_size, (batch_size, seq_len)) # (batch, seq_len)
+
+# 단어 임베딩
+x_embed = embedding(x_idx) # (batch, seq_len, d_model)
+
+# Positional Encoding 생성
+pe = get_positional_encoding(max_len=seq_len, d_model=d_model) # (seq_len, d_model)
+pe = pe.unsqueeze(0) # (1, seq_len, d_model) -> batch 차원 맞추기
+
+# 단어 임베딩 + 위치 인코딩(가중치역할)
+x_with_pos = x_embed + pe # broadcasting -> (batch, seq_len, d_model)
+# print(x_with_pos)
