@@ -75,3 +75,52 @@ class CopyDataset(Dataset):
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
         return self.data[idx]
     
+
+def collate_fn(batch: List[Tuple[torch.Tensor, torch.Tensor]]):
+    """
+    batch: [(src, trg), (src, trg), ...]
+      src: (src_len,)
+      trg: (trg_len,)  -> [<sos>, x1, x2, ..., xL, <eos>]
+    리턴:
+      - src_batch : (B, S)
+      - trg_input : (B, T) [<sos>, x1, ..., xL]
+      - trg_output: (B, T) [x1, ..., xL, <eos>]
+      - src_key_padding_mask: (B, S)  (PAD 위치=True)
+      - tgt_key_padding_mask: (B, T)  (PAD 위치=True)
+    """
+
+    src_list, trg_list = zip(*batch)
+
+    # src 패딩
+    src_batch = pad_sequence(
+        src_list,
+        batch_first=True,
+        padding_value=PAD_IDX
+    ) # (B, S)
+
+    # trg_input, trg_output 분리
+    trg_input_list = []
+    trg_output_list = []
+    for trg in trg_list:
+        # trg: [<sos>, x1, ..., xL, <eos>]
+        trg_input_list.append(trg[:-1]) # [<sos>, x1, ..., xL]
+        trg_output_list.append(trg[1:]) # [x1, ..., xL, <eos>]
+
+    trg_input = pad_sequence(
+        trg_input_list,
+        batch_first=True,
+        padding_value=PAD_IDX
+    ) # (B, T)
+    trg_output = pad_sequence(
+        trg_output_list,
+        batch_first=True,
+        padding_value=PAD_IDX
+    ) # (B, T)
+    
+    # Transformer는 key_padding_mask에서
+    # "True = 가려야 할 위치(PAD)" 로 사용
+    src_key_padding_mask = (src_batch == PAD_IDX) # (B, S)
+    tgt_key_padding_mask = (trg_input == PAD_IDX) # (B, T)
+
+    return src_batch, trg_input, trg_output, src_key_padding_mask, tgt_key_padding_mask
+
