@@ -192,3 +192,25 @@ class DecoderWithAttention(nn.Module):
         outputs = torch.cat(outputs, dim=1) # (B, T-1, vocab_size)
         attn_weights_all = torch.cat(attn_list, 1) # (B, T-1, S)
         return outputs, attn_weights_all
+    
+# 공백 기준 토큰화 함수
+def indices_to_tokens(indices: List[int]) -> List[str]:
+    return [VOCAB_TOKENS[i] for i in indices]
+
+# 출력 함수
+def print_example(src, trg_input, trg_output, pred_indices):
+    """
+    src: (S,)
+    trg_input: (T,)
+    trg_output: (T,)  # [x1, ..., xL, <eos>]
+    pred_indices: (T,) # 예측 토큰 인덱스
+    """
+    src_tokens = indices_to_tokens(src)
+    trg_tokens = indices_to_tokens(trg_output)
+    pred_tokens = indices_to_tokens(pred_indices)
+    print("-------------------------------------------------")
+    print("SRC        :", " ".join(src_tokens))
+    print("TRG (gold) :", " ".join(trg_tokens))
+    print("PRED       :", " ".join(pred_tokens))
+    print("-------------------------------------------------")
+
