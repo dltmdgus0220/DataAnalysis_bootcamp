@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import math
 
+
 def get_positional_encoding(max_len, d_model):
     """
     반환: (max_len, d_model) 텐서
@@ -19,6 +20,25 @@ def get_positional_encoding(max_len, d_model):
     # 문장 내 장거리 의존성과 단거리 의존성을 동시에 표현할 수 있음.
     # sin, cos 범위가 무한대이기 때문에 학습 중 보지 못한 긴 문장도 일반화 가능.
     # sinusodial 방식은 수학적 공식에 대입해 계산하면 되기 때문에 학습이 필요없다는 장점도 있음.
+
+
+class SimpleTransformerInput(nn.Module):
+    def __init__(self, vocab_size, d_model, max_len):
+        super().__init__()
+        self.d_model = d_model
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        self.pos_encoding = get_positional_encoding(max_len, d_model) # (max_len, d_model)
+
+    def forward(self, x):
+        """
+        x: (batch, seq_len)  토큰 인덱스
+        """
+        batch_size, seq_len = x.size()
+        emb = self.embedding(x) # (batch, seq_len, d_model)
+        pe = self.pos_encoding[:seq_len].unsqueeze(0) # (1, seq_len, d_model)
+        emb = emb + pe # (batch, seq_len, d_model)
+        return emb
+
 
 batch_size = 2
 seq_len = 5
