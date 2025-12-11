@@ -112,3 +112,24 @@ class Encoder(nn.Module):
         emb = self.embedding(src)
         outputs, hidden = self.rnn(emb)
         return outputs, hidden.squeeze(0)
+
+# 어텐션 클래스
+class AdditiveAttention(nn.Module):
+    def __init__(self, hidden_size_enc, hidden_size_dec, attn_dim):
+        super().__init__()
+        self.W_h = nn.Linear(hidden_size_enc, attn_dim, bias=False)
+        self.W_s = nn.Linear(hidden_size_dec, attn_dim, bias=False)
+        self.v_a = nn.Linear(attn_dim, 1, bias=False)
+
+    def forward(self, encoder_hidden, decoder_hidden, mask=None):
+        Wh = self.W_h(encoder_hidden)
+        Ws = self.W_s(decoder_hidden).unsqueeze(1)
+        score = self.v_a(torch.tanh(Wh+Ws)).squeeze(-1)
+
+        if mask is not None:
+            score = score.masked_fill(mask == 0, -1e9)
+        
+        attn_weights = F.softmax(score, dim=-1)
+        context = torch.bmm(attn_weights.unsqueeze(1), encoder_hidden) # (B, 1, H)
+
+        return context, attn_weights
