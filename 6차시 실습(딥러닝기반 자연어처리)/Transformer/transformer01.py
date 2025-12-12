@@ -254,3 +254,37 @@ def print_example(src, trg_output, pred_indices):
     print("PRED       :", " ".join(pred_tokens))
     print("-------------------------------------------------")
 
+
+def train():
+    # 1) 데이터셋 / 데이터로더
+    train_dataset = CopyDataset(
+        num_samples=NUM_TRAIN_SAMPLES,
+        min_len=MIN_SEQ_LEN,
+        max_len=MAX_SEQ_LEN,
+        vocab_start=3,
+        vocab_end=VOCAB_SIZE - 1,
+        sos_idx=SOS_IDX,
+        eos_idx=EOS_IDX
+    )
+    valid_dataset = CopyDataset(
+        num_samples=NUM_VALID_SAMPLES,
+        min_len=MIN_SEQ_LEN,
+        max_len=MAX_SEQ_LEN,
+        vocab_start=3,
+        vocab_end=VOCAB_SIZE - 1,
+        sos_idx=SOS_IDX,
+        eos_idx=EOS_IDX
+    )
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+        collate_fn=collate_fn
+    )
+    valid_loader = DataLoader(
+        valid_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=False,
+        collate_fn=collate_fn
+    )
+
