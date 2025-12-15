@@ -344,3 +344,10 @@ def train():
         
         return total_loss / total_tokens
     
+    # 4) Epoch 루프
+    for epoch in range(1, NUM_EPOCHS + 1):
+        train_loss = run_one_epoch(train_loader, train_mode=True)
+        valid_loss = run_one_epoch(valid_loader, train_mode=False)
+        print(f"[Epoch {epoch:02d}] "
+              f"train_loss={train_loss:.4f}  valid_loss={valid_loss:.4f}")
+        
