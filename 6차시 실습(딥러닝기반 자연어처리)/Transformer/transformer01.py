@@ -300,3 +300,7 @@ def train():
         pad_idx=PAD_IDX,
     )
 
+    # 3) 옵티마이저, 손실함수
+    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
+
