@@ -351,3 +351,32 @@ def train():
         print(f"[Epoch {epoch:02d}] "
               f"train_loss={train_loss:.4f}  valid_loss={valid_loss:.4f}")
         
+    # 5) 학습 후 예시 출력
+    model.eval()
+    with torch.no_grad():
+        src, trg_input, trg_output, src_key_padding_mask, tgt_key_padding_mask = next(iter(valid_loader)) # valid셋에서 batch 하나 가져오기
+        logits = model(src, trg_input, src_key_padding_mask, tgt_key_padding_mask)
+        preds = logits.argmax(dim=-1)  # (B, T)
+        num_show = min(3, src.size(0))
+
+        for i in range(num_show):
+            src_i = src[i]
+            trg_i = trg_output[i]
+            pred_i = preds[i]
+
+            # PAD 제거
+            src_i_nopad = src_i[src_i != PAD_IDX]
+            trg_i_nopad = trg_i[trg_i != PAD_IDX]
+            pred_i_nopad = pred_i[pred_i != PAD_IDX]
+
+            # 길이 맞추기
+            T_eff = len(trg_i_nopad)
+            pred_i_cut = pred_i_nopad[:T_eff]
+            print_example(
+                src_i_nopad.tolist(),
+                trg_i_nopad.tolist(),
+                pred_i_cut.tolist()
+            )
+
+if __name__ == "__main__":
+    train()
