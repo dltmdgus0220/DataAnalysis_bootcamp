@@ -304,3 +304,43 @@ def train():
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
     criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
 
+    def run_one_epoch(dataloader, train_mode: bool):
+        if train_mode:
+            model.train()
+        else:
+            model.eval()
+
+        total_loss = 0.0
+        total_tokens = 0
+
+        with torch.set_grad_enabled(train_mode):
+            for (
+                src,
+                trg_input,
+                trg_output,
+                src_key_padding_mask,
+                tgt_key_padding_mask,
+            ) in dataloader:
+                
+                logits = model(src, trg_input, src_key_padding_mask, tgt_key_padding_mask)
+                # logits: (B, T, V)
+                B, T, V = logits.size()
+                loss = criterion(
+                    logits.view(B * T, V),
+                    trg_output.reshape(-1)
+                )
+
+                if train_mode:
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+
+                non_pad = (trg_output != PAD_IDX).sum().item()
+                total_loss += loss.item() * non_pad
+                total_tokens += non_pad
+
+        if total_tokens == 0:
+            return 0.0
+        
+        return total_loss / total_tokens
+    
