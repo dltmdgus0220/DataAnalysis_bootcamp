@@ -288,3 +288,15 @@ def train():
         collate_fn=collate_fn
     )
 
+    # 2) 모델 준비
+    model = TransformerCopyModel(
+        vocab_size=VOCAB_SIZE,
+        d_model=D_MODEL,
+        nhead=NHEAD,
+        num_encoder_layers=NUM_ENCODER_LAYERS,
+        num_decoder_layers=NUM_DECODER_LAYERS,
+        dim_feedforward=DIM_FEEDFORWARD,
+        dropout=DROPOUT,
+        pad_idx=PAD_IDX,
+    )
+
