@@ -5,8 +5,13 @@ from collections import Counter
 
 # --- 0. 초기 설정 및 파일 경로 ---
 okt = Okt()
-FILE_PATH_INPUT = r"배달앱 데이터분석 프로젝트\데이터\원시데이터\ddangyo_reviews_playstore_7000.csv"
-FILE_PATH_OUTPUT = r"배달앱 데이터분석 프로젝트\데이터\전처리데이터\preprocessed_ddangyo_reviews_playstore.csv"
+APP_LIST = ['baemin', 'coupangeats', 'yogiyo', 'ddangyo']
+APP_NUM = 3
+APP_NAME = APP_LIST[APP_NUM]
+FILE_PATH_INPUT = f"배달앱 데이터분석 프로젝트/데이터/원시데이터/{APP_NAME}_reviews_playstore_7000.csv"
+FILE_PATH_OUTPUT = f"배달앱 데이터분석 프로젝트/데이터/전처리데이터/preprocessed_{APP_NAME}_reviews_playstore.csv"
+# FILE_PATH_INPUT = f"배달앱 데이터분석 프로젝트/데이터/원시데이터/merged_reviews_playstore.csv"
+# FILE_PATH_OUTPUT = f"배달앱 데이터분석 프로젝트/데이터/전처리데이터/preprocessed_merged_reviews_playstore.csv"
 
 # --- 1. 데이터 로드 및 전처리 ---
 try:
@@ -54,7 +59,9 @@ print("--- 2. 토큰화 및 '쿠팡이츠' 사후 결합 완료 ---")
 # 특정 품사 제거 목록 (요청하신 목록에 해당하지 않는 품사)
 REMOVE_POS = ("Josa", "Eomi", "Punctuation", "Suffix", "Adverb", "Conjunction", "URL", "Hashtag", "Foreign", "Alpha", "Number", "KoreanParticle")
 # 특정 단어 제거 목록 (요청하신 목록)
-CUSTOM_STOPWORDS = ['되다', '이다', '하다', '것', '있다',"돼다",'요','자다','좋다','배민','쿠팡','와우','쿠팡이츠','어플','앱',"최고","한국","회원",'굿굿','굿굿굿','짱짱','사용','탈퇴'] 
+CUSTOM_STOPWORDS = ['되다', '이다', '하다', '것', '있다',"돼다",'요','자다','좋다','배민',
+                    '쿠팡','와우','쿠팡이츠','어플','앱',"최고","한국","회원",'굿굿','굿굿굿',
+                    '짱짱','사용','탈퇴','야하다','어으','리도','호두'] 
 
 
 # 불용어 처리 함수 정의
@@ -81,6 +88,7 @@ def stopword_processing_final(tagged_list, remove_pos=REMOVE_POS, stopword=CUSTO
     return final_keywords
 
 # --- 6. 불용어 처리 함수 적용 ---
+
 df['filtered_keywords'] = df['tagged_content'].apply(stopword_processing_final)
 print("--- 3. 최종 불용어 처리 완료 (filtered_keywords 컬럼 생성) ---")
 
