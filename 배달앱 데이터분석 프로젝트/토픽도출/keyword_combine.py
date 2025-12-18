@@ -6,10 +6,24 @@ from konlpy.tag import Okt
 STATE = ["느림", "빠름", "나쁨", "비쌈", "쌈", "불친절", "친절", "안됨", "있음", "없음", "적음", "많음"]
 kiwi = Kiwi()
 okt = Okt()
-for s in STATE:
-    print(f"====={s}=====")
-    for t in kiwi.tokenize(s):
-        print(t.form, t.tag) # 없음-> 없/음, 느림-> 느리/ㅁ 이렇게 분리하기 때문에 맞지않음
-    for w, p in okt.pos(s):
-        print(w, p) 
+# for s in STATE:
+#     print(f"====={s}=====")
+#     for t in kiwi.tokenize(s):
+#         print(t.form, t.tag) # 없음-> 없/음, 느림-> 느리/ㅁ 이렇게 분리하기 때문에 맞지않음
+#     for w, p in okt.pos(s):
+#         print(w, p) 
+
+
+# --- 1. 불용어 및 매핑사전 ---
+
+# 불용어
+add_stopwords = ['땡기', '요기']
+with open('stopwords-ko.txt', encoding='utf-8') as f:
+    STOPWORDS = set(w.strip() for w in f if w.strip())
+if add_stopwords is not None:
+    STOPWORDS.update(add_stopwords)
+
+# 매핑
+with open("canon.json", "r", encoding="utf-8") as f:
+    CANON = json.load(f)
 
