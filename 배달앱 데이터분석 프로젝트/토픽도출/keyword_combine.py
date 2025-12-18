@@ -35,24 +35,17 @@ df = pd.read_csv(r'배달앱 데이터분석 프로젝트\데이터\전처리데
 
 # --- 3. 토큰화 및 매핑 ---
 
-df.loc[0, 'content'] = '배달이 느리고 혜택도 없어서 안좋다.' # 예제
-data = df['content'].apply(lambda x : x.split()) # 공백기준토큰화
-print("===== 공백기준 토큰화 =====")
-print(data[0]) # 토큰화 결과
+def tokenize_and_mapping(text:str) -> str:
+    text = text.split() # 공백기준토큰화
+    text = [CANON.get(token, token) for token in text] # 1차 매핑
+    # okt 토큰화를 위한 토큰결합
+    text = " ".join(text)
+    text = [w for w, p in okt.pos(text) if p in ("Noun", "Adjective", "Verb") and p not in STOPWORDS] # okt 토큰화
+    text = [CANON.get(token, token) for token in text] # 2차 매핑
 
-data = data.apply(lambda tokens: [CANON.get(token, token) for token in tokens]) # 1차 매핑
-data = data.apply(lambda x : " ".join(x))
-print("\n===== 1차 매핑 =====")
-print(data[0]) # 1차 매핑 결과
+    return text
 
-data = data.apply(lambda x : [w for w, p in okt.pos(x) if p in ("Noun", "Adjective", "Verb")]) # okt 토큰화
-print("\n===== Okt 토큰화 =====")
-print(data[0]) # 토큰화 결과
-
-data = data.apply(lambda tokens: [CANON.get(token, token) for token in tokens]) # 2차 매핑
-print("\n===== 2차 매핑 =====")
-print(data[0]) # 2차 매핑 결과
-
+print(tokenize_and_mapping('배달이 느리고 혜택도 없어서 안좋다.'))
 
 # --- 4. 키워드결합 ---
 
@@ -82,3 +75,4 @@ def keyword_combine(keywords:list) -> list:
 data = data.apply(lambda x : keyword_combine(x))
 print("\n===== 키워드결합 =====")
 print(data[0]) # 키워드결합
+
