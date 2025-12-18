@@ -53,3 +53,32 @@ data = data.apply(lambda tokens: [CANON.get(token, token) for token in tokens]) 
 print("\n===== 2차 매핑 =====")
 print(data[0]) # 2차 매핑 결과
 
+
+# --- 4. 키워드결합 ---
+
+def keyword_combine(keywords:list) -> list:
+    # ['배달', '느림', '혜택', '없음', '나쁨']
+    # ['배달느림', '혜택없음', '나쁨']
+    ret = []
+    used = [False] * len(keywords)
+    for i in range(len(keywords) - 1):
+        a, b = keywords[i], keywords[i+1]
+
+        # 대상+상태
+        if (b in STATE) and (a not in STATE):
+            ret.append(a + b) # "배달"+"느림" -> "배달느림"
+            used[i] = True
+            used[i+1] = True
+    
+    # 남은 키워드 처리
+    for i, keyword in enumerate(keywords):
+        if used[i]:
+            continue
+        ret.append(keyword) # 남은 키워드 다 추가
+
+    return ret
+    # 키워드 빈도수 파악을 위해 중복제거는 하지 않음
+
+data = data.apply(lambda x : keyword_combine(x))
+print("\n===== 키워드결합 =====")
+print(data[0]) # 키워드결합
