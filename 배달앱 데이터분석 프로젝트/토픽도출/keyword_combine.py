@@ -27,3 +27,8 @@ if add_stopwords is not None:
 with open("canon.json", "r", encoding="utf-8") as f:
     CANON = json.load(f)
 
+
+# --- 2. 데이터로드 ---
+
+df = pd.read_csv(r'배달앱 데이터분석 프로젝트\데이터\전처리데이터\preprocessed_ddangyo_reviews_playstore.csv', encoding='utf-8-sig')
+
