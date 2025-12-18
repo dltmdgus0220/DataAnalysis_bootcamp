@@ -32,3 +32,24 @@ with open("canon.json", "r", encoding="utf-8") as f:
 
 df = pd.read_csv(r'배달앱 데이터분석 프로젝트\데이터\전처리데이터\preprocessed_ddangyo_reviews_playstore.csv', encoding='utf-8-sig')
 
+
+# --- 3. 토큰화 및 매핑 ---
+
+df.loc[0, 'content'] = '배달이 느리고 혜택도 없어서 안좋다.' # 예제
+data = df['content'].apply(lambda x : x.split()) # 공백기준토큰화
+print("===== 공백기준 토큰화 =====")
+print(data[0]) # 토큰화 결과
+
+data = data.apply(lambda tokens: [CANON.get(token, token) for token in tokens]) # 1차 매핑
+data = data.apply(lambda x : " ".join(x))
+print("\n===== 1차 매핑 =====")
+print(data[0]) # 1차 매핑 결과
+
+data = data.apply(lambda x : [w for w, p in okt.pos(x) if p in ("Noun", "Adjective", "Verb")]) # okt 토큰화
+print("\n===== Okt 토큰화 =====")
+print(data[0]) # 토큰화 결과
+
+data = data.apply(lambda tokens: [CANON.get(token, token) for token in tokens]) # 2차 매핑
+print("\n===== 2차 매핑 =====")
+print(data[0]) # 2차 매핑 결과
+
