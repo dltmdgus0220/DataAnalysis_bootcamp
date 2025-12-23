@@ -65,22 +65,27 @@ with open("canon.json", "r", encoding="utf-8") as f:
 
 # --- 2. 데이터로드 ---
 
-df = pd.read_csv(r'배달앱 데이터분석 프로젝트\데이터\전처리데이터\preprocessed_ddangyo_reviews_playstore.csv', encoding='utf-8-sig')
+df = pd.read_csv(r'배달앱 데이터분석 프로젝트\데이터\원시데이터\merged_reviews_playstore.csv', encoding='utf-8-sig')
 
 
 # --- 3. 토큰화 및 매핑 ---
 
-def tokenize_and_mapping(text:str) -> str:
-    text = text.split() # 공백기준토큰화
-    text = [CANON.get(token, token) for token in text] # 1차 매핑
-    # okt 토큰화를 위한 토큰결합
-    text = " ".join(text)
-    text = [w for w, p in okt.pos(text) if p in ("Noun", "Adjective", "Verb") and p not in STOPWORDS] # okt 토큰화
-    text = [CANON.get(token, token) for token in text] # 2차 매핑
-
+def normalize_special(text: str) -> str:
+    text = str(text)
+    for pat, repl in SPECIAL_PATTERNS:
+        text = re.sub(pat, repl, text)
     return text
 
-print(tokenize_and_mapping('배달이 느리고 혜택도 없어서 안좋다.'))
+def tokenize_and_mapping(text:str, pos_list:list=None) -> list:
+    # print(okt.pos(text))
+    if pos_list is not None:
+        tokens = [w for w, p in okt.pos(text) if p in pos_list and w not in STOPWORDS and len(w) > 1] # okt 토큰화
+    else:
+        tokens = [w for w, p in okt.pos(text)] # okt 토큰화
+    tokens = [CANON.get(token, token) for token in tokens] # 매핑
+    # print(tokens)
+    return normalize_special(" ".join(tokens)).split()
+
 
 # --- 4. 키워드결합 ---
 
