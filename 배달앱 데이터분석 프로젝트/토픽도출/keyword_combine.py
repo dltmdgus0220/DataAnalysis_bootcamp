@@ -157,3 +157,24 @@ print()
 
 df.to_csv('배달앱 데이터분석 프로젝트/데이터/merged_reviews_keyword_playstore.csv', encoding='utf-8-sig')
 
+
+# --- 랜덤 인덱스에 대한 테스트 ---
+
+num = np.random.randint(-1, len(df))
+# num = 12129 # 18338, 21000, 19593, 12129, 17269, 19484, 8784
+# '배달이 느리고 혜택도 없어서 안좋다.'
+score = df.loc[num, 'score']
+# df.loc[num, 'content'] = '"알뜰배달", "한집배달", "배달특급", "배민클럽", "배민", "쿠팡이츠", "요기요", "땡겨요", "요기패스", "와우회원", "지역화폐", "온누리상품권", "고객센터"'
+data = df.loc[num, 'content']
+tokens = tokenize_and_mapping(data)
+comb = keyword_combine(tokens)
+
+print("===== 원본데이터 인덱스 및 별점 =====")
+print(num, score)
+print("===== 원본데이터 =====")
+print(data)
+print("===== 토큰화 및 매핑 =====")
+print(tokens)
+print("===== 키워드결합 =====")
+print(comb)
+
