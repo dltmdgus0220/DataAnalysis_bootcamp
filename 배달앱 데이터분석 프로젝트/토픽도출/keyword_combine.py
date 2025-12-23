@@ -129,7 +129,19 @@ def keyword_combine(keywords:list) -> list:
     # STATE가 도출되지 않은 경우 별점을 기반으로 추가하는 건 어떨까?
 
 
-data = data.apply(lambda x : keyword_combine(x))
-print("\n===== 키워드결합 =====")
-print(data[0]) # 키워드결합
+# --- 5. ASPECT 구축을 위한 명사형 키워드 상위 N개 ---
+
+def print_topn_noun(df:pd.DataFrame, col_name:str, topn:int):
+    counter = Counter()
+
+    for row in df[col_name]:
+        counter.update(row)
+
+    print(f"===== Top {topn}개 명사형 키워드 =====")
+    for word, cnt in counter.most_common(topn):
+        print(f"{word} : {cnt}개")
+
+# df['filtered_keywords_noun'] = df['content'].apply(lambda x : tokenize_and_mapping(x,['Noun']))
+# print_topn_noun(df, 'filtered_keywords_noun', 50)
+
 
