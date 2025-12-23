@@ -145,3 +145,15 @@ def print_topn_noun(df:pd.DataFrame, col_name:str, topn:int):
 # print_topn_noun(df, 'filtered_keywords_noun', 50)
 
 
+# --- 6. 데이터 프레임 추가 ---
+
+df['filtered_keywords'] = df['content'].apply(lambda x : tokenize_and_mapping(x))
+df['filtered_keywords'] = df['filtered_keywords'].apply(lambda x : keyword_combine(x))
+print(df['filtered_keywords'].apply(lambda x : len(x) == 0).value_counts())
+print()
+
+
+# --- 7. 데이터 프레임 csv로 저장 ---
+
+df.to_csv('배달앱 데이터분석 프로젝트/데이터/merged_reviews_keyword_playstore.csv', encoding='utf-8-sig')
+
