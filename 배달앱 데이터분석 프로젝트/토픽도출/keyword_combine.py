@@ -52,7 +52,7 @@ okt = Okt()
 # --- 1. 불용어 및 매핑사전 ---
 
 # 불용어
-add_stopwords = ['땡기', '요기']
+add_stopwords = []
 with open('stopwords-ko.txt', encoding='utf-8') as f:
     STOPWORDS = set(w.strip() for w in f if w.strip())
 if add_stopwords is not None:
@@ -92,25 +92,42 @@ def tokenize_and_mapping(text:str, pos_list:list=None) -> list:
 def keyword_combine(keywords:list) -> list:
     # ['배달', '느림', '혜택', '없음', '나쁨']
     # ['배달느림', '혜택없음', '나쁨']
-    ret = []
+    tmp = []
     used = [False] * len(keywords)
+    
     for i in range(len(keywords) - 1):
         a, b = keywords[i], keywords[i+1]
 
         # 대상+상태
-        if (b in STATE) and (a not in STATE):
-            ret.append(a + b) # "배달"+"느림" -> "배달느림"
+        if (a in ASPECT) and (b in STATE):
+            tmp.append(a + b) # "배달"+"느림" -> "배달느림"
             used[i] = True
             used[i+1] = True
     
     # 남은 키워드 처리
     for i, keyword in enumerate(keywords):
-        if used[i]:
-            continue
-        ret.append(keyword) # 남은 키워드 다 추가
+        if used[i] == False:
+            if (keyword in STATE) or (keyword in ASPECT):
+                tmp.append(keyword)
 
-    return ret
+    # 최종결합
+    ret = []
+    i = 0
+    while i < len(tmp)-1:
+        a, b = tmp[i], tmp[i+1]
+        if (a in ASPECT) and (b in STATE):
+            ret.append(a + b)
+            i += 2
+        else:
+            ret.append(a)
+            i += 1
+    if i == len(tmp)-1:
+        ret.append(tmp[-1])
+
+    return ret if len(tmp) > 1 else tmp
     # 키워드 빈도수 파악을 위해 중복제거는 하지 않음
+    # STATE가 도출되지 않은 경우 별점을 기반으로 추가하는 건 어떨까?
+
 
 data = data.apply(lambda x : keyword_combine(x))
 print("\n===== 키워드결합 =====")
