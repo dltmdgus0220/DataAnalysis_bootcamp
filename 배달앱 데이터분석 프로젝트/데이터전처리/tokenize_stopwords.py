@@ -92,18 +92,7 @@ def stopword_processing_final(tagged_list, remove_pos=REMOVE_POS, stopword=CUSTO
 df['filtered_keywords'] = df['tagged_content'].apply(stopword_processing_final)
 print("--- 3. 최종 불용어 처리 완료 (filtered_keywords 컬럼 생성) ---")
 
-# --- 7. 별점 기반 라벨링 ---
-
-# 긍정(1) : 별점 4,5점 / 중립(0) : 별점 3점 / 부정(-1) : 별점 1,2점
-df.loc[df['score'].isin([4, 5]), 'sentiment_label'] = 1 # 긍정
-df.loc[df['score'] == 3, 'sentiment_label'] = 0 # 중립
-df.loc[df['score'].isin([1, 2]), 'sentiment_label'] = -1 # 부정
-
-df.loc[df['score'].isin([4, 5]), 'sentiment'] = 'positive' # 긍정
-df.loc[df['score'] == 3, 'sentiment'] = 'neutral' # 중립
-df.loc[df['score'].isin([1, 2]), 'sentiment'] = 'negative' # 부정
-
-# --- 8. 최종 결과 저장 ---
+# --- 7. 최종 결과 저장 ---
 
 # 저장할 데이터프레임 구성: 원본 content와 최종 키워드 목록
 df_output = df.copy()
