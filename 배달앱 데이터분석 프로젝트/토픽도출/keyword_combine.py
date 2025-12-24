@@ -7,8 +7,8 @@ from kiwipiepy import Kiwi
 from konlpy.tag import Okt
 
 STATE = ["느림", "빠름", "나쁨", "좋음", "비쌈", "쌈", "불친절", "친절", "안됨", "있음", "없음", "적음", "많음", "편함", "편리함"] # 상태
-ASPECT = {"배달", "쿠폰", "주문", "할인", "어플", "사용", "가게", "결제", "이용", "센터", "지역",
-          "음식", "리뷰", "이벤트", "취소", "수수료", "혜택", "매장", "전화", "오류", "가격", "업체", "상품권",
+ASPECT = {"배달", "쿠폰", "주문", "할인", "어플", "사용", "가게", "결제", "이용", "센터", "지역", "대응", "응대",
+          "음식", "리뷰", "이벤트", "취소", "수수료", "혜택", "매장", "전화", "오류", "가격", "업체", "상품권", "상술",
           "메뉴", "광고", "접속", "카드", "소비자", "연결", "기능", "서비스", "기사", "업데이트", "문의", "지연", "설정",
           "배차", "배송", "라이더", "삭제", "업데이트", "환불", "시스템", "도착", "위치", "매장", "보상", "음식점", "양",
           "배민보다", "쿠팡이츠보다", "쿠팡보다", "요기요보다", "땡겨요보다",
@@ -36,7 +36,12 @@ SPECIAL_PATTERNS = [
     (r"요기요\s*보다", "요기요보다"),
     (r"땡겨요\s*보다", "땡겨요보다"),
     (r'굿+', "좋음"),
-    (r'안\s*좋(?:다|아|아요|네요|음)?', "나쁨")
+    (r'안\s*좋(?:다|아|아요|네요|음)?', "나쁨"),
+    (r'C\s*/?\s*S', "응대"),
+    (r'c\s*/?\s*S', "응대"),
+    (r'C\s*/?\s*s', "응대"),
+    (r'c\s*/?\s*s', "응대"),
+    (r'거슬', "나쁨")
 ]
 
 # --- 0. 토크나이저 테스트 ---
@@ -67,6 +72,7 @@ with open("canon.json", "r", encoding="utf-8") as f:
 # --- 2. 데이터로드 ---
 
 df = pd.read_csv(r'배달앱 데이터분석 프로젝트\데이터\원시데이터\merged_reviews_playstore.csv', encoding='utf-8-sig')
+# df = pd.read_csv(r'배달앱 데이터분석 프로젝트\데이터\원시데이터\coupangeats_reviews_playstore_7000.csv', encoding='utf-8-sig')
 
 
 # --- 3. 토큰화 및 매핑 ---
@@ -79,6 +85,7 @@ def normalize_special(text: str) -> str:
 
 def tokenize_and_mapping(text:str, pos_list:list=None) -> list:
     # print(okt.pos(text))
+    text = normalize_special(text)
     if pos_list is not None:
         tokens = [w for w, p in okt.pos(text) if p in pos_list and w not in STOPWORDS and len(w) > 1] # okt 토큰화
     else:
@@ -112,22 +119,20 @@ def keyword_combine(keywords:list) -> list:
                 tmp.append(keyword)
 
     # 최종결합
-    ret = []
+    ret = set()
     i = 0
     while i < len(tmp)-1:
         a, b = tmp[i], tmp[i+1]
         if (a in ASPECT) and (b in STATE):
-            ret.append(a + b)
+            ret.add(a + b)
             i += 2
         else:
-            ret.append(a)
+            ret.add(a)
             i += 1
     if i == len(tmp)-1:
-        ret.append(tmp[-1])
+        ret.add(tmp[-1])
 
-    return ret if len(tmp) > 1 else tmp
-    # 키워드 빈도수 파악을 위해 중복제거는 하지 않음
-    # STATE가 도출되지 않은 경우 별점을 기반으로 추가하는 건 어떨까?
+    return list(ret) if len(tmp) > 1 else tmp
 
 
 # --- 5. ASPECT 구축을 위한 명사형 키워드 상위 N개 ---
